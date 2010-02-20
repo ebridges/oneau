@@ -7,25 +7,37 @@ import static java.lang.String.format;
 class Ephemeris {
 
     /*
-       This class contains the methods necessary to parse the JPL DE405 ephemeris files (text versions), and compute the position and velocity of the planets, Moon, and Sun.
+       This class contains the methods necessary to parse the JPL DE405 ephemeris files (text versions), and compute
+       the position and velocity of the planets, Moon, and Sun.
 
        IMPORTANT: In order to use these methods, the user should:
          - save this class in a directory of his/her choosing;
-         - save to the same directory the text versions of the DE405 ephemeris files, which must be named  "ASCPxxxx.txt", where xxxx represents the start-year of the 20-year block;
+         - save to the same directory the text versions of the DE405 ephemeris files, which must be named  "ASCPxxxx.txt",
+         where xxxx represents the start-year of the 20-year block;
          - have at least Java 1.1.8 installed.
 
-       The input is the julian date (jultime) for which the ephemeris is needed.  Note that only julian dates from 2414992.5 to 2524624.5 are supported.  This input must be specified in
- the "main" method, which contains the call to "planetary_ephemeris".
+       The input is the julian date (jultime) for which the ephemeris is needed.  Note that only julian dates from
+       2414992.5 to 2524624.5 are supported.  This input must be specified in the "main" method, which contains the
+       call to "planetary_ephemeris".
 
-       GENERAL IDEA:  The "get_ephemeris_coefficients" method reads the ephemeris file corresponding to the input julian day, and stores the ephemeris coefficients needed to calculate planetary positions and velocities in the array "ephemeris_coefficients".
-       The "get_planet_posvel" method calls "get_ephemeris_coefficients" if needed, then calculates the position and velocity of the specified planet.
-       The "planetary_ephemeris" method calls "get_planet_posvel" for each planet, and resolves the position and velocity of the Earth/Moon barycenter and geocentric Moon into the position and velocity of the Earth and Moon.
+       GENERAL IDEA:  The "get_ephemeris_coefficients" method reads the ephemeris file corresponding to the input
+       julian day, and stores the ephemeris coefficients needed to calculate planetary positions and velocities in the
+       array "ephemeris_coefficients".
+       The "get_planet_posvel" method calls "get_ephemeris_coefficients" if needed, then calculates the position and
+       velocity of the specified planet.
+       The "planetary_ephemeris" method calls "get_planet_posvel" for each planet, and resolves the position and velocity
+       of the Earth/Moon barycenter and geocentric Moon into the position and velocity of the Earth and Moon.
 
-       Since the "ephemeris_coefficients" array is declared as an instance variable, its contents will remain intact, should this code be modified to call "planetary_ephemeris" more than once.  As a result, assuming the julian date of the subsequent call fell within the same 20-year file as the initial call, there would be no need to reread the ephemeris file; this would save on i/o time.
+       Since the "ephemeris_coefficients" array is declared as an instance variable, its contents will remain intact,
+       should this code be modified to call "planetary_ephemeris" more than once.  As a result, assuming the julian date
+       of the subsequent call fell within the same 20-year file as the initial call, there would be no need to reread the
+       ephemeris file; this would save on i/o time.
+
 
        The outputs are the arrays "planet_r" and "planet_rprime", also declared as instance variables.
 
-       Several key constants and variables follow.  As noted, they are configured for DE405; however, they could be adjusted to use the DE200 ephemeris, whose format is quite similar.
+       Several key constants and variables follow.  As noted, they are configured for DE405; however, they could be
+       adjusted to use the DE200 ephemeris, whose format is quite similar.
      */
 
 
@@ -46,17 +58,20 @@ class Ephemeris {
     static double emrat = 81.30056;
 
     /*
-       Chebyshev coefficients for the DE405 ephemeris are contained in the files "ASCPxxxx.txt".  These files are broken into intervals of length "interval_duration", in days.
+       Chebyshev coefficients for the DE405 ephemeris are contained in the files "ASCPxxxx.txt".  These files are broken
+       into intervals of length "interval_duration", in days.
      */
     static int interval_duration = 32;
 
     /*
-       Each interval contains an interval number, length, start and end jultimes, and Chebyshev coefficients.  We keep only the coefficients.
+       Each interval contains an interval number, length, start and end jultimes, and Chebyshev coefficients.  We keep
+       only the coefficients.
      */
     static int numbers_per_interval = 816;
 
     /*
-       For each planet (and the Moon makes 10, and the Sun makes 11), each interval contains several complete sets of coefficients, each covering a fraction of the interval duration
+       For each planet (and the Moon makes 10, and the Sun makes 11), each interval contains several complete sets of
+       coefficients, each covering a fraction of the interval duration
      */
     static int number_of_coef_sets_1 = 4;
     static int number_of_coef_sets_2 = 2;
@@ -71,7 +86,8 @@ class Ephemeris {
     static int number_of_coef_sets_11 = 2;
 
     /*
-       Each planet (and the Moon makes 10, and the Sun makes 11) has a different number of Chebyshev coefficients used to calculate each component of position and velocity.
+       Each planet (and the Moon makes 10, and the Sun makes 11) has a different number of Chebyshev coefficients used
+       to calculate each component of position and velocity.
      */
     static int number_of_coefs_1 = 14;
     static int number_of_coefs_2 = 10;
@@ -93,7 +109,8 @@ class Ephemeris {
     double[] ephemeris_dates = new double[3];
 
     /*
-       Define the positions and velocities of the major planets as instance variables.  Note that the first subscript is the planet number, while the second subscript specifies x, y, or z component.
+       Define the positions and velocities of the major planets as instance variables.  Note that the first subscript
+       is the planet number, while the second subscript specifies x, y, or z component.
      */
     double[][] planet_r = new double[12][4];
     double[][] planet_rprime = new double[12][4];
@@ -117,7 +134,8 @@ class Ephemeris {
         Ephemeris testBody = new Ephemeris();
 
         /*
-            This is the call to "planetary_ephemeris", which will put planetary positions into the array "planet_r", and planetary velocities into the array "planet_rprime".
+            This is the call to "planetary_ephemeris", which will put planetary positions into the array "planet_r",
+            and planetary velocities into the array "planet_rprime".
           */
         testBody.planetary_ephemeris(jultime);
 
@@ -142,7 +160,8 @@ class Ephemeris {
 
         /*
             Procedure to calculate the position and velocity at jultime of the major planets.
-            Note that the planets are enumerated as follows:  Mercury = 1, Venus = 2, Earth-Moon barycenter = 3, Mars = 4, ... , Pluto = 9, Geocentric Moon = 10, Sun = 11.
+            Note that the planets are enumerated as follows:  Mercury = 1, Venus = 2, Earth-Moon barycenter = 3,
+            Mars = 4, ... , Pluto = 9, Geocentric Moon = 10, Sun = 11.
           */
 
         double dist = 0, lighttime = 0;
@@ -164,7 +183,9 @@ class Ephemeris {
             }
         }
 
-        /*  The positions and velocities of the Earth and Moon are found indirectly.  We already have the pos/vel of the Earth-Moon barycenter (i = 3).  We have also calculated planet_r(10,j), a geocentric vector from the Earth to the Moon.  Using the ratio of masses, we get vectors from the Earth-Moon barycenter to the Moon and to the Earth.  */
+        /*  The positions and velocities of the Earth and Moon are found indirectly.  We already have the pos/vel of the
+        Earth-Moon barycenter (i = 3).  We have also calculated planet_r(10,j), a geocentric vector from the Earth to
+        the Moon.  Using the ratio of masses, we get vectors from the Earth-Moon barycenter to the Moon and to the Earth.  */
         for (int j = 1; j <= 3; j++) {
             planet_r[3][j] = planet_r[3][j] - planet_r[10][j] / (1 + emrat);
             planet_r[10][j] = planet_r[3][j] + planet_r[10][j];
@@ -178,8 +199,12 @@ class Ephemeris {
     void get_planet_posvel(double jultime, int i, double ephemeris_r[], double ephemeris_rprime[]) {
 
         /*
-            Procedure to calculate the position and velocity of planet i, subject to the JPL DE405 ephemeris.  The positions and velocities are calculated using Chebyshev polynomials, the coefficients of which are stored in the files "ASCPxxxx.txt".
-            The general idea is as follows:  First, check to be sure the proper ephemeris coefficients (corresponding to jultime) are available.  Then read the coefficients corresponding to jultime, and calculate the positions and velocities of the planet.
+            Procedure to calculate the position and velocity of planet i, subject to the JPL DE405 ephemeris.  The
+            positions and velocities are calculated using Chebyshev polynomials, the coefficients of which are stored
+            in the files "ASCPxxxx.txt".
+            The general idea is as follows:  First, check to be sure the proper ephemeris coefficients (corresponding to
+            jultime) are available.  Then read the coefficients corresponding to jultime, and calculate the positions and
+            velocities of the planet.
           */
 
         int interval = 0, numbers_to_skip = 0, pointer = 0, j = 0, k = 0, subinterval = 0, light_pointer = 0;
@@ -221,7 +246,8 @@ class Ephemeris {
 
 
         /*
-            Begin by determining whether the current ephemeris coefficients are appropriate for jultime, or if we need to load a new set.
+            Begin by determining whether the current ephemeris coefficients are appropriate for jultime, or if we need
+            to load a new set.
           */
         if ((jultime < ephemeris_dates[1]) || (jultime > ephemeris_dates[2]))
             get_ephemeris_coefficients(jultime);
@@ -233,7 +259,8 @@ class Ephemeris {
         numbers_to_skip = (interval - 1) * numbers_per_interval;
 
         /*
-              Starting at the beginning of the coefficient array, skip the first "numbers_to_skip" coefficients.  This puts the pointer on the first piece of data in the correct interval.
+              Starting at the beginning of the coefficient array, skip the first "numbers_to_skip" coefficients.  This
+              puts the pointer on the first piece of data in the correct interval.
           */
         pointer = numbers_to_skip + 1;
 
@@ -283,7 +310,9 @@ class Ephemeris {
             ephemeris_rprime[j] = 0;
             for (k = 1; k <= number_of_coefs[i]; k++)
                 ephemeris_rprime[j] = ephemeris_rprime[j] + coef[j][k] * velocity_poly[k];
-            /*  The next line accounts for differentiation of the iterative formula with respect to chebyshev time.  Essentially, if dx/dt = (dx/dct) times (dct/dt), the next line includes the factor (dct/dt) so that the units are km/day  */
+            /*  The next line accounts for differentiation of the iterative formula with respect to chebyshev time.
+            Essentially, if dx/dt = (dx/dct) times (dct/dt), the next line includes the factor (dct/dt) so that the
+            units are km/day  */
             ephemeris_rprime[j] = ephemeris_rprime[j] * (2.0 * number_of_coef_sets[i] / interval_duration);
 
             /*  Convert from km to A.U.  */
