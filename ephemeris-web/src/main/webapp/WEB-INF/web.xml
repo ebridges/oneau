@@ -10,9 +10,9 @@
         <description>Loads an instance of Ephemeris into the Servlet Context, and remains available to fulfill requests.</description>
         <servlet-class>com.oneau.web.EphemerisServlet</servlet-class>
         <init-param>
-            <param-name>ephemerides</param-name>
+            <param-name>ephemeris-data</param-name>
             <param-value>/ASCP2000.txt</param-value>
-            <description>Ephemerides Data FIle</description>
+            <description>Ephemerides Data File</description>
         </init-param>
         <load-on-startup>10</load-on-startup>
     </servlet>
