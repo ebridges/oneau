@@ -11,8 +11,8 @@
         <servlet-class>com.oneau.web.EphemerisServlet</servlet-class>
         <init-param>
             <param-name>ephemeris-data</param-name>
-            <param-value>/ASCP2000.txt</param-value>
-            <description>Ephemerides Data File</description>
+            <param-value>ASCP2000.txt</param-value>
+            <description>Comma-separated list of Ephemerides Data File(s)</description>
         </init-param>
         <load-on-startup>10</load-on-startup>
     </servlet>
