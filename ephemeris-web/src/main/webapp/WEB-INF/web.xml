@@ -1,7 +1,6 @@
 <!DOCTYPE web-app PUBLIC
         "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
         "http://java.sun.com/dtd/web-app_2_3.dtd" >
-
 <web-app>
     <display-name>Ephemeris Web Application</display-name>
     <servlet>
@@ -18,6 +17,9 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>EphemerisServlet</servlet-name>
-        <url-pattern>/calc/*</url-pattern>
+        <url-pattern>/calc</url-pattern>
     </servlet-mapping>
+    <welcome-file-list>
+        <welcome-file>index.jspx</welcome-file>
+    </welcome-file-list>
 </web-app>

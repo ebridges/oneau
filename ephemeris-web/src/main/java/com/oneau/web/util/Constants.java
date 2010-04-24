@@ -1,5 +1,7 @@
 package com.oneau.web.util;
 
+import java.util.regex.Pattern;
+
 /**
  * User: ebridges
  * Date: Feb 19, 2010
@@ -15,9 +17,27 @@ public final class Constants {
      */
     public final static double EMRAT = 81.30056;
 
+    /**
+     * Regular expression that can match and parse an ISO8601 formatted date (yyyy-mm-ddThh:mm:ss).
+     */
+    public static final Pattern ISO_DATE_PATTERN = Pattern.compile("([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})");
+
+    /**
+     * Servlet init-param for identifying data files intended to be pre-loaded.
+     */
     public static final String EPHEMERIS_DATA = "ephemeris-data";
-    
+
+    public static final String DATE_PARAM = "isoDate";
     public static final String JULIAN_DATE_PARAM = "julianDate";
+    public static final String BODY_NAME_PARAM = "body";
+    public static final String MONTH_PARAM = "month";
+    public static final String DAY_PARAM = "day";
+    public static final String YEAR_PARAM = "year";
+    public static final String HOUR_PARAM = "hour";
+    public static final String MIN_PARAM = "minute";
+    public static final String SEC_PARAM = "second";
+    public static final String RESPONSE_CONTENT_TYPE_PARAM = "responseType";
+    public static final String RESPONSE_UNITS_PARAM = "responseUnits";
 
     private Constants() {
     }

@@ -1,6 +1,7 @@
 package com.oneau.web;
 
 import com.oneau.web.util.HeavenlyBody;
+import static com.oneau.web.util.Utility.newDouble;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -9,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import static java.lang.String.format;
 import java.util.List;
+import static java.util.Collections.unmodifiableList;
 import static java.util.Arrays.asList;
 
 /**
@@ -52,7 +54,7 @@ public class EphemerisData {
      * @return double[] Chebyshev coefficients parsed from the given file.
      */
     private Double[] parseEphemerisCoefficients(EphemerisDataFile dataFile) throws IOException {
-        Double[] coefficients = new Double[dataFile.getRecordCount() * 274 * 3];
+        Double[] coefficients = newDouble(dataFile.getRecordCount() * 274 * 3);
         int mantissa1;
         int mantissa2;
         int exponent;
@@ -189,10 +191,10 @@ public class EphemerisData {
 
         List<Double> getCoefficients() {
             List<Double> coefficients = asList(ephemerisCoefficients);
-            return coefficients.subList(
+            return unmodifiableList(coefficients.subList(
                     getViewBegin(),
                     getViewEnd()
-            );
+            ));
         }
 
         public HeavenlyBody getBody() {
@@ -204,26 +206,34 @@ public class EphemerisData {
         }
 
         public double getChebyshevTime() {
-            return 2 * (asOf - ((dataFile.getSubinterval(body, asOf) - 1) * dataFile.getSubintervalDuration(body) + dataFile.getIntervalStartTime(asOf))) / dataFile.getSubintervalDuration(body) - 1;
+            return 2 * (asOf - ((dataFile.getSubinterval(body, asOf) - 1) * dataFile.getSubintervalDuration(body) + dataFile.getIntervalStartTime(asOf) )) / dataFile.getSubintervalDuration(body) - 1;
         }
 
         private int getViewBegin() {
             int interval = dataFile.getInterval(asOf);
             int subinterval = dataFile.getSubinterval(body, asOf);
-            int numbers_to_skip = (interval - 1) * EphemerisDataFile.NUMBERS_PER_INTERVAL;
+            int numbersToSkip = (interval - 1) * EphemerisDataFile.NUMBERS_PER_INTERVAL;
 
             /*
-             * Starting at the beginning of the coefficient array, skip the first "numbers_to_skip"
+             * Starting at the beginning of the coefficient array, skip the first "numbersToSkip"
              * coefficients.  This puts the pointer on the first piece of data in the correct interval.
              */
-            int pointer = numbers_to_skip + 1;
+            int pointer = numbersToSkip + 1;
 
-            // Skip the coefficients for the first (heavenlyBody-1) planets
-            for (int j = 0; j < (body.getIndex() - 1); j++)
-                pointer += 3 * (body.getNumberOfCoefficientSets() * body.getNumberOfChebyshevCoefficients());
+            // Skip the coefficients for the planets ahead of this one
+            for(HeavenlyBody b : HeavenlyBody.orderedByIndex()) {
+                if(b == body) {
+                    break;
+                }
+                pointer = pointer + 3 * b.getNumberOfCoefficientSets() * b.getNumberOfChebyshevCoefficients();
+            }
 
             // Skip the next (subinterval - 1)*3*number_of_coefs(heavenlyBody) coefficients
             pointer += (subinterval - 1) * 3 * body.getNumberOfChebyshevCoefficients();
+
+            if(logger.isDebugEnabled()) {
+                logger.debug(format("interval: %d, subinterval: %d, numbersToSkip: %d, pointer: %d", interval, subinterval, numbersToSkip, pointer));
+            }
 
             return pointer;
         }

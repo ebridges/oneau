@@ -3,14 +3,36 @@ package com.oneau.web.util;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import org.apache.log4j.Logger;
+
+import static java.lang.System.*;
+import static java.lang.String.format;
+import java.util.regex.Matcher;
+import java.util.List;
+import java.util.ArrayList;
+
+import static com.oneau.web.util.Constants.*;
+
 /**
  * User: ebridges
  * Date: Feb 19, 2010
  */
 public final class Utility {
+    private static final Logger logger = Logger.getLogger(Utility.class);
+
+    private Utility() {
+    }
 
     public static boolean isEmpty(String s) {
         return null == s || s.length() < 1;
+    }
+
+    public static Double[] newDouble(int size) {
+        Double[] d = new Double[size];
+        for(int i=0; i<size; i++) {
+            d[i] = 0.0;
+        }
+        return d;
     }
 
     public static String toCsv(double[] o) {
@@ -36,6 +58,18 @@ public final class Utility {
         return sb.toString();
     }
 
+    public static Double toJulianDay() {
+        DateTime d = new DateTime().withZone(DateTimeZone.UTC);
+        return toJulianDay(
+                d.getYear(),
+                d.getMonthOfYear(),
+                d.getDayOfMonth(),
+                d.getHourOfDay(),
+                d.getMinuteOfHour(),
+                d.getSecondOfMinute(),
+                0.0
+        );
+    }
 
     public static double toJulianDay(String isoDate) {
         DateTime d = new DateTime(isoDate).withZone(DateTimeZone.UTC);
@@ -70,9 +104,6 @@ public final class Utility {
         return julianDay;
     }
 
-    private Utility() {
-    }
-
     public static String toString(Object[] objects) {
         StringBuilder sb = new StringBuilder(objects.length*32);
         boolean isFirst = true;
@@ -87,7 +118,102 @@ public final class Utility {
         return sb.toString();
     }
 
-    public static boolean isEmpty(String[] strings) {
-        return null == strings || strings.length < 1;
+    public static boolean isEmpty(Object[] v) {
+        return null == v || v.length < 1;
+    }
+
+    public static boolean contains(Object[] es, Object ee) {
+        for(Object e : es) {
+            if(e == ee) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean containsAny(Object[] es, Object ... ee) {
+        if(isEmpty(es) || isEmpty(ee)) {
+            return false;
+        }
+        for(Object e : es) {
+            if(e == ee[0]) {
+                return true;
+            }
+        }
+        if(ee.length > 1) {
+            return containsAny(es, rest(ee));
+        }
+        return false;
+    }
+
+    public static boolean containsAll(Object[] es, Object ... ee) {
+      //  System.out.printf("es: %s, ee: %s\n", toString(es), toString(ee));
+        if(isEmpty(es) || isEmpty(ee)) {
+            return false;
+        }
+        if(ee.length > 1) {
+            return containsAll(es, first(ee)) && containsAll(es, rest(ee));
+        } else {
+            for(Object e : es) {
+                if(e == ee[0]) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static Object first(Object[] ee) {
+        if(isEmpty(ee)) {
+            return null;
+        } else {
+            return ee[0];
+        }
+    }
+
+    public static Object[] rest(Object[] e) {
+        if(isEmpty(e)) {
+            return e;
+        }
+        Object[] ee = new Object[e.length-1];
+        arraycopy(e, 1, ee, 0, e.length-1);
+        return ee;
+    }
+
+    public static Double[] parseDate(String isoDate) {
+        Matcher m = ISO_DATE_PATTERN.matcher(isoDate);
+        if(m.matches()) {
+            int cnt = m.groupCount();
+            Double[] dateFields = new Double[cnt];
+            for(int i=1; i<=cnt; i++) {
+                Double v = new Double(m.group(i));
+                dateFields[i-1] = v;
+            }
+            return dateFields;
+        } else {
+            throw new IllegalArgumentException(format("Invalid date format [%s]",isoDate));
+        }
+    }
+
+    public static HeavenlyBody[] toHeavenlyBody(String ... bodyNames) {
+        if(!isEmpty(bodyNames)) {
+            List<HeavenlyBody> bodies = new ArrayList<HeavenlyBody>(bodyNames.length);
+            for(String name : bodyNames) {
+                HeavenlyBody body = HeavenlyBody.lookup(name);
+                if(null!=body){
+                    bodies.add(body);
+                } else {
+                    logger.warn(format("no body found with name [%s]", name));
+                }
+            }
+            return bodies.toArray(new HeavenlyBody[bodyNames.length]);
+        } else {
+            return HeavenlyBody.values();
+        }
+    }
+
+    public static boolean isBetween(double asOf, double[] range) {
+        return (range[0] < asOf) && (asOf < range[range.length-1]);
     }
 }
+

@@ -23,7 +23,14 @@ public class AssertionUtil {
                 assertNull(format("expected null at idx[%d]",i), actual[i]);
                 continue;
             }
-            assertEquals(format("idx[%d]",i),expected[i], actual[i], 0.01);
+            if(null == actual[i]) {
+                assertNull(format("expected null at idx[%d]", i), expected[i]);
+                continue;
+            }
+            if(logger.isTraceEnabled()) {
+                logger.trace(format("i=>%d::e:[%f]::a:[%f]",i, expected[i], actual[i]));
+            }
+            assertEquals(format("idx[%d]",i),expected[i], actual[i], 0.000000001);
         }
     }
 
@@ -31,7 +38,27 @@ public class AssertionUtil {
         assertEquals(expected.length, actual.length);
         int sz = expected.length;
         for(int i=0; i<sz; i++) {
-            assertEquals(format("idx[%d]",i),expected[i], actual[i], 0.01);
+            assertEquals(format("idx[%d]",i),expected[i], actual[i], 0.000000001);
         }
+    }
+
+    public static Double[] copy(double[] from) {
+        Double[] to = new Double[from.length];
+        for(int i=0; i<from.length; i++){
+            to[i] = from[i];
+        }
+        return to;
+    }
+
+    public static double[] copy(Double[] from) {
+        double[] to = new double[from.length];
+        for(int i=0; i<from.length; i++){
+            if(null == from[i]) {
+                to[i]=0;
+            } else {
+                to[i] = from[i];
+            }
+        }
+        return to;
     }
 }

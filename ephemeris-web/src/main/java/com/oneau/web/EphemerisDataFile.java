@@ -1,16 +1,27 @@
 package com.oneau.web;
 
 import static com.oneau.web.util.Utility.isEmpty;
+import static com.oneau.web.util.Utility.isBetween;
 import com.oneau.web.util.HeavenlyBody;
+
+import org.apache.log4j.Logger;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.TreeSet;
+import static java.util.Collections.unmodifiableSortedSet;
+import static java.lang.String.format;
+import java.io.File;
 
 /**
  * User: EBridges
  * Created: 2010-04-07
  */
-public class EphemerisDataFile {
+public class EphemerisDataFile implements Comparable<EphemerisDataFile> {
+    private static final Logger logger = Logger.getLogger(EphemerisDataFile.class);
+
     private static final EphemerisDataFile ASCP1900 = new EphemerisDataFile("ASCP1900.txt", 230, 2414992.5, 2422320.5);
     private static final EphemerisDataFile ASCP1920 = new EphemerisDataFile("ASCP1920.txt", 229, 2422320.5, 2429616.5);
     private static final EphemerisDataFile ASCP1940 = new EphemerisDataFile("ASCP1940.txt", 230, 2429616.5, 2436912.5);
@@ -79,7 +90,7 @@ public class EphemerisDataFile {
     public static EphemerisDataFile lookupByDate(Double julianTime) {
         if(null != julianTime) {
             for(Map.Entry<double[], EphemerisDataFile> entry : LOOKUP_BY_DATE.entrySet()) {
-                if((julianTime >= entry.getKey()[0]) && (julianTime < entry.getKey()[1])) {
+                if(isBetween(julianTime, entry.getKey())) {
                     return entry.getValue();
                 }
             }
@@ -92,6 +103,10 @@ public class EphemerisDataFile {
             return LOOKUP_BY_NAME.get(filename);
         }
         return null;
+    }
+
+    public static Set<EphemerisDataFile> values() {
+        return unmodifiableSortedSet(new TreeSet<EphemerisDataFile>(LOOKUP_BY_NAME.values()));
     }
 
     private double[] dateRange;
@@ -124,12 +139,26 @@ public class EphemerisDataFile {
         return recordCount;
     }
 
+    public boolean existsOnClasspath() {
+        return getClass().getResourceAsStream(this.fileName) != null;
+    }
+
+    public boolean existsAtLocation(String location) {
+        File f = new File(location, this.fileName);
+        return f.exists();
+    }
+
+    public boolean exists() {
+        File f = new File(this.fileName);
+        return f.exists();
+    }
+
     public int getInterval(Double julianDate) {
         return (int) (Math.floor((julianDate - dateRange[0]) / INTERVAL_DURATION) + 1);
     }
 
-    public double getIntervalStartTime(Double julianDate) {
-        return (this.getInterval(julianDate)-1) * INTERVAL_DURATION + dateRange[0];
+    public Double getIntervalStartTime(Double julianDate) {
+        return (this.getInterval(julianDate) - 1) * INTERVAL_DURATION + dateRange[0];
     }
 
     public double getSubintervalDuration(HeavenlyBody body) {
@@ -137,6 +166,16 @@ public class EphemerisDataFile {
     }
 
     public int getSubinterval(HeavenlyBody body, double asOf) {
-        return (int) (Math.floor((asOf - this.getIntervalStartTime(asOf)) / this.getSubintervalDuration(body)) + 1);
+        double subIntervalDuration = this.getSubintervalDuration(body);
+        int subinterval = (int) (Math.floor((asOf - this.getIntervalStartTime(asOf)) / subIntervalDuration) + 1);
+        if(logger.isDebugEnabled()) {
+            logger.debug(format("asOf(%f) beginDate(%f) subIntervalDuration(%f) subinterval(%d)", asOf, this.getBeginDate(), subIntervalDuration, subinterval));
+        }
+        return subinterval;
+    }
+
+    @Override
+    public int compareTo(EphemerisDataFile that) {
+        return this.fileName.compareTo(that.fileName);
     }
 }

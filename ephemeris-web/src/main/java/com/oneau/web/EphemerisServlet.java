@@ -1,6 +1,9 @@
 package com.oneau.web;
 
 import com.oneau.web.util.HeavenlyBody;
+import com.oneau.web.util.Utility;
+import com.oneau.web.util.Converter;
+import com.oneau.web.util.ConverterFactory;
 import org.apache.log4j.Logger;
 
 import javax.servlet.ServletConfig;
@@ -11,12 +14,28 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
+import java.util.List;
+import java.util.LinkedList;
+import java.util.Set;
+import java.util.HashSet;
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 
 import static com.oneau.web.util.Constants.EPHEMERIS_DATA;
 import static com.oneau.web.util.Constants.JULIAN_DATE_PARAM;
+import static com.oneau.web.util.Constants.BODY_NAME_PARAM;
+import static com.oneau.web.util.Constants.*;
 import static com.oneau.web.util.Utility.isEmpty;
 import static com.oneau.web.util.Utility.toCsv;
+import static com.oneau.web.util.Utility.toJulianDay;
+import static com.oneau.web.util.Utility.toHeavenlyBody;
+import com.oneau.web.view.ViewFactory;
+import com.oneau.web.view.View;
+
 import static java.lang.String.format;
+import static java.lang.Double.valueOf;
+
+import org.joda.time.DateTime;
 
 /**
  * User: ebridges
@@ -53,40 +72,122 @@ public class EphemerisServlet extends HttpServlet {
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String jdate = request.getParameter(JULIAN_DATE_PARAM);
-        Double julianDate = Double.valueOf(jdate);
-        if(logger.isDebugEnabled()) {
-            logger.debug(format("doGet(%s=%s) called.",JULIAN_DATE_PARAM, julianDate));
-        }
-
         Ephemeris ephemeris = (Ephemeris) this.getServletContext().getAttribute(EPHEMERIS_DATA);
         if(logger.isTraceEnabled()) {
             logger.trace("ephemeris located in servletContext.");
         }
+        View view = ViewFactory.view(chooseView(request.getParameter(RESPONSE_CONTENT_TYPE_PARAM)));
+        response.setContentType(view.getMimeType());
+        HeavenlyBody[] bodies = toHeavenlyBody(request.getParameterValues(BODY_NAME_PARAM));
+        Converter[] converters = getConvertersFromRequest(request);
 
-        Map<HeavenlyBody, PositionAndVelocity> results = ephemeris.calculatePlanetaryEphemeris(julianDate);
-        if(logger.isDebugEnabled()){
-            logger.debug(format("retrieved position and velocity for %d bodies.", results.keySet().size()));
-        }
-
-        PrintWriter out = response.getWriter();
-        response.setContentType("text/plain");
-
-        out.println("bodyId;body;position;velocity");
-
-        for (Map.Entry<HeavenlyBody, PositionAndVelocity> e : results.entrySet()) {
-            String position = toCsv(e.getValue().getPosition());
-            String velocity = toCsv(e.getValue().getVelocity());
-            if(logger.isTraceEnabled()){
-                logger.trace(format("sending result for body [%s]", e.getKey().getName()));
+        PrintWriter writer = response.getWriter();
+        try {
+            List<Double> julianDates = getJulianDateFromRequest(request);
+            for(Double julianDate : julianDates) {
+                Map<HeavenlyBody, PositionAndVelocity> model = ephemeris.calculatePlanetaryEphemeris(julianDate, bodies);
+                if(logger.isDebugEnabled()){
+                    logger.debug(format("retrieved position and velocity for %d bodies for date %f.", model.keySet().size(), julianDate));
+                }
+                view.writeModel(writer, model);
             }
-            out.println(format("%d;%s;%s;%s",
-                    e.getKey().getIndex(),
-                    e.getKey().getName(),
-                    position,
-                    velocity
-                )
-            );
+        } finally {
+            writer.flush();
         }
     }
+
+    private Converter[] getConvertersFromRequest(HttpServletRequest request) {
+        String[] converterNames = request.getParameterValues(RESPONSE_UNITS_PARAM);
+        if(!isEmpty(converterNames)) {
+            Set<Converter> converters = new HashSet<Converter>();
+            int i=0;
+            for(String name : converterNames) {
+                Converter.TYPE type = null;
+                try {
+                    type = Converter.TYPE.valueOf(name);
+                } catch(IllegalArgumentException e) {
+                    logger.warn("got invalid converter type: ["+name+"]");
+                    continue;
+                }
+                if(null != type)
+                    converters.add(ConverterFactory.getConverter(type));
+            }
+            return converters.toArray(new Converter[converters.size()]);
+        } else {
+            Converter KM = ConverterFactory.getConverter( Converter.TYPE.KM );
+            return new Converter[]{ KM };
+        }
+    }
+
+    private ViewFactory.ViewType chooseView(String parameter) {
+        if(isEmpty(parameter)) {
+            return ViewFactory.ViewType.TEXT;
+        } else {
+            return ViewFactory.ViewType.valueOf(parameter.trim().toUpperCase());
+        }
+    }
+
+    private List<Double> getJulianDateFromRequest(HttpServletRequest request) {
+        if(!isEmpty(request.getParameterValues(JULIAN_DATE_PARAM))) {
+            String[] dates = request.getParameterValues(JULIAN_DATE_PARAM);
+            List<Double> julianDates = new LinkedList<Double>();
+            for(String date : dates) {
+                Double julianDate = valueOf(date);
+                if(logger.isInfoEnabled()) {
+                    logger.info(format("queryDate: [%s/%s]", date, julianDate));
+                }
+                julianDates.add(julianDate);
+            }
+            return  unmodifiableList(julianDates);
+        } else if(!isEmpty(request.getParameterValues(DATE_PARAM))) {
+            String[] isoDates = request.getParameterValues(DATE_PARAM);
+            List<Double> julianDates = new LinkedList<Double>();
+            for(String isoDate : isoDates) {
+                Double[] dateFields = Utility.parseDate(isoDate);
+                Double julianDate = toJulianDay(
+                        dateFields[0],
+                        dateFields[1],
+                        dateFields[2],
+                        dateFields[3],
+                        dateFields[4],
+                        dateFields[5],
+                        0.0
+                );
+                if(logger.isInfoEnabled()) {
+                    logger.info(format("queryDate: [%s/%s]", isoDate, julianDate));
+                }
+                julianDates.add(julianDate);
+            }
+            return  unmodifiableList(julianDates);
+        } else if(!isEmpty(request.getParameter(MONTH_PARAM))) {
+            String MO = request.getParameter(MONTH_PARAM);
+            String D  = request.getParameter(DAY_PARAM);
+            String Y  = request.getParameter(YEAR_PARAM);
+            String H  = request.getParameter(HOUR_PARAM);
+            String MI = request.getParameter(MIN_PARAM);
+            String S  = request.getParameter(SEC_PARAM);
+            String m  = "000";
+            Double julianDate = toJulianDay(
+                    valueOf(Y),
+                    valueOf(MO),
+                    valueOf(D),
+                    valueOf(H),
+                    valueOf(MI),
+                    valueOf(S),
+                    0.0
+            );
+            if(logger.isInfoEnabled()) {
+                String date = format("%s-%s-%sT%s:%s:%s.%sZ", Y, MO, D, H, MI, S, m);
+                logger.info(format("queryDate: [%s/%s]",date, julianDate));
+            }
+            return unmodifiableList(asList(julianDate));
+        } else {
+            Double julianDate = toJulianDay();
+            if(logger.isInfoEnabled()) {
+                logger.info(format("queryDate default to today: [%s/%s]", new DateTime(), julianDate));
+            }
+            return unmodifiableList(asList(julianDate));
+        }
+    }
+
 }

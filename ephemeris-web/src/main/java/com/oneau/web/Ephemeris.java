@@ -2,11 +2,15 @@ package com.oneau.web;
 
 import static com.oneau.web.util.HeavenlyBody.MOON;
 import static com.oneau.web.util.HeavenlyBody.EARTH;
+import static com.oneau.web.util.Utility.isEmpty;
+import static com.oneau.web.util.Utility.contains;
 import static java.lang.String.format;
 
 import com.oneau.web.util.Constants;
 import com.oneau.web.util.HeavenlyBody;
 import com.oneau.web.util.Utility;
+import com.oneau.web.util.Converter;
+import com.oneau.web.util.ConverterFactory;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -52,6 +56,7 @@ public class Ephemeris {
             if(!DATAFILE_CACHE.containsKey(dataFile)){
                 logger.info(format("precaching dataFile [%s]", file));
                 DATAFILE_CACHE.put(dataFile, new EphemerisData(dataFile));
+                logger.info(format("dataFile [%s] successfully cached.", file));
             }
         }
     }
@@ -74,6 +79,22 @@ public class Ephemeris {
      * @return Map<HeavenlyBody, PositionAndVelocity> Results of calculations of position and velocity for given heavenly bodies.
      */
     public Map<HeavenlyBody, PositionAndVelocity> calculatePlanetaryEphemeris(double jultime, HeavenlyBody ... heavenlyBodies) throws IOException {
+        if (logger.isTraceEnabled()) {
+            logger.trace("calculatePlanetaryEphemeris() called.");
+        }
+
+        if(isEmpty(heavenlyBodies)) {
+            heavenlyBodies = HeavenlyBody.values();
+        } else if(contains(heavenlyBodies, EARTH) && !contains(heavenlyBodies, MOON)) {
+            HeavenlyBody[] t = new HeavenlyBody[heavenlyBodies.length+1];
+            int i=0;
+            for(; i<heavenlyBodies.length; i++) {
+                t[i] = heavenlyBodies[i];
+            }
+            t[i] = MOON;
+            heavenlyBodies = t;
+        }
+
         Map<HeavenlyBody, PositionAndVelocity> results = new HashMap<HeavenlyBody, PositionAndVelocity>();
 
         //  Get the ephemeris positions and velocities of each major planet
@@ -118,10 +139,11 @@ public class Ephemeris {
      *
      * @param jultime Time at which position is to be calculated.
      * @param heavenlyBody Body to calculate position of.
+     * @param resultConverter One or more result transformers.
      * @return PositionAndVelocity Position and velocity of the given body at the given time.
      * @throws java.io.IOException Thrown when I/O error occurs when reading data file.
      */
-     PositionAndVelocity getPlanetPositionAndVelocity(double jultime, HeavenlyBody heavenlyBody) throws IOException {
+     PositionAndVelocity getPlanetPositionAndVelocity(double jultime, HeavenlyBody heavenlyBody, Converter ... resultConverter) throws IOException {
         /*
             Begin by determining whether the current ephemeris coefficients are appropriate for jultime, or if we need
             to load a new set.
@@ -133,45 +155,61 @@ public class Ephemeris {
         EphemerisData data = DATAFILE_CACHE.get(dataFile);
         EphemerisData.EphemerisDataView dataView = data.getDataForBody(heavenlyBody, jultime);
 
-        Double[] position = calculatePosition(dataView);
-        Double[] velocity = calculateVelocity(dataView);
+        Converter c;
+        if(null != resultConverter && resultConverter.length > 0) {
+            c = resultConverter[0];
+        } else {
+            c = ConverterFactory.getConverter(Converter.TYPE.AU);
+        }
 
-        return new PositionAndVelocity(heavenlyBody, position, velocity);
+        Double[] position = calculatePosition(dataView, c);
+        Double[] velocity = calculateVelocity(dataView, c);
+
+        return new PositionAndVelocity(jultime, heavenlyBody, position, velocity);
     }
 
-    private Double[] calculateVelocity(EphemerisData.EphemerisDataView ephemerisData) {
-        Double[] velocity = new Double[3];
+    private Double[] calculateVelocity(EphemerisData.EphemerisDataView ephemerisData, Converter resultConverter) {
+        Double[] velocity = newDouble(3);
         double chebyshevTime = ephemerisData.getChebyshevTime();
         int coefficientCount = ephemerisData.getBody().getNumberOfChebyshevCoefficients();
-        double[] polynomial = new double[coefficientCount];
         List<Double> coefficients = ephemerisData.getCoefficients();
 
         /*  Calculate the Chebyshev velocity polynomials  */
-        polynomial[0] = 0;
-        polynomial[1] = 1;
-        polynomial[2] = 4 * chebyshevTime;
-        for (int j = 3; j < coefficientCount; j++)
-            polynomial[j] = 2 * chebyshevTime * polynomial[j - 1] + 2 * polynomial[j - 1] - polynomial[j - 2];
+        double[] polynomial = createVelocityPolynomial(coefficientCount, chebyshevTime);
 
-        /*  Calculate the velocity of the heavenlyBody'th planet  */
-        for (int j = 0; j < 3; j++) {
-            velocity[j] = 0.0;
-            for (int k = 0; k < coefficientCount; k++)
-                velocity[j] += coefficients.get(k) * polynomial[k];
+        /*
+         * Calculate the velocity of the planet at jultime. The coefficients returned from the dataview is a
+         * 2-d matrix of coefficients flattened to a 1-d array. Therefore the indexing is a running sum of
+         * the index "i".
+         */
+        int i=0;
+        for (int x = 0; x < 3; x++) {
+            velocity[x] = 0.0;
+            for (int y = 0; y < coefficientCount; y++) {
+                if(logger.isDebugEnabled()) {
+                    logger.debug(format("    a: velocity[%d](%f) += coefficient[%d](%f) * polynomial[%d](%f)", x, velocity[x], i, coefficients.get(i), y, polynomial[y]));
+                }
+                velocity[x] += coefficients.get(i++) * polynomial[y];
+            }
             /*
              * The next line accounts for differentiation of the iterative formula with respect to chebyshev time.
              * Essentially, if dx/dt = (dx/dct) times (dct/dt), the next line includes the factor (dct/dt) so that
              * the units are km/day
              */
-            velocity[j] *= (2.0 * ephemerisData.getBody().getNumberOfCoefficientSets() / EphemerisDataFile.INTERVAL_DURATION);
+            if(logger.isDebugEnabled()) {
+                logger.debug(format("   a: velocity[%d](%f) *= (2.0 * NumCoefficientSets(%d) / INTERVAL_DURATION(%d)", x, velocity[x], ephemerisData.getBody().getNumberOfCoefficientSets(), EphemerisDataFile.INTERVAL_DURATION));
+            }
+            velocity[x] *= (2.0 * ephemerisData.getBody().getNumberOfCoefficientSets() / EphemerisDataFile.INTERVAL_DURATION);
 
-            /*  Convert from km to A.U.  */
-            velocity[j] /= Constants.AU;
+            if(logger.isDebugEnabled()) {
+                logger.debug(format("velocity[%d]=%fkm, %fau", x, velocity[x], resultConverter.convert(velocity[x])));
+            }
+            velocity[x] = resultConverter.convert(velocity[x]);
         }
         return velocity;
     }
 
-    private Double[] calculatePosition(EphemerisData.EphemerisDataView ephemerisData) {
+    private Double[] calculatePosition(EphemerisData.EphemerisDataView ephemerisData, Converter resultConverter) {
         /*  Calculate the Chebyshev position polynomials   */
         /* Chebyshev Polynomials of the first kind:
             Tn+1(x) = 2 x Tn(x) - Tn-1(x)
@@ -180,28 +218,62 @@ public class Ephemeris {
             T3( x ) = 2x (2x^2 - 1) - x = 4x^3 - 3x
             T4( x ) = 2x (4x^3 - 3x) - (2x^2 - 1) = 8x^4 - 8x^2 + 1
          */
-        Double[] position = new Double[3];
+        Double[] position = newDouble(3);
         double chebyshevTime = ephemerisData.getChebyshevTime();
         int coefficientCount = ephemerisData.getBody().getNumberOfChebyshevCoefficients();
         List<Double> coefficients = ephemerisData.getCoefficients();
 
+        double[] polynomial = createPositionPolynomial(coefficientCount, chebyshevTime);
+
+        /*
+         * Calculate the position of the planet at jultime. The coefficients returned from the dataview is a
+         * 2-d matrix of coefficients flattened to a 1-d array. Therefore the indexing is a running sum of
+         * the index "i".
+         */
+        int i=0;
+        for (int x = 0; x < 3; x++) {
+            position[x] = 0.0;
+            for (int y = 0; y < coefficientCount; y++) {
+                if(logger.isDebugEnabled()) {
+                    logger.debug(format("    a: position[%d](%f) += coefficient[%d](%f) * polynomial[%d](%f)", x, position[x], i, coefficients.get(i), y, polynomial[y]));
+                }
+                position[x] += coefficients.get(i++) * polynomial[y];
+            }
+
+            if(logger.isDebugEnabled()) {
+                logger.debug(format("position[%d]=%fkm, %fau", x, position[x], resultConverter.convert(position[x])));
+            }
+            position[x] = resultConverter.convert(position[x]);
+        }
+        return position;
+    }
+
+    private double[] createVelocityPolynomial(int coefficientCount, double chebyshevTime) {
+        double[] positionPolynomial = createPositionPolynomial(coefficientCount, chebyshevTime);
+        double[] polynomial = new double[coefficientCount];
+        polynomial[0] = 0;
+        polynomial[1] = 1;
+        polynomial[2] = 4 * chebyshevTime;
+        for (int j = 3; j < coefficientCount; j++)
+            polynomial[j] = 2 * chebyshevTime * polynomial[j - 1] + 2 * positionPolynomial[j - 1] - polynomial[j - 2];
+
+        return polynomial;
+    }
+
+    private double[] createPositionPolynomial(int coefficientCount, double chebyshevTime) {
         double[] polynomial = new double[coefficientCount];
         polynomial[0] = 1;
         polynomial[1] = chebyshevTime;
         for (int j = 2; j < coefficientCount; j++)
             polynomial[j] = 2 * chebyshevTime * polynomial[j - 1] - polynomial[j - 2];
+        return polynomial;
+    }
 
-        /*  Calculate the position of the planet at jultime  */
-        for (int j = 0; j < 3; j++) {
-            position[j] = 0.0;
-            for (int k = 0; k < coefficientCount; k++){
-                position[j] += coefficients.get(k) * polynomial[k];
-            }
-
-            /*  Convert from km to A.U.  */
-            position[j] /= Constants.AU;
-        }
-        return position;
+    private Double[] newDouble(int i) {
+        Double[] d = new Double[i];
+        for(int ii=0; ii<d.length; ii++)
+            d[ii]=0.0;
+        return d;
     }
 
     public static void main(String args[]) throws Exception {
@@ -227,30 +299,6 @@ public class Ephemeris {
             logger.info("    Position: "+ Utility.toString(pav.getPosition()));
             logger.info("    Velocity: "+ Utility.toString(pav.getVelocity()));
         }
-    }
-}
-
-class PositionAndVelocity {
-    private HeavenlyBody body;
-    private Double[] position;
-    private Double[] velocity;
-
-    public PositionAndVelocity(HeavenlyBody body, Double[] position, Double[] velocity) {
-        this.body = body;
-        this.position = position;
-        this.velocity = velocity;
-    }
-
-    public HeavenlyBody getBody() {
-        return body;
-    }
-
-    public Double[] getPosition() {
-        return position;
-    }
-
-    public Double[] getVelocity() {
-        return velocity;
     }
 }
 

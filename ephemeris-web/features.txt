@@ -1,0 +1,47 @@
+URL
+    http://1au.com/ephemeris/calc
+
+INPUT PARAMETERS
+    * Date specification:
+        - one or more julian dates (param: julianDate)
+        - one or more iso8601 date strings (param: isoDate)
+        - one date by specifying each component (params: month, day, year, hour, minute, second)
+        - if no date specified, uses current date.
+    * Body specification:
+        - one or more heavenly bodies (param: body), specified by name (case insensitive) or by ID:
+                1.  Mercury      2.  Venus
+                3.  Earth        4.  Mars
+                5.  Jupiter      6.  Saturn
+                7.  Uranus       8.  Neptune
+                9.  Pluto        10. Moon
+                11. Sun
+         - if no body is specified, returns calculation for all bodies.
+    * Units specification
+        - specify what unit the returned values should be denominated in (param: responseUnits):
+            + KM
+            + AU
+        - if no unit specified, returns results in KM (velocity in KM/day)
+    * Result format
+        - specify what format the returned results should be in:
+            + TEXT
+                Format description:
+                ephemerisDate;bodyId;body;position;velocity
+            + JSON
+                Format description:
+                http://en.wikipedia.org/wiki/JSON
+        - if no format is specified, returns results in TEXT format.
+
+EPHEMERIS DATA NOTES
+    Supports date ranges from January 1, 2000 through December 31, 2020
+    Uses the DE405 ephemeris coefficients data from:
+        ftp://ssd.jpl.nasa.gov/pub/eph/planets/ascii/de405/ascp2000.405
+        (Adding other date periods is merely a configuration change, limited
+        only by available memory).
+    Returns position & velocity in solar system barycentric coordinates.
+        Coordinates are based in the J2000 epoch, but equator & equinox are
+        defined by the IERS reference frame.
+        Earth & moon solar system coordinates are derived from the earth/moon
+        barycentric coordinates.
+    Using the ephemeris coordinates:
+        http://www.cv.nrao.edu/~rfisher/Ephemerides/ephem_use.html
+
