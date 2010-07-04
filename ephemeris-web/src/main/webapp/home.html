@@ -1,0 +1,82 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>
+      location lookup
+    </title>
+    <style type="text/css">
+    /*margin and padding on body element
+    can introduce errors in determining
+    element position and are not recommended;
+    we turn them off as a foundation for YUI
+    CSS treatments. */
+    body {
+        margin:0;
+        padding:0;
+    }
+    </style>
+    <!-- 
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.1/build/fonts/fonts-min.css">
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.1/build/tabview/assets/skins/sam/tabview.css">
+    <script type="text/javascript" src="http://yui.yahooapis.com/2.8.1/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="http://yui.yahooapis.com/2.8.1/build/element/element-min.js"></script>
+    <script type="text/javascript" src="http://yui.yahooapis.com/2.8.1/build/tabview/tabview-min.js"></script>
+	 -->
+	
+    <link rel="stylesheet" type="text/css" href="/css/build/fonts/fonts-min.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/tabview/assets/skins/sam/tabview.css" />
+    <script type="text/javascript" src="/js/yahoo-dom-event/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="/js/element/element-min.js"></script>
+    <script type="text/javascript" src="/js/tabview/tabview-min.js"></script>
+
+	<!--there is no custom header content for this example-->
+  </head>
+  <body class="yui-skin-sam">
+    <h1>
+      location lookup
+    </h1>
+     	<form action="#">
+    <div class="exampleIntro">
+      <p>
+        Do a lookup for the following year: <input type="text"/>
+      </p>
+    </div>
+    <div id="demo" class="yui-navset">
+      <ul class="yui-nav">
+        <li>
+          <a href="#tab1"><em>Lookup by location</em></a>
+        </li>
+        <li class="selected">
+          <a href="#tab2"><em>Lookup by coordinate</em></a>
+        </li>
+      </ul>
+      <div class="yui-content">
+        <div id="tab1">
+    	<table>
+			<tr><td>City, State</td><td><input type="text" name="city"/>, <input type="text" name="state"/></td></tr>
+			<tr><td>Zip code</td><td><input type="text" name="zipCode"/></td></tr>
+		</table>
+        </div>
+	        <div id="tab2">
+			<table>
+				<tr><td>Longitude</td><td><input type="text" name="lon"/></td></tr>
+				<tr><td>Latitude</td><td><input type="text" name="lat"/></td></tr>
+				<tr><td>Elevation</td><td><input type="text" name="el"/></td></tr>
+			</table>
+	        </div>
+      </div>
+    <input type="submit"/>
+    </div>
+    </form>
+	<script type="text/javascript">
+
+    (function() {
+    var tabView = new YAHOO.widget.TabView('demo');
+
+    YAHOO.log("The example has finished loading; as you interact with it, you'll see log messages appearing here.", "info", "example");
+    })();
+    </script>
+  </body>
+</html>
