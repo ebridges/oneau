@@ -8,7 +8,6 @@ import static java.lang.Math.sin;
 import static java.lang.Math.sqrt;
 import static java.lang.Math.tan;
 
-import static java.lang.String.format;
 import static java.lang.System.out;
 
 /**
