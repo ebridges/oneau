@@ -1,15 +1,16 @@
 package com.oneau.web.view;
 
-import com.oneau.web.util.HeavenlyBody;
-import static com.oneau.web.util.Utility.toCsv;
 import com.oneau.web.PositionAndVelocity;
+import com.oneau.web.util.HeavenlyBody;
 import com.oneau.web.util.MagneticDeclension;
 import org.apache.log4j.Logger;
 
-import static java.lang.String.format;
-import java.io.Writer;
 import java.io.IOException;
+import java.io.Writer;
 import java.util.Map;
+
+import static com.oneau.web.util.Utility.toCsv;
+import static java.lang.String.format;
 
 /**
  * User: EBridges
@@ -48,6 +49,7 @@ public class ViewFactory {
 
 class JsonView implements View {
     private static final Logger logger = Logger.getLogger(JsonView.class);
+
     public String getMimeType() {
         return "text/json";
     }
@@ -64,7 +66,7 @@ class JsonView implements View {
                 decl.getInclination(),
                 decl.getTotalIntensity(),
                 decl.getHorizontalIntensity()
-            )
+        )
         );
     }
 
@@ -76,27 +78,27 @@ class JsonView implements View {
         writer.write("[");
         boolean isFirst = true;
         for (Map.Entry<HeavenlyBody, PositionAndVelocity> e : model.entrySet()) {
-            if(isFirst) {
+            if (isFirst) {
                 isFirst = false;
             } else {
                 writer.write(',');
             }
-            if(logger.isTraceEnabled()){
+            if (logger.isTraceEnabled()) {
                 logger.trace(format("sending result as json for body [%s]", e.getKey().getName()));
             }
             writer.write(
-                format(
-                    "{\"bodyId\":\"%s\", \"bodyName\":\"%s\", \"ephemerisDate\":\"%s\", \"position\":[\"%s\",\"%s\",\"%s\"], \"velocity\":[\"%s\",\"%s\",\"%s\"]}",
-                    e.getKey().getId(),
-                    e.getKey().getName(),
-                    e.getValue().getEphemerisDate(),
-                    e.getValue().getPosition()[0],
-                    e.getValue().getPosition()[1],
-                    e.getValue().getPosition()[2],
-                    e.getValue().getVelocity()[0],
-                    e.getValue().getVelocity()[1],
-                    e.getValue().getVelocity()[2]
-                )
+                    format(
+                            "{\"bodyId\":\"%s\", \"bodyName\":\"%s\", \"ephemerisDate\":\"%s\", \"position\":[\"%s\",\"%s\",\"%s\"], \"velocity\":[\"%s\",\"%s\",\"%s\"]}",
+                            e.getKey().getId(),
+                            e.getKey().getName(),
+                            e.getValue().getEphemerisDate(),
+                            e.getValue().getPosition()[0],
+                            e.getValue().getPosition()[1],
+                            e.getValue().getPosition()[2],
+                            e.getValue().getVelocity()[0],
+                            e.getValue().getVelocity()[1],
+                            e.getValue().getVelocity()[2]
+                    )
             );
         }
         writer.write("]\n");
@@ -105,6 +107,7 @@ class JsonView implements View {
 
 class TextView implements View {
     private static final Logger logger = Logger.getLogger(TextView.class);
+
     public String getMimeType() {
         return "text/plain";
     }
@@ -122,7 +125,7 @@ class TextView implements View {
                 decl.getInclination(),
                 decl.getTotalIntensity(),
                 decl.getHorizontalIntensity()
-            )
+        )
         );
     }
 
@@ -131,7 +134,7 @@ class TextView implements View {
         for (Map.Entry<HeavenlyBody, PositionAndVelocity> e : model.entrySet()) {
             String position = toCsv(e.getValue().getPosition());
             String velocity = toCsv(e.getValue().getVelocity());
-            if(logger.isTraceEnabled()){
+            if (logger.isTraceEnabled()) {
                 logger.trace(format("sending result as text for body [%s]", e.getKey().getName()));
             }
             writer.write(format("%f;%d;%s;%s;%s\n",
@@ -140,7 +143,7 @@ class TextView implements View {
                     e.getKey().getName(),
                     position,
                     velocity
-                )
+            )
             );
         }
     }

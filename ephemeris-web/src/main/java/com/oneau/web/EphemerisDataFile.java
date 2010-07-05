@@ -1,19 +1,18 @@
 package com.oneau.web;
 
-import static com.oneau.web.util.Utility.isEmpty;
-import static com.oneau.web.util.Utility.isBetween;
 import com.oneau.web.util.HeavenlyBody;
-
 import org.apache.log4j.Logger;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.TreeSet;
-import static java.util.Collections.unmodifiableSortedSet;
-import static java.lang.String.format;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
+import static com.oneau.web.util.Utility.isBetween;
+import static com.oneau.web.util.Utility.isEmpty;
+import static java.lang.String.format;
+import static java.util.Collections.unmodifiableSortedSet;
 
 /**
  * User: EBridges
@@ -88,9 +87,9 @@ public class EphemerisDataFile implements Comparable<EphemerisDataFile> {
     }
 
     public static EphemerisDataFile lookupByDate(Double julianTime) {
-        if(null != julianTime) {
-            for(Map.Entry<double[], EphemerisDataFile> entry : LOOKUP_BY_DATE.entrySet()) {
-                if(isBetween(julianTime, entry.getKey())) {
+        if (null != julianTime) {
+            for (Map.Entry<double[], EphemerisDataFile> entry : LOOKUP_BY_DATE.entrySet()) {
+                if (isBetween(julianTime, entry.getKey())) {
                     return entry.getValue();
                 }
             }
@@ -99,7 +98,7 @@ public class EphemerisDataFile implements Comparable<EphemerisDataFile> {
     }
 
     public static EphemerisDataFile lookupByName(String filename) {
-        if(!isEmpty(filename) && LOOKUP_BY_NAME.containsKey(filename)) {
+        if (!isEmpty(filename) && LOOKUP_BY_NAME.containsKey(filename)) {
             return LOOKUP_BY_NAME.get(filename);
         }
         return null;
@@ -116,7 +115,7 @@ public class EphemerisDataFile implements Comparable<EphemerisDataFile> {
     private EphemerisDataFile(String fileName, Integer recordCount, double dateRangeBegin, double dateRangeEnd) {
         this.fileName = fileName;
         this.recordCount = recordCount;
-        this.dateRange = new double[] {dateRangeBegin, dateRangeEnd};
+        this.dateRange = new double[]{dateRangeBegin, dateRangeEnd};
     }
 
     public double[] getDateRange() {
@@ -168,7 +167,7 @@ public class EphemerisDataFile implements Comparable<EphemerisDataFile> {
     public int getSubinterval(HeavenlyBody body, double asOf) {
         double subIntervalDuration = this.getSubintervalDuration(body);
         int subinterval = (int) (Math.floor((asOf - this.getIntervalStartTime(asOf)) / subIntervalDuration) + 1);
-        if(logger.isDebugEnabled()) {
+        if (logger.isDebugEnabled()) {
             logger.debug(format("asOf(%f) beginDate(%f) subIntervalDuration(%f) subinterval(%d)", asOf, this.getBeginDate(), subIntervalDuration, subinterval));
         }
         return subinterval;

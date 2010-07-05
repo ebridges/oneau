@@ -19,20 +19,19 @@ import static com.oneau.web.util.Constants.RESPONSE_CONTENT_TYPE_PARAM;
 import static com.oneau.web.util.Utility.isEmpty;
 import static java.lang.Double.parseDouble;
 import static java.lang.Integer.parseInt;
-import static java.lang.String.format;
 
 /**
  * User: ebridges
  * Date: Jul 5, 2010
  */
-public class MagneticDeclensionServlet  extends HttpServlet {
+public class MagneticDeclensionServlet extends HttpServlet {
     private static final Logger logger = Logger.getLogger(MagneticDeclensionServlet.class);
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
 
-        if(logger.isDebugEnabled()){
+        if (logger.isDebugEnabled()) {
             logger.debug("creating instance of magnetic declension calculator.");
         }
         TrueNorth trueNorthCalculator = new TrueNorth();
@@ -56,7 +55,7 @@ public class MagneticDeclensionServlet  extends HttpServlet {
             double lat = parseDouble(request.getParameter(Constants.LATITUDE_PARAM));
             double el = parseDouble(request.getParameter(Constants.ELEVATION_PARAM));
 
-            MagneticDeclension md = trueNorthCalculator.calculate(year, month, day, lat, lon, el );
+            MagneticDeclension md = trueNorthCalculator.calculate(year, month, day, lat, lon, el);
 
             view.writeModel(writer, md);
         } finally {
@@ -65,7 +64,7 @@ public class MagneticDeclensionServlet  extends HttpServlet {
     }
 
     private ViewFactory.ViewType chooseView(String parameter) {
-        if(isEmpty(parameter)) {
+        if (isEmpty(parameter)) {
             return ViewFactory.ViewType.TEXT;
         } else {
             return ViewFactory.ViewType.valueOf(parameter.trim().toUpperCase());

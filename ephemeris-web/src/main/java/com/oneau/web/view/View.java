@@ -1,12 +1,12 @@
 package com.oneau.web.view;
 
-import com.oneau.web.util.HeavenlyBody;
 import com.oneau.web.PositionAndVelocity;
+import com.oneau.web.util.HeavenlyBody;
 import com.oneau.web.util.MagneticDeclension;
 
-import java.util.Map;
-import java.io.Writer;
 import java.io.IOException;
+import java.io.Writer;
+import java.util.Map;
 
 /**
  * User: EBridges
@@ -14,6 +14,8 @@ import java.io.IOException;
  */
 public interface View {
     String getMimeType();
+
     void writeModel(Writer writer, Map<HeavenlyBody, PositionAndVelocity> model) throws IOException;
+
     void writeModel(Writer writer, MagneticDeclension decl) throws IOException;
 }

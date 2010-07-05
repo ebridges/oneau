@@ -6,9 +6,9 @@ package com.oneau.web.util;
  */
 public class ConverterFactory {
     public static Converter getConverter(Converter.TYPE type) {
-        if(type == Converter.TYPE.AU) {
+        if (type == Converter.TYPE.AU) {
             return new KmToAuConverter();
-        } else if(type == Converter.TYPE.KM) {
+        } else if (type == Converter.TYPE.KM) {
             return new NoOpConverter();
         } else {
             throw new IllegalArgumentException("unrecognized converter type.");

@@ -1,17 +1,18 @@
 package com.oneau.web;
 
 import com.oneau.web.util.HeavenlyBody;
-import static com.oneau.web.util.Utility.newDouble;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import static java.lang.String.format;
 import java.util.List;
-import static java.util.Collections.unmodifiableList;
+
+import static com.oneau.web.util.Utility.newDouble;
+import static java.lang.String.format;
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 
 /**
  * User: EBridges
@@ -21,7 +22,7 @@ public class EphemerisData {
     private static final Logger logger = Logger.getLogger(EphemerisData.class);
 
     private EphemerisDataFile dataFile;
-   private Double[] ephemerisCoefficients;
+    private Double[] ephemerisCoefficients;
 
     public EphemerisData(EphemerisDataFile dataFile) throws IOException {
         this.dataFile = dataFile;
@@ -29,7 +30,7 @@ public class EphemerisData {
     }
 
     public EphemerisDataView getDataForBody(HeavenlyBody body, Double asOf) {
-        if(null == body) {
+        if (null == body) {
             throw new IllegalArgumentException("body cannot be null");
         }
         return new EphemerisDataView(body, asOf);
@@ -46,12 +47,12 @@ public class EphemerisData {
     /**
      * Procedure to read the DE405 ephemeris file corresponding to jultime.  Returns the Chebyshev coefficients for
      * Mercury, Venus, Earth-Moon, Mars, Jupiter, Saturn, Uranus, Neptune, Pluto, Geocentric Moon, and Sun.
-     *
+     * <p/>
      * Note that the DE405 ephemeris files should on the same classpath as this class.
      *
      * @param dataFile Ephemeris data file relative to date range the application is searching for.
-     * @throws java.io.IOException when an i/o error occurs.
      * @return double[] Chebyshev coefficients parsed from the given file.
+     * @throws java.io.IOException when an i/o error occurs.
      */
     private Double[] parseEphemerisCoefficients(EphemerisDataFile dataFile) throws IOException {
         Double[] coefficients = newDouble(dataFile.getRecordCount() * 274 * 3);
@@ -82,7 +83,7 @@ public class EphemerisData {
                         mantissa1 = Integer.parseInt(line.substring(4, 13));
                         mantissa2 = Integer.parseInt(line.substring(13, 22));
                         exponent = Integer.parseInt(line.substring(24, 26));
-                        if(logger.isTraceEnabled()) {
+                        if (logger.isTraceEnabled()) {
                             logger.trace(format("1st entry (record:%d,coefficient:%d): [mantissa1:%d] [mantissa2:%d] [exponent:%d]", record, coefficient, mantissa1, mantissa2, exponent));
                         }
                         int idx = (record - 1) * 816 + (3 * (coefficient - 2) - 1);
@@ -93,7 +94,7 @@ public class EphemerisData {
                                 line.substring(1, 2).equals("-"),
                                 line.substring(23, 24).equals("-")
                         );
-                        if(logger.isTraceEnabled()) {
+                        if (logger.isTraceEnabled()) {
                             logger.trace(format("  coefficient[%s]: %s", idx, coefficients[idx]));
                         }
                     }
@@ -102,7 +103,7 @@ public class EphemerisData {
                         mantissa1 = Integer.parseInt(line.substring(30, 39));
                         mantissa2 = Integer.parseInt(line.substring(39, 48));
                         exponent = Integer.parseInt(line.substring(50, 52));
-                        if(logger.isTraceEnabled()) {
+                        if (logger.isTraceEnabled()) {
                             logger.trace(format("2nd entry (record:%d,coefficient:%d): [mantissa1:%d] [mantissa2:%d] [exponent:%d]", record, coefficient, mantissa1, mantissa2, exponent));
                         }
                         int idx = (record - 1) * 816 + 3 * (coefficient - 2);
@@ -113,7 +114,7 @@ public class EphemerisData {
                                 line.substring(27, 28).equals("-"),
                                 line.substring(49, 50).equals("-")
                         );
-                        if(logger.isTraceEnabled()) {
+                        if (logger.isTraceEnabled()) {
                             logger.trace(format("  coefficient[%s]: %s", idx, coefficients[idx]));
                         }
                     }
@@ -122,7 +123,7 @@ public class EphemerisData {
                         mantissa1 = Integer.parseInt(line.substring(56, 65));
                         mantissa2 = Integer.parseInt(line.substring(65, 74));
                         exponent = Integer.parseInt(line.substring(76, 78));
-                        if(logger.isTraceEnabled()) {
+                        if (logger.isTraceEnabled()) {
                             logger.trace(format("3rd entry (record:%d,coefficient:%d): [mantissa1:%d] [mantissa2:%d] [exponent:%d]", record, coefficient, mantissa1, mantissa2, exponent));
                         }
                         int idx = (record - 1) * 816 + (3 * (coefficient - 2) + 1);
@@ -133,7 +134,7 @@ public class EphemerisData {
                                 line.substring(53, 54).equals("-"),
                                 line.substring(75, 76).equals("-")
                         );
-                        if(logger.isTraceEnabled()) {
+                        if (logger.isTraceEnabled()) {
                             logger.trace(format("  coefficient[%s]: %s", idx, coefficients[idx]));
                         }
                     }
@@ -153,15 +154,15 @@ public class EphemerisData {
             logger.error("String index out of bounds at coefficient = " + coefficient);
             throw e;
         } finally {
-            if(null != buff)
-                 buff.close();
+            if (null != buff)
+                buff.close();
         }
         return coefficients;
     }
 
     private double buildCoefficient(int mantissa1, int mantissa2, int exponent, boolean isCoefficientNegative, boolean isExponentNegative) {
         double coefficient;
-        if(isExponentNegative) {
+        if (isExponentNegative) {
             coefficient = mantissa1 * Math.pow(10, -(exponent + 9)) + mantissa2 * Math.pow(10, -(exponent + 18));
         } else {
             coefficient = mantissa1 * Math.pow(10, (exponent - 9)) + mantissa2 * Math.pow(10, (exponent - 18));
@@ -206,7 +207,7 @@ public class EphemerisData {
         }
 
         public double getChebyshevTime() {
-            return 2 * (asOf - ((dataFile.getSubinterval(body, asOf) - 1) * dataFile.getSubintervalDuration(body) + dataFile.getIntervalStartTime(asOf) )) / dataFile.getSubintervalDuration(body) - 1;
+            return 2 * (asOf - ((dataFile.getSubinterval(body, asOf) - 1) * dataFile.getSubintervalDuration(body) + dataFile.getIntervalStartTime(asOf))) / dataFile.getSubintervalDuration(body) - 1;
         }
 
         private int getViewBegin() {
@@ -221,8 +222,8 @@ public class EphemerisData {
             int pointer = numbersToSkip + 1;
 
             // Skip the coefficients for the planets ahead of this one
-            for(HeavenlyBody b : HeavenlyBody.orderedByIndex()) {
-                if(b == body) {
+            for (HeavenlyBody b : HeavenlyBody.orderedByIndex()) {
+                if (b == body) {
                     break;
                 }
                 pointer = pointer + 3 * b.getNumberOfCoefficientSets() * b.getNumberOfChebyshevCoefficients();
@@ -231,7 +232,7 @@ public class EphemerisData {
             // Skip the next (subinterval - 1)*3*number_of_coefs(heavenlyBody) coefficients
             pointer += (subinterval - 1) * 3 * body.getNumberOfChebyshevCoefficients();
 
-            if(logger.isDebugEnabled()) {
+            if (logger.isDebugEnabled()) {
                 logger.debug(format("interval: %d, subinterval: %d, numbersToSkip: %d, pointer: %d", interval, subinterval, numbersToSkip, pointer));
             }
 
