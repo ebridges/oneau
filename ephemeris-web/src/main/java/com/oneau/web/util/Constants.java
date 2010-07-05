@@ -15,7 +15,7 @@ public final class Constants {
     /**
      * Ratio of the mass of the Earth to the mass of the Moon
      */
-    public final static double EMRAT = 81.30056;
+    public final static double EMrat = 81.30056;
 
     /**
      * Regular expression that can match and parse an ISO8601 formatted date (yyyy-mm-ddThh:mm:ss).
@@ -26,6 +26,12 @@ public final class Constants {
      * Servlet init-param for identifying data files intended to be pre-loaded.
      */
     public static final String EPHEMERIS_DATA = "ephemeris-data";
+
+    /**
+     * Servlet context attribute where an instance of the calculator is stored.
+     */
+    public static final String DECLENSION_CALCULATOR = "declension-calculator";
+
 
     public static final String DATE_PARAM = "isoDate";
     public static final String JULIAN_DATE_PARAM = "julianDate";
@@ -38,6 +44,9 @@ public final class Constants {
     public static final String SEC_PARAM = "second";
     public static final String RESPONSE_CONTENT_TYPE_PARAM = "responseType";
     public static final String RESPONSE_UNITS_PARAM = "responseUnits";
+    public static final String LONGITUDE_PARAM = "lon";
+    public static final String LATITUDE_PARAM = "lat";
+    public static final String ELEVATION_PARAM = "el";
 
     private Constants() {
     }

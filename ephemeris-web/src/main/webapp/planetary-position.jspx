@@ -1,0 +1,352 @@
+<!--
+  User: ebridges
+  Date: Jul 5, 2010
+-->
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns="http://www.w3.org/1999/xhtml"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://java.sun.com/jsp/jstl/core"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          version="2.0">
+    <jsp:output doctype-root-element="html"
+                doctype-public="-//W3C//DTD HTML 4.01//EN"
+                doctype-system="http://www.w3.org/TR/html4/strict.dtd"/>
+    <jsp:directive.page
+            contentType="text/html;charset=utf-8"
+            language="java"
+            isELIgnored="false"/>
+
+  <html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>
+      location lookup
+    </title>
+    <style type="text/css">
+    /*margin and padding on body element
+    can introduce errors in determining
+    element position and are not recommended;
+    we turn them off as a foundation for YUI
+    CSS treatments. */
+    body {
+        margin:0;
+        padding:0;
+    }
+
+        .caption {
+            font-size:smaller;
+            font-style:italic;
+        }
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.1/build/fonts/fonts-min.css"/>
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.1/build/button/assets/skins/sam/button.css" />
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/2.8.1/build/tabview/assets/skins/sam/tabview.css"/>
+    <script type="text/javascript" src="http://yui.yahooapis.com/2.8.1/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="http://yui.yahooapis.com/2.8.1/build/element/element-min.js"></script>
+    <script type="text/javascript" src="http://yui.yahooapis.com/2.8.1/build/tabview/tabview-min.js"></script>
+    <script type="text/javascript" src="http://yui.yahooapis.com/2.8.1/build/button/button-min.js"></script>
+
+  <!--
+    <link rel="stylesheet" type="text/css" href="css/build/fonts/fonts-min.css"/>
+    <link rel="stylesheet" type="text/css" href="css/build/tabview/assets/skins/sam/tabview.css" />
+    <script type="text/javascript" src="js/build/yahoo-dom-event/yahoo-dom-event.js"></script>
+    <script type="text/javascript" src="js/build/element/element-min.js"></script>
+    <script type="text/javascript" src="js/build/tabview/tabview-min.js"></script>
+ -->
+<style type="text/css">
+
+    #lookup-form fieldset,
+    #lookup-form fieldset div {
+
+        border: 1px groove #ccc;
+        margin: .5em;
+        padding: .5em;
+
+    }
+
+    #lookup-form-postdata {
+
+        border: dashed 1px #666;
+        background-color: #ccc;
+        padding: 1em;
+
+    }
+
+    #lookup-form-postdata h2 {
+
+        margin: 0 0 .5em 0;
+        padding: 0;
+        border: none;
+
+    }
+
+</style>
+  </head>
+  <body class="yui-skin-sam">
+    <h1>
+      Planetary Positions
+    </h1>
+    <span class="caption">Calculate planetary positions relative to the solar system barycenter.</span>
+    <form id="lookup-form" action="/oneau/ephemeris" method="get">
+    <div class="exampleIntro">
+        <fieldset id="planetlist">
+            <legend>Choose Planets</legend>
+                <span class="caption">Choose one or more planets whose location to be calculated.</span>
+                <div>
+                    <input id="checkbutton01" type="checkbox" name="body" value="Sun"/>
+                    <input id="checkbutton02" type="checkbox" name="body" value="Mercury"/>
+                    <input id="checkbutton03" type="checkbox" name="body" value="Venus"/>
+                    <input id="checkbutton04" type="checkbox" name="body" value="Earth" checked="checked"/>
+                    <input id="checkbutton05" type="checkbox" name="body" value="Moon"/>
+                    <input id="checkbutton06" type="checkbox" name="body" value="Mars"/>
+                    <input id="checkbutton07" type="checkbox" name="body" value="Jupiter"/>
+                    <input id="checkbutton08" type="checkbox" name="body" value="Saturn"/>
+                    <input id="checkbutton09" type="checkbox" name="body" value="Uranus"/>
+                    <input id="checkbutton10" type="checkbox" name="body" value="Neptune"/>
+                    <input id="checkbutton11" type="checkbox" name="body" value="Pluto"/>
+                </div>
+        </fieldset>
+        <fieldset id="dateChooser">
+            <legend>Choose a Date</legend>
+            <span class="caption">Select the date and time for the calculation. Date should be in the UTC timezone.</span>
+            <div>
+                <select name="year">
+                    <option>2010</option> <option>2009</option> <option>2008</option>
+                    <option>2007</option> <option>2006</option> <option>2005</option>
+                    <option>2004</option> <option>2003</option> <option>2002</option>
+                    <option>2001</option> <option>2000</option> <option>1999</option>
+                </select>&#160;-&#160;
+                <select name="month">
+                    <option>01</option> <option>02</option> <option>03</option>
+                    <option>04</option> <option>05</option> <option>06</option>
+                    <option>07</option> <option>08</option> <option>09</option>
+                    <option>10</option> <option>11</option> <option>12</option>
+                </select>&#160;-&#160;
+                <select name="day">
+                    <option>01</option> <option>02</option> <option>03</option>
+                    <option>04</option> <option>05</option> <option>06</option>
+                    <option>07</option> <option>08</option> <option>09</option>
+                    <option>10</option> <option>11</option> <option>12</option>
+                    <option>13</option> <option>14</option> <option>15</option>
+                    <option>16</option> <option>17</option> <option>18</option>
+                    <option>19</option> <option>20</option> <option>21</option>
+                    <option>22</option> <option>23</option> <option>24</option>
+                    <option>25</option> <option>26</option> <option>27</option>
+                    <option>28</option> <option>29</option> <option>30</option>
+                    <option>31</option>
+                </select>&#160;T&#160;
+                <select name="hour">
+                    <option>00</option> <option>01</option> <option>02</option> <option>03</option>
+                    <option>04</option> <option>05</option> <option>06</option>
+                    <option>07</option> <option>08</option> <option>09</option>
+                    <option>10</option> <option>11</option> <option>12</option>
+                    <option>13</option> <option>14</option> <option>15</option>
+                    <option>16</option> <option>17</option> <option>18</option>
+                    <option>19</option> <option>20</option> <option>21</option>
+                    <option>22</option> <option>23</option>
+                </select>&#160;:&#160;
+                <select name="minute">
+                    <option>00</option> <option>01</option> <option>02</option> <option>03</option>
+                    <option>04</option> <option>05</option> <option>06</option>
+                    <option>07</option> <option>08</option> <option>09</option>
+                    <option>10</option> <option>11</option> <option>12</option>
+                    <option>13</option> <option>14</option> <option>15</option>
+                    <option>16</option> <option>17</option> <option>18</option>
+                    <option>19</option> <option>20</option> <option>21</option>
+                    <option>22</option> <option>23</option> <option>24</option>
+                    <option>25</option> <option>26</option> <option>27</option>
+                    <option>28</option> <option>29</option> <option>30</option>
+                    <option>31</option> <option>32</option> <option>33</option>
+                    <option>34</option> <option>35</option> <option>36</option>
+                    <option>37</option> <option>38</option> <option>39</option>
+                    <option>40</option> <option>41</option> <option>42</option>
+                    <option>43</option> <option>44</option> <option>45</option>
+                    <option>46</option> <option>47</option> <option>48</option>
+                    <option>49</option> <option>50</option> <option>51</option>
+                    <option>52</option> <option>53</option> <option>54</option>
+                    <option>55</option> <option>56</option> <option>57</option>
+                    <option>58</option> <option>59</option>
+                </select>&#160;:&#160;
+                <select name="second">
+                    <option>00</option> <option>01</option> <option>02</option> <option>03</option>
+                    <option>04</option> <option>05</option> <option>06</option>
+                    <option>07</option> <option>08</option> <option>09</option>
+                    <option>10</option> <option>11</option> <option>12</option>
+                    <option>13</option> <option>14</option> <option>15</option>
+                    <option>16</option> <option>17</option> <option>18</option>
+                    <option>19</option> <option>20</option> <option>21</option>
+                    <option>22</option> <option>23</option> <option>24</option>
+                    <option>25</option> <option>26</option> <option>27</option>
+                    <option>28</option> <option>29</option> <option>30</option>
+                    <option>31</option> <option>32</option> <option>33</option>
+                    <option>34</option> <option>35</option> <option>36</option>
+                    <option>37</option> <option>38</option> <option>39</option>
+                    <option>40</option> <option>41</option> <option>42</option>
+                    <option>43</option> <option>44</option> <option>45</option>
+                    <option>46</option> <option>47</option> <option>48</option>
+                    <option>49</option> <option>50</option> <option>51</option>
+                    <option>52</option> <option>53</option> <option>54</option>
+                    <option>55</option> <option>56</option> <option>57</option>
+                    <option>58</option> <option>59</option>
+                </select>&#160;.&#160;000Z
+            </div>
+        </fieldset>
+    </div>
+    <label for="responseType">Choose output format:</label>
+    <select id="responseType" name="responseType">
+        <option>text</option>
+        <option>json</option>
+    </select>
+    <input type="submit"/>
+    </form>
+	<script type="text/javascript">
+
+    (function() {
+
+    	var Button = YAHOO.widget.Button;
+        YAHOO.util.Event.onContentReady("planetlist", function () {
+            var oCheckButton01 = new Button("checkbutton01", { label: "Sun" });
+            var oCheckButton02 = new Button("checkbutton02", { label: "Mercury" });
+            var oCheckButton03 = new Button("checkbutton03", { label: "Venus" });
+            var oCheckButton04 = new Button("checkbutton04", { label: "Earth" });
+            var oCheckButton05 = new Button("checkbutton05", { label: "Moon" });
+            var oCheckButton06 = new Button("checkbutton06", { label: "Mars" });
+            var oCheckButton07 = new Button("checkbutton07", { label: "Jupiter" });
+            var oCheckButton08 = new Button("checkbutton08", { label: "Saturn" });
+            var oCheckButton09 = new Button("checkbutton09", { label: "Uranus" });
+            var oCheckButton10 = new Button("checkbutton10", { label: "Neptune" });
+            var oCheckButton11 = new Button("checkbutton11", { label: "Pluto" });
+        });
+
+    var tabView = new YAHOO.widget.TabView('lookupparams');
+
+    YAHOO.log("The example has finished loading; as you interact with it, you'll see log messages appearing here.", "info", "example");
+    })();
+    </script>
+  </body>
+</html>
+
+<!--
+<html>
+  <head>
+      <title>Simple jspx page</title>
+      <style type="text/css">
+          td { vertical-align:top; }
+      </style>
+  </head>
+  <body>
+  <form action="http://localhost:8080/ephemeris/calc" method="GET">
+    <table>
+        <tr>
+            <td>Planet(s)</td>
+            <td>
+                <select name="body" multiple="true">
+                    <option value="">All</option>
+                    <option>Sun</option>
+                    <option>Mercury</option>
+                    <option>Venus</option>
+                    <option selected="true">Earth</option>
+                    <option>Moon</option>
+                    <option>Mars</option>
+                    <option>Jupiter</option>
+                    <option>Saturn</option>
+                    <option>Uranus</option>
+                    <option>Neptune</option>
+                    <option>Pluto</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>UTC Date</td>
+            <td>
+                <select name="year">
+                    <option>2010</option> <option>2009</option> <option>2008</option>
+                    <option>2007</option> <option>2006</option> <option>2005</option>
+                    <option>2004</option> <option>2003</option> <option>2002</option>
+                    <option>2001</option> <option>2000</option> <option>1999</option>
+                </select>&#160;-&#160;
+                <select name="month">
+                    <option>01</option> <option>02</option> <option>03</option>
+                    <option>04</option> <option>05</option> <option>06</option>
+                    <option>07</option> <option>08</option> <option>09</option>
+                    <option>10</option> <option>11</option> <option>12</option>
+                </select>&#160;-&#160;
+                <select name="day">
+                    <option>01</option> <option>02</option> <option>03</option>
+                    <option>04</option> <option>05</option> <option>06</option>
+                    <option>07</option> <option>08</option> <option>09</option>
+                    <option>10</option> <option>11</option> <option>12</option>
+                    <option>13</option> <option>14</option> <option>15</option>
+                    <option>16</option> <option>17</option> <option>18</option>
+                    <option>19</option> <option>20</option> <option>21</option>
+                    <option>22</option> <option>23</option> <option>24</option>
+                    <option>25</option> <option>26</option> <option>27</option>
+                    <option>28</option> <option>29</option> <option>30</option>
+                    <option>31</option>
+                </select>&#160;T&#160;
+                <select name="hour">
+                    <option>00</option> <option>01</option> <option>02</option> <option>03</option>
+                    <option>04</option> <option>05</option> <option>06</option>
+                    <option>07</option> <option>08</option> <option>09</option>
+                    <option>10</option> <option>11</option> <option>12</option>
+                    <option>13</option> <option>14</option> <option>15</option>
+                    <option>16</option> <option>17</option> <option>18</option>
+                    <option>19</option> <option>20</option> <option>21</option>
+                    <option>22</option> <option>23</option>
+                </select>&#160;:&#160;
+                <select name="minute">
+                    <option>00</option> <option>01</option> <option>02</option> <option>03</option>
+                    <option>04</option> <option>05</option> <option>06</option>
+                    <option>07</option> <option>08</option> <option>09</option>
+                    <option>10</option> <option>11</option> <option>12</option>
+                    <option>13</option> <option>14</option> <option>15</option>
+                    <option>16</option> <option>17</option> <option>18</option>
+                    <option>19</option> <option>20</option> <option>21</option>
+                    <option>22</option> <option>23</option> <option>24</option>
+                    <option>25</option> <option>26</option> <option>27</option>
+                    <option>28</option> <option>29</option> <option>30</option>
+                    <option>31</option> <option>32</option> <option>33</option>
+                    <option>34</option> <option>35</option> <option>36</option>
+                    <option>37</option> <option>38</option> <option>39</option>
+                    <option>40</option> <option>41</option> <option>42</option>
+                    <option>43</option> <option>44</option> <option>45</option>
+                    <option>46</option> <option>47</option> <option>48</option>
+                    <option>49</option> <option>50</option> <option>51</option>
+                    <option>52</option> <option>53</option> <option>54</option>
+                    <option>55</option> <option>56</option> <option>57</option>
+                    <option>58</option> <option>59</option>
+                </select>&#160;:&#160;
+                <select name="second">
+                    <option>00</option> <option>01</option> <option>02</option> <option>03</option>
+                    <option>04</option> <option>05</option> <option>06</option>
+                    <option>07</option> <option>08</option> <option>09</option>
+                    <option>10</option> <option>11</option> <option>12</option>
+                    <option>13</option> <option>14</option> <option>15</option>
+                    <option>16</option> <option>17</option> <option>18</option>
+                    <option>19</option> <option>20</option> <option>21</option>
+                    <option>22</option> <option>23</option> <option>24</option>
+                    <option>25</option> <option>26</option> <option>27</option>
+                    <option>28</option> <option>29</option> <option>30</option>
+                    <option>31</option> <option>32</option> <option>33</option>
+                    <option>34</option> <option>35</option> <option>36</option>
+                    <option>37</option> <option>38</option> <option>39</option>
+                    <option>40</option> <option>41</option> <option>42</option>
+                    <option>43</option> <option>44</option> <option>45</option>
+                    <option>46</option> <option>47</option> <option>48</option>
+                    <option>49</option> <option>50</option> <option>51</option>
+                    <option>52</option> <option>53</option> <option>54</option>
+                    <option>55</option> <option>56</option> <option>57</option>
+                    <option>58</option> <option>59</option>
+                </select>&#160;.&#160;000Z
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center"><input type="submit"/></td>
+        </tr>
+    </table>
+  </form>
+  </body>
+</html>
+-->
+</jsp:root>        

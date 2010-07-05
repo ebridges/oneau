@@ -113,13 +113,13 @@ public class Ephemeris {
         PositionAndVelocity moon = results.get(MOON);
         if(null != earth && null != moon) {
             for (int j = 0; j < 3; j++) {
-                // EARTH = EARTH - (MOON/1+EMRAT)
-                earth.getPosition()[j] = earth.getPosition()[j] - moon.getPosition()[j] / (1+ Constants.EMRAT);
+                // EARTH = EARTH - (MOON/1+EMrat)
+                earth.getPosition()[j] = earth.getPosition()[j] - moon.getPosition()[j] / (1+ Constants.EMrat);
                 // MOON = EARTH + MOON
                 moon.getPosition()[j] = earth.getPosition()[j] + moon.getPosition()[j];
 
-                // EARTH = EARTH - (MOON/1+EMRAT)
-                earth.getVelocity()[j] = earth.getVelocity()[j] - moon.getVelocity()[j] / (1+ Constants.EMRAT);
+                // EARTH = EARTH - (MOON/1+EMrat)
+                earth.getVelocity()[j] = earth.getVelocity()[j] - moon.getVelocity()[j] / (1+ Constants.EMrat);
                 // MOON = EARTH + MOON
                 moon.getVelocity()[j] = earth.getVelocity()[j] + moon.getVelocity()[j];
             }

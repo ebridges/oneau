@@ -24,11 +24,15 @@ public class TrueNorth {
 
     public static void main(String[] args) {
         TrueNorth t = new TrueNorth();
-        t.calculate(2010, 7, 2, 40.72, -73.96); // 11211
+        MagneticDeclension decl;
+        decl = t.calculate(2010, 7, 2, 40.72, -73.96); // 11211
+        out.println(decl);
         out.println("---");
-        t.calculate(2010, 7, 2, 33.67, 117.90); // 92626
+        decl = t.calculate(2010, 7, 2, 33.67, 117.90); // 92626
+        out.println(decl);
         out.println("---");
-        t.calculate(2012, 6, 0, -80.0, 240.0, 100000.0);
+        decl = t.calculate(2012, 6, 0, -80.0, 240.0, 100000.0);
+        out.println(decl);
 
 
         /*
@@ -44,11 +48,11 @@ http://geomag.nrcan.gc.ca/apps/mdcal-eng.php?Year=2012&Month=6&Day=1&Lat=80&Min=
          */
     }
 
-    public void calculate(int year, int month, int day, double latitude, double longitude) {
-        calculate(year, month, day, latitude, longitude, 0);
+    public MagneticDeclension calculate(int year, int month, int day, double latitude, double longitude) {
+        return calculate(year, month, day, latitude, longitude, 0);
     }
 
-    public void calculate(int year, int month, int day, double latitude, double longitude, double elevation) {
+    public MagneticDeclension calculate(int year, int month, int day, double latitude, double longitude, double elevation) {
 
         int n;
         int m;
@@ -413,6 +417,7 @@ http://geomag.nrcan.gc.ca/apps/mdcal-eng.php?Year=2012&Month=6&Day=1&Lat=80&Min=
         mag_D = atan2(Y_vector, X_vector) * 180.0 / PI;              // declination angle (magnetic variation), measured CW from true north
 
 
+        /*
         out.println(format("latitude = %f", latitude));
         out.println(format("latitude_rad = %f", lat_rad));
         out.println(format("latitude0_rad = %f", lat0_rad));
@@ -422,5 +427,14 @@ http://geomag.nrcan.gc.ca/apps/mdcal-eng.php?Year=2012&Month=6&Day=1&Lat=80&Min=
         out.println(format("total intensity = %f", mag_F));
         out.println(format("inclination angle =  %f", mag_I));
         out.println(format("declination angle =  %f", mag_D));
+        */
+        
+        MagneticDeclension info = new MagneticDeclension(year, month, day, latitude, longitude, elevation);
+        info.setDeclension(mag_D);
+        info.setInclination(mag_I);
+        info.setHorizontalIntensity(mag_H);
+        info.setTotalIntensity(mag_F);
+
+        return info;
     }
 }

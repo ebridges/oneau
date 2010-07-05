@@ -7,6 +7,8 @@ import org.apache.log4j.Logger;
 
 import static java.lang.System.*;
 import static java.lang.String.format;
+
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.List;
 import java.util.ArrayList;
@@ -119,7 +121,7 @@ public final class Utility {
     }
 
     public static boolean isEmpty(Object[] v) {
-        return null == v || v.length < 1;
+       return (null == v || v.length < 1);
     }
 
     public static boolean contains(Object[] es, Object ee) {
@@ -196,24 +198,42 @@ public final class Utility {
     }
 
     public static HeavenlyBody[] toHeavenlyBody(String ... bodyNames) {
-        if(!isEmpty(bodyNames)) {
+
+        HeavenlyBody[] h=null;
+        boolean bodyFound = false;
+        if(null != bodyNames) {
             List<HeavenlyBody> bodies = new ArrayList<HeavenlyBody>(bodyNames.length);
             for(String name : bodyNames) {
                 HeavenlyBody body = HeavenlyBody.lookup(name);
                 if(null!=body){
                     bodies.add(body);
+                    bodyFound = true;
                 } else {
                     logger.warn(format("no body found with name [%s]", name));
                 }
             }
-            return bodies.toArray(new HeavenlyBody[bodyNames.length]);
-        } else {
-            return HeavenlyBody.values();
+            if(bodyFound)
+                h = bodies.toArray(new HeavenlyBody[bodyNames.length]);
         }
+
+        if(!bodyFound)
+           h = HeavenlyBody.values();
+
+        assert null != h;
+        logger.info(Arrays.toString(h));
+
+        return h;
     }
 
     public static boolean isBetween(double asOf, double[] range) {
         return (range[0] < asOf) && (asOf < range[range.length-1]);
+    }
+
+    public static <T> T throwIfNull(String field, T t) {
+        if(null == t) {
+            throw new IllegalArgumentException(format("%s cannot be null", field));
+        }
+        return t;
     }
 }
 
