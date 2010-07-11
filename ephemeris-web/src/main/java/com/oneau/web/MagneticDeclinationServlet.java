@@ -14,6 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 import static com.oneau.web.util.Constants.RESPONSE_CONTENT_TYPE_PARAM;
 import static com.oneau.web.util.Utility.convertInteger;
@@ -48,9 +51,10 @@ public class MagneticDeclinationServlet extends HttpServlet {
 
         PrintWriter writer = response.getWriter();
         try {
-            int year = convertInteger(request.getParameter(Constants.YEAR_PARAM));
-            int month = convertInteger(request.getParameter(Constants.MONTH_PARAM));
-            int day = convertInteger(request.getParameter(Constants.DAY_PARAM));
+            int year = thisYearIfZero(convertInteger(request.getParameter(Constants.YEAR_PARAM)));
+            int month = thisMonthIfZero(convertInteger(request.getParameter(Constants.MONTH_PARAM)));
+            int day = thisDayIfZero(convertInteger(request.getParameter(Constants.DAY_PARAM)));
+
             double lon = convertDouble(request.getParameter(Constants.LONGITUDE_PARAM));
             double lat = convertDouble(request.getParameter(Constants.LATITUDE_PARAM));
             double el = convertDouble(request.getParameter(Constants.ELEVATION_PARAM));
@@ -61,6 +65,36 @@ public class MagneticDeclinationServlet extends HttpServlet {
         } finally {
             writer.flush();
         }
+    }
+
+    private int thisDayIfZero(Integer day) {
+        if(0 == day) {
+            return getDateField(Calendar.DAY_OF_MONTH);
+        } else {
+            return day;
+        }
+    }
+
+    private int thisMonthIfZero(Integer month) {
+        if(0 == month) {
+            return getDateField(Calendar.MONTH)+1;
+        } else {
+            return month;
+        }
+    }
+
+    private int thisYearIfZero(Integer year) {
+        if(0 == year) {
+            return getDateField(Calendar.YEAR);
+        } else {
+            return year;
+        }
+    }
+
+    private int getDateField(int field) {
+        Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        c.setTime(new Date());
+        return c.get(field);
     }
 
     private ViewFactory.ViewType chooseView(String parameter) {
