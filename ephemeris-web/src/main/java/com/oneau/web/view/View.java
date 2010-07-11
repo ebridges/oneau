@@ -2,7 +2,7 @@ package com.oneau.web.view;
 
 import com.oneau.web.PositionAndVelocity;
 import com.oneau.web.util.HeavenlyBody;
-import com.oneau.web.util.MagneticDeclension;
+import com.oneau.web.util.MagneticDeclination;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -17,5 +17,5 @@ public interface View {
 
     void writeModel(Writer writer, Map<HeavenlyBody, PositionAndVelocity> model) throws IOException;
 
-    void writeModel(Writer writer, MagneticDeclension decl) throws IOException;
+    void writeModel(Writer writer, MagneticDeclination decl) throws IOException;
 }

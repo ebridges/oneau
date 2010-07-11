@@ -2,7 +2,7 @@ package com.oneau.web.view;
 
 import com.oneau.web.PositionAndVelocity;
 import com.oneau.web.util.HeavenlyBody;
-import com.oneau.web.util.MagneticDeclension;
+import com.oneau.web.util.MagneticDeclination;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -54,15 +54,15 @@ class JsonView implements View {
         return "text/json";
     }
 
-    public void writeModel(Writer writer, MagneticDeclension decl) throws IOException {
-        writer.write(format("{\"date\" : \"%d/%d/%d\", \"position\":[\"%f\",\"%f\",\"%f\"], \"declension\" : \"%f\", \"inclination\" : \"%f\", \"totalIntensity\" : \"%f\", \"horizontalIntensity\" : \"%f\" }\n",
+    public void writeModel(Writer writer, MagneticDeclination decl) throws IOException {
+        writer.write(format("{\"date\" : \"%d/%d/%d\", \"position\":[\"%f\",\"%f\",\"%f\"], \"declination\" : \"%f\", \"inclination\" : \"%f\", \"totalIntensity\" : \"%f\", \"horizontalIntensity\" : \"%f\" }\n",
                 decl.getYear(),
                 decl.getMonth(),
                 decl.getDay(),
                 decl.getLatitude(),
                 decl.getLongitude(),
                 decl.getElevation(),
-                decl.getDeclension(),
+                decl.getDeclination(),
                 decl.getInclination(),
                 decl.getTotalIntensity(),
                 decl.getHorizontalIntensity()
@@ -112,8 +112,8 @@ class TextView implements View {
         return "text/plain";
     }
 
-    public void writeModel(Writer writer, MagneticDeclension decl) throws IOException {
-        writer.write("date;position;declension;inclination;totalIntensity;horizontalIntensity\n");
+    public void writeModel(Writer writer, MagneticDeclination decl) throws IOException {
+        writer.write("date;position;declination;inclination;totalIntensity;horizontalIntensity\n");
         writer.write(format("%d/%d/%d;%f,%f,%f;%f;%f;%f;%f\n",
                 decl.getYear(),
                 decl.getMonth(),
@@ -121,7 +121,7 @@ class TextView implements View {
                 decl.getLatitude(),
                 decl.getLongitude(),
                 decl.getElevation(),
-                decl.getDeclension(),
+                decl.getDeclination(),
                 decl.getInclination(),
                 decl.getTotalIntensity(),
                 decl.getHorizontalIntensity()

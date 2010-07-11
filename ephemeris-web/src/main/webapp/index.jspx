@@ -87,7 +87,7 @@
     <div id="utilitylist">
 
         <a id="linkbutton1" href="/oneau/planetary-position.jspx">Planetary Position</a>
-        <span id="linkbutton2" class="yui-button yui-link-button"><span class="first-child"><a href="/oneau/magnetic-declension.jspx">Magnetic Declension</a></span></span>
+        <span id="linkbutton2" class="yui-button yui-link-button"><span class="first-child"><a href="/oneau/magnetic-declination.jspx">Magnetic Declination</a></span></span>
 
     </div>
 

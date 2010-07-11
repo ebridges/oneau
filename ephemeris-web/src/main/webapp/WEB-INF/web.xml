@@ -16,18 +16,18 @@
         <load-on-startup>10</load-on-startup>
     </servlet>
     <servlet>
-        <servlet-name>MagneticDeclensionServlet</servlet-name>
-        <display-name>Magnetic Declension Servlet</display-name>
-        <description>Calculates magnetic declension for a given location and date.</description>
-        <servlet-class>com.oneau.web.MagneticDeclensionServlet</servlet-class>
+        <servlet-name>MagneticDeclinationServlet</servlet-name>
+        <display-name>Magnetic Declination Servlet</display-name>
+        <description>Calculates magnetic declination for a given location and date.</description>
+        <servlet-class>com.oneau.web.MagneticDeclinationServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>EphemerisServlet</servlet-name>
         <url-pattern>/ephemeris</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>MagneticDeclensionServlet</servlet-name>
-        <url-pattern>/magnetic-declension</url-pattern>
+        <servlet-name>MagneticDeclinationServlet</servlet-name>
+        <url-pattern>/magnetic-declination</url-pattern>
     </servlet-mapping>
     <welcome-file-list>
         <welcome-file>index.jspx</welcome-file>

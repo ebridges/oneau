@@ -30,7 +30,7 @@ public final class Constants {
     /**
      * Servlet context attribute where an instance of the calculator is stored.
      */
-    public static final String DECLENSION_CALCULATOR = "declension-calculator";
+    public static final String DECLINATION_CALCULATOR = "declination-calculator";
 
 
     public static final String DATE_PARAM = "isoDate";
@@ -46,7 +46,7 @@ public final class Constants {
     public static final String RESPONSE_UNITS_PARAM = "responseUnits";
     public static final String LONGITUDE_PARAM = "lon";
     public static final String LATITUDE_PARAM = "lat";
-    public static final String ELEVATION_PARAM = "el";
+    public static final String ELEVATION_PARAM = "ele";
 
     private Constants() {
     }

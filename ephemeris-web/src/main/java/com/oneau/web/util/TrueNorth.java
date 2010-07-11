@@ -22,7 +22,7 @@ public class TrueNorth {
 
     public static void main(String[] args) {
         TrueNorth t = new TrueNorth();
-        MagneticDeclension decl;
+        MagneticDeclination decl;
         decl = t.calculate(2010, 7, 2, 40.72, -73.96); // 11211
         out.println(decl);
         out.println("---");
@@ -46,11 +46,11 @@ http://geomag.nrcan.gc.ca/apps/mdcal-eng.php?Year=2012&Month=6&Day=1&Lat=80&Min=
          */
     }
 
-    public MagneticDeclension calculate(int year, int month, int day, double latitude, double longitude) {
+    public MagneticDeclination calculate(int year, int month, int day, double latitude, double longitude) {
         return calculate(year, month, day, latitude, longitude, 0);
     }
 
-    public MagneticDeclension calculate(int year, int month, int day, double latitude, double longitude, double elevation) {
+    public MagneticDeclination calculate(int year, int month, int day, double latitude, double longitude, double elevation) {
 
         int n;
         int m;
@@ -423,8 +423,8 @@ http://geomag.nrcan.gc.ca/apps/mdcal-eng.php?Year=2012&Month=6&Day=1&Lat=80&Min=
         out.println(format("declination angle =  %f", mag_D));
         */
 
-        MagneticDeclension info = new MagneticDeclension(year, month, day, latitude, longitude, elevation);
-        info.setDeclension(mag_D);
+        MagneticDeclination info = new MagneticDeclination(year, month, day, latitude, longitude, elevation);
+        info.setDeclination(mag_D);
         info.setInclination(mag_I);
         info.setHorizontalIntensity(mag_H);
         info.setTotalIntensity(mag_F);

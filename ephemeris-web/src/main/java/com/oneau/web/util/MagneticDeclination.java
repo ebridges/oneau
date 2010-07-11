@@ -7,7 +7,7 @@ import static java.lang.String.format;
  * User: ebridges
  * Date: Jul 5, 2010
  */
-public class MagneticDeclension {
+public class MagneticDeclination {
     private Integer year;
     private Integer month;
     private Integer day;
@@ -17,9 +17,9 @@ public class MagneticDeclension {
     private Double horizontalIntensity;
     private Double totalIntensity;
     private Double inclination;
-    private Double declension;
+    private Double declination;
 
-    public MagneticDeclension(Integer year, Integer month, Integer day, Double latitude, Double longitude, Double elevation) {
+    public MagneticDeclination(Integer year, Integer month, Integer day, Double latitude, Double longitude, Double elevation) {
         this.year = throwIfNull("year", year);
         this.month = throwIfNull("month", month);
         this.day = throwIfNull("day", day);
@@ -76,12 +76,12 @@ public class MagneticDeclension {
         this.inclination = inclination;
     }
 
-    public Double getDeclension() {
-        return declension;
+    public Double getDeclination() {
+        return declination;
     }
 
-    public void setDeclension(Double declension) {
-        this.declension = declension;
+    public void setDeclination(Double declination) {
+        this.declination = declination;
     }
 
     @Override
@@ -89,7 +89,7 @@ public class MagneticDeclension {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        MagneticDeclension that = (MagneticDeclension) o;
+        MagneticDeclination that = (MagneticDeclination) o;
 
         if (!day.equals(that.day)) return false;
         if (!elevation.equals(that.elevation)) return false;
@@ -120,7 +120,7 @@ public class MagneticDeclension {
         sb.append(format("horizontal intensity = %f\n", horizontalIntensity));
         sb.append(format("total intensity = %f\n", totalIntensity));
         sb.append(format("inclination angle =  %f\n", inclination));
-        sb.append(format("declension angle =  %f\n", declension));
+        sb.append(format("declination angle =  %f\n", declination));
         return sb.toString();
     }
 }

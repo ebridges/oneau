@@ -4,6 +4,8 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -233,5 +235,18 @@ public final class Utility {
         }
         return t;
     }
-}
 
+    public static Double convertDouble(String field) {
+        if(isEmpty(field)) {
+            field = "0.0";
+        }
+        return Double.valueOf(field);
+    }
+
+    public static Integer convertInteger(String field) {
+        if(isEmpty(field)) {
+            field = "0";
+        }
+        return Integer.valueOf(field);
+    }
+}
