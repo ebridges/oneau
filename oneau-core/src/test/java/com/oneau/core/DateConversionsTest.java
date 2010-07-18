@@ -1,17 +1,16 @@
-package com.oneau.web;
+package com.oneau.core;
 
 import com.oneau.core.util.Utility;
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.zip.GZIPInputStream;
 
 import static java.lang.String.format;
-import static org.joda.time.DateTimeZone.UTC;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -20,15 +19,16 @@ import static org.junit.Assert.assertEquals;
  */
 public class DateConversionsTest {
     private static final Logger logger = Logger.getLogger(DateConversionsTest.class);
-    private static final String JULIAN_DAY_DATA = "/julian-days.dat.gz";
+//    private static final String JULIAN_DAY_DATA = "/julian-days.dat.gz";
+    private static final String JULIAN_DAY_DATA = "/dates.txt";
 
     // 1850-01-01T00:00:00.000Z,2396758.50000
     // 1850-01-01T00:02:00.000Z,2396758.50139
     // 1850-01-01T00:03:00.000Z,2396758.50208
 
-    //@Test
+    @Test
     public void testJulianDayConversion() throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(new GZIPInputStream(getClass().getResourceAsStream(JULIAN_DAY_DATA))));
+        BufferedReader reader = loadData(JULIAN_DAY_DATA);
         String buff;
         while(null !=(buff = reader.readLine())) {
             String[] vals = buff.split(",");
@@ -42,6 +42,7 @@ public class DateConversionsTest {
         assertEquals(expectedDays, 0.00001, actualDays);
     }
 
+    /*
     @Test
     public void testJodaCommutativity() {
         String expected = "1850-01-01T00:11:11.000Z";  // JD 2396758.50777
@@ -57,5 +58,15 @@ public class DateConversionsTest {
         assertEquals(expectedDate, actualDate);
         assertEquals(expectedMillis, actualMillis);
         assertEquals(expected, actual);
+    }
+    */
+
+    private BufferedReader loadData(String file) throws IOException {
+        InputStream is = getClass().getResourceAsStream(file);
+        if(file.endsWith(".gz")) {
+            return new BufferedReader(new InputStreamReader(new GZIPInputStream(is)));
+        } else {
+            return new BufferedReader(new InputStreamReader(is));
+        }
     }
 }

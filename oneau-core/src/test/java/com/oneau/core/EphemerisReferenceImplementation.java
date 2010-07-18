@@ -10,7 +10,7 @@ import java.io.InputStreamReader;
 
 import static com.oneau.core.EphemerisDataFile.INTERVAL_DURATION;
 import static com.oneau.core.util.Utility.newDouble;
-import static com.oneau.web.util.AssertionUtil.copy;
+import static com.oneau.core.util.AssertionUtil.copy;
 import static java.lang.String.format;
 
 /**

@@ -3,7 +3,7 @@ package com.oneau.core;
 import com.oneau.core.util.HeavenlyBody;
 import com.oneau.core.util.PositionAndVelocity;
 import com.oneau.core.util.Utility;
-import com.oneau.web.util.AssertionUtil;
+import com.oneau.core.util.AssertionUtil;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +15,7 @@ import java.io.InputStreamReader;
 import java.util.zip.GZIPInputStream;
 
 import static com.oneau.core.util.Utility.toCsv;
-import static com.oneau.web.util.AssertionUtil.assertArraysEqual;
+import static com.oneau.core.util.AssertionUtil.assertArraysEqual;
 import static java.lang.String.format;
 
 /**

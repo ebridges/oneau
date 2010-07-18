@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import static com.oneau.web.util.AssertionUtil.assertArraysEqual;
+import static com.oneau.core.util.AssertionUtil.assertArraysEqual;
 import static org.junit.Assert.assertNotNull;
 
 /**
