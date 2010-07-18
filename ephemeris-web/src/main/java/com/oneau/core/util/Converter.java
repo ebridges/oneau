@@ -1,4 +1,4 @@
-package com.oneau.web.util;
+package com.oneau.core.util;
 
 /**
  * User: EBridges

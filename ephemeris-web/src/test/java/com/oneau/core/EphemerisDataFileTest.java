@@ -1,7 +1,8 @@
-package com.oneau.web;
+package com.oneau.core;
 
+import com.oneau.core.util.HeavenlyBody;
+import org.apache.log4j.Logger;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,8 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.zip.GZIPInputStream;
 
-import com.oneau.web.util.HeavenlyBody;
-import org.apache.log4j.Logger;
+import static org.junit.Assert.assertEquals;
 
 /**
  * User: EBridges
@@ -19,8 +19,8 @@ import org.apache.log4j.Logger;
 public class EphemerisDataFileTest {
     private static final Logger logger = Logger.getLogger(EphemerisDataFileTest.class);
 
-    private static final String TEST_DATE_FILE = "/julian-days.dat.gz";
-    //private static final String TEST_DATE_FILE = "/dates.txt";
+    //private static final String TEST_DATE_FILE = "/julian-days.dat.gz";
+    private static final String TEST_DATE_FILE = "/dates.txt";
 
     @Test
     public void testGetInterval() throws IOException {

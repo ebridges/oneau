@@ -1,7 +1,7 @@
 package com.oneau.web.view;
 
-import com.oneau.web.PositionAndVelocity;
-import com.oneau.web.util.HeavenlyBody;
+import com.oneau.core.util.HeavenlyBody;
+import com.oneau.core.util.PositionAndVelocity;
 import com.oneau.web.util.MagneticDeclination;
 
 import java.io.IOException;

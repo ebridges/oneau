@@ -1,5 +1,11 @@
-package com.oneau.web.legacy;
-import java.io.*;
+package com.oneau.legacy;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+
 import static java.lang.String.format;
 class EphemerisOrig {
     /*

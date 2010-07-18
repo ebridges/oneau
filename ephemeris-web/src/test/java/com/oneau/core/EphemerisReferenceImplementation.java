@@ -1,14 +1,16 @@
-package com.oneau.web;
+package com.oneau.core;
 
-import static com.oneau.web.util.Utility.newDouble;
-import static com.oneau.web.util.AssertionUtil.copy;
-import com.oneau.web.util.HeavenlyBody;
+import com.oneau.core.util.HeavenlyBody;
 import org.apache.log4j.Logger;
 
-import java.io.IOException;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+
+import static com.oneau.core.EphemerisDataFile.INTERVAL_DURATION;
+import static com.oneau.core.util.Utility.newDouble;
+import static com.oneau.web.util.AssertionUtil.copy;
 import static java.lang.String.format;
 
 /**
@@ -27,11 +29,11 @@ public class EphemerisReferenceImplementation {
     }
 
     public static int getInterval(Double asOf, EphemerisDataFile dataFile) {
-        return (int) (Math.floor((asOf - dataFile.getBeginDate()) / dataFile.INTERVAL_DURATION) + 1);
+        return (int) (Math.floor((asOf - dataFile.getBeginDate()) / INTERVAL_DURATION) + 1);
     }
 
     public static Double getIntervalStartTime(Double asOf, EphemerisDataFile file) {
-        return ((Math.floor((asOf - file.getBeginDate()) / file.INTERVAL_DURATION) + 1) - 1) * file.INTERVAL_DURATION + file.getBeginDate();
+        return ((Math.floor((asOf - file.getBeginDate()) / INTERVAL_DURATION) + 1) - 1) * INTERVAL_DURATION + file.getBeginDate();
     }
 
     public static double getSubintervalDuration(HeavenlyBody body, EphemerisDataFile file) {
@@ -39,7 +41,7 @@ public class EphemerisReferenceImplementation {
     }
 
     public static int getSubinterval(double asOf, HeavenlyBody body, EphemerisDataFile file) {
-        return (int) (Math.floor((asOf - (((Math.floor((asOf - file.getBeginDate()) / file.INTERVAL_DURATION) + 1) - 1) * file.INTERVAL_DURATION + file.getBeginDate())) / (file.INTERVAL_DURATION / body.getNumberOfCoefficientSets())) + 1);
+        return (int) (Math.floor((asOf - (((Math.floor((asOf - file.getBeginDate()) / INTERVAL_DURATION) + 1) - 1) * INTERVAL_DURATION + file.getBeginDate())) / (INTERVAL_DURATION / body.getNumberOfCoefficientSets())) + 1);
     }
     
     public Double[] parseEphemerisCoefficients(EphemerisDataFile ephemerisData) throws IOException {

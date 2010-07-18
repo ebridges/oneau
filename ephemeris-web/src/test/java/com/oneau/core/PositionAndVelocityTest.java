@@ -1,20 +1,22 @@
-package com.oneau.web;
+package com.oneau.core;
 
-import static com.oneau.web.util.AssertionUtil.assertArraysEqual;
-import com.oneau.web.util.HeavenlyBody;
+import com.oneau.core.util.HeavenlyBody;
+import com.oneau.core.util.PositionAndVelocity;
+import com.oneau.core.util.Utility;
 import com.oneau.web.util.AssertionUtil;
-import com.oneau.web.util.Utility;
-import static com.oneau.web.util.Utility.toCsv;
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
-import org.apache.log4j.Logger;
 
-import java.io.IOException;
 import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.IOException;
 import java.io.InputStream;
-import static java.lang.String.format;
+import java.io.InputStreamReader;
 import java.util.zip.GZIPInputStream;
+
+import static com.oneau.core.util.Utility.toCsv;
+import static com.oneau.web.util.AssertionUtil.assertArraysEqual;
+import static java.lang.String.format;
 
 /**
  * User: EBridges
@@ -27,8 +29,8 @@ public class PositionAndVelocityTest {
     //private static final Double TEST_DATE = 2455302.500000000;
     private static final Double TEST_DATE = 2452210.33056;
 
-    private static final String TEST_DATE_FILE = "/julian-days.dat.gz";
-    //private static final String TEST_DATE_FILE = "/dates.txt";
+    //private static final String TEST_DATE_FILE = "/julian-days.dat.gz";
+    private static final String TEST_DATE_FILE = "/dates.txt";
 
     private Ephemeris underTest;
 

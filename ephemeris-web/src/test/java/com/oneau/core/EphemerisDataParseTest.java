@@ -1,19 +1,12 @@
-package com.oneau.web;
-
-import org.junit.Before;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+package com.oneau.core;
 
 import org.apache.log4j.Logger;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import static java.lang.String.format;
 
 import static com.oneau.web.util.AssertionUtil.assertArraysEqual;
-import com.oneau.web.util.AssertionUtil;
 import static org.junit.Assert.assertNotNull;
 
 /**

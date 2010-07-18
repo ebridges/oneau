@@ -1,6 +1,6 @@
-package com.oneau.web;
+package com.oneau.core;
 
-import com.oneau.web.util.HeavenlyBody;
+import com.oneau.core.util.HeavenlyBody;
 import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -9,7 +9,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import static com.oneau.web.util.Utility.newDouble;
+import static com.oneau.core.util.Utility.newDouble;
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;

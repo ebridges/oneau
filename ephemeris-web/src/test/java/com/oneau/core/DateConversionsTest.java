@@ -1,11 +1,13 @@
 package com.oneau.web;
 
-import com.oneau.web.util.Utility;
+import com.oneau.core.util.Utility;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.Test;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.zip.GZIPInputStream;
 
 import static java.lang.String.format;

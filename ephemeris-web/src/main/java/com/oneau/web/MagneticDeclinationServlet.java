@@ -1,6 +1,6 @@
 package com.oneau.web;
 
-import com.oneau.web.util.Constants;
+import com.oneau.core.util.Constants;
 import com.oneau.web.util.MagneticDeclination;
 import com.oneau.web.util.TrueNorth;
 import com.oneau.web.view.View;
@@ -18,10 +18,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
-import static com.oneau.web.util.Constants.RESPONSE_CONTENT_TYPE_PARAM;
-import static com.oneau.web.util.Utility.convertInteger;
-import static com.oneau.web.util.Utility.convertDouble;
-import static com.oneau.web.util.Utility.isEmpty;
+import static com.oneau.core.util.Constants.RESPONSE_CONTENT_TYPE_PARAM;
+import static com.oneau.core.util.Utility.convertDouble;
+import static com.oneau.core.util.Utility.convertInteger;
+import static com.oneau.core.util.Utility.isEmpty;
 
 /**
  * User: ebridges

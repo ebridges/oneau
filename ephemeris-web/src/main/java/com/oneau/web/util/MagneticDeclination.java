@@ -1,6 +1,6 @@
 package com.oneau.web.util;
 
-import static com.oneau.web.util.Utility.throwIfNull;
+import static com.oneau.core.util.Utility.throwIfNull;
 import static java.lang.String.format;
 
 /**

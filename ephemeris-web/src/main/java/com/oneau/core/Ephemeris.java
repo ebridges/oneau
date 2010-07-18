@@ -1,10 +1,11 @@
-package com.oneau.web;
+package com.oneau.core;
 
-import com.oneau.web.util.Constants;
-import com.oneau.web.util.Converter;
-import com.oneau.web.util.ConverterFactory;
-import com.oneau.web.util.HeavenlyBody;
-import com.oneau.web.util.Utility;
+import com.oneau.core.util.Constants;
+import com.oneau.core.util.Converter;
+import com.oneau.core.util.ConverterFactory;
+import com.oneau.core.util.HeavenlyBody;
+import com.oneau.core.util.PositionAndVelocity;
+import com.oneau.core.util.Utility;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -12,10 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.oneau.web.util.HeavenlyBody.EARTH;
-import static com.oneau.web.util.HeavenlyBody.MOON;
-import static com.oneau.web.util.Utility.contains;
-import static com.oneau.web.util.Utility.isEmpty;
+import static com.oneau.core.util.HeavenlyBody.EARTH;
+import static com.oneau.core.util.HeavenlyBody.MOON;
+import static com.oneau.core.util.Utility.contains;
+import static com.oneau.core.util.Utility.isEmpty;
 import static java.lang.String.format;
 
 /**

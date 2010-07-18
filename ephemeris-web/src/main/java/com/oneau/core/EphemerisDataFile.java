@@ -1,6 +1,6 @@
-package com.oneau.web;
+package com.oneau.core;
 
-import com.oneau.web.util.HeavenlyBody;
+import com.oneau.core.util.HeavenlyBody;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -9,8 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static com.oneau.web.util.Utility.isBetween;
-import static com.oneau.web.util.Utility.isEmpty;
+import static com.oneau.core.util.Utility.isBetween;
+import static com.oneau.core.util.Utility.isEmpty;
 import static java.lang.String.format;
 import static java.util.Collections.unmodifiableSortedSet;
 

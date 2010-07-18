@@ -1,7 +1,7 @@
 package com.oneau.web.view;
 
-import com.oneau.web.PositionAndVelocity;
-import com.oneau.web.util.HeavenlyBody;
+import com.oneau.core.util.HeavenlyBody;
+import com.oneau.core.util.PositionAndVelocity;
 import com.oneau.web.util.MagneticDeclination;
 import org.apache.log4j.Logger;
 
@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Map;
 
-import static com.oneau.web.util.Utility.toCsv;
+import static com.oneau.core.util.Utility.toCsv;
 import static java.lang.String.format;
 
 /**

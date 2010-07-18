@@ -1,4 +1,4 @@
-package com.oneau.web.util;
+package com.oneau.core.util;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import static com.oneau.web.util.Utility.isEmpty;
+import static com.oneau.core.util.Utility.isEmpty;
 import static java.util.Collections.unmodifiableSortedSet;
 
 /**

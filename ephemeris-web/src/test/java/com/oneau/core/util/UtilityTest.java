@@ -1,14 +1,15 @@
 package com.oneau.web.util;
 
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+
+import static com.oneau.core.util.Utility.containsAll;
+import static com.oneau.core.util.Utility.containsAny;
+import static com.oneau.core.util.Utility.first;
+import static com.oneau.core.util.Utility.rest;
 import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static com.oneau.web.util.Utility.rest;
-import static com.oneau.web.util.Utility.containsAny;
-import static com.oneau.web.util.Utility.containsAll;
-import static com.oneau.web.util.Utility.first;
+import static org.junit.Assert.assertTrue;
 
 /**
  * User: EBridges

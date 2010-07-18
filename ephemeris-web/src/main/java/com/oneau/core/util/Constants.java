@@ -1,4 +1,4 @@
-package com.oneau.web.util;
+package com.oneau.core.util;
 
 import java.util.regex.Pattern;
 

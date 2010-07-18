@@ -1,6 +1,4 @@
-package com.oneau.web;
-
-import com.oneau.web.util.HeavenlyBody;
+package com.oneau.core.util;
 
 /**
  * User: EBridges
