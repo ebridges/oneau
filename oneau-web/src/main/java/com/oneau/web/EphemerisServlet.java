@@ -9,7 +9,6 @@ import com.oneau.core.util.Utility;
 import com.oneau.web.view.View;
 import com.oneau.web.view.ViewFactory;
 import org.apache.log4j.Logger;
-import org.joda.time.DateTime;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -18,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -191,7 +191,7 @@ public class EphemerisServlet extends HttpServlet {
         } else {
             Double julianDate = toJulianDay();
             if (logger.isInfoEnabled()) {
-                logger.info(format("queryDate default to today: [%s/%s]", new DateTime(), julianDate));
+                logger.info(format("queryDate default to today: [%s/%s]", new Date(), julianDate));
             }
             return unmodifiableList(asList(julianDate));
         }
