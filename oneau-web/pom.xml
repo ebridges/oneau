@@ -2,7 +2,7 @@
 	 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.oneau.web</groupId>
-  <artifactId>oneau</artifactId>
+  <artifactId>oneau-web</artifactId>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <name>Oneau Web Application</name>
@@ -15,8 +15,8 @@
 	  <artifactId>maven-compiler-plugin</artifactId>
 	  <configuration>
 	    <encoding>utf-8</encoding>
-	    <source>1.5</source>
-	    <target>1.5</target>
+	    <source>1.6</source>
+	    <target>1.6</target>
 	  </configuration>
 	</plugin>
 	<plugin>
