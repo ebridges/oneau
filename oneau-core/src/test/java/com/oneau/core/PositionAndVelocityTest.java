@@ -24,7 +24,7 @@ import static java.lang.String.format;
  */
 public class PositionAndVelocityTest {
     private static final Logger logger = Logger.getLogger(EphemerisDataParseTest.class);
-    private static final EphemerisDataFile DATA_FILE= EphemerisDataFile.lookupByName("ASCP2000.txt");
+    private static final EphemerisDataFile DATA_FILE= EphemerisDataFile.lookupByName("ascp2000.405");
     //private static final Double TEST_DATE = 2451545.0; // 2000-01-01T12:00:00Z
     //private static final Double TEST_DATE = 2455302.500000000;
     private static final Double TEST_DATE = 2452210.33056;

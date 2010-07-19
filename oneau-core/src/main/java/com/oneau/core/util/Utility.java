@@ -15,6 +15,7 @@ import java.util.regex.Matcher;
 import static com.oneau.core.util.Constants.ISO_DATE_RE_PATTERN;
 import static java.lang.String.format;
 import static java.lang.System.arraycopy;
+import static java.util.Arrays.sort;
 
 /**
  * User: ebridges
@@ -231,8 +232,11 @@ public final class Utility {
         return h;
     }
 
-    public static boolean isBetween(double asOf, double[] range) {
-        return (range[0] < asOf) && (asOf < range[range.length - 1]);
+    public static boolean isBetween(double asOf, final double[] range) {
+        double[] rangeCopy = new double[range.length];
+        arraycopy(range, 0, rangeCopy, 0, range.length);
+        sort(rangeCopy);
+        return (rangeCopy[0] < asOf) && (asOf < rangeCopy[rangeCopy.length - 1]);
     }
 
     public static <T> T throwIfNull(String field, T t) {

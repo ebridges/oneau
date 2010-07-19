@@ -15,7 +15,7 @@ import static org.junit.Assert.assertNotNull;
  */
 public class EphemerisDataParseTest {
     private static final Logger logger = Logger.getLogger(EphemerisDataParseTest.class);
-    private static final EphemerisDataFile DATA_FILE= EphemerisDataFile.lookupByName("ASCP2000.txt");
+    private static final EphemerisDataFile DATA_FILE= EphemerisDataFile.lookupByName("ascp2000.405");
 
     @Before
     public void setUp() {

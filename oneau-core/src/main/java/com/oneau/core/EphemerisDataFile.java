@@ -21,21 +21,21 @@ import static java.util.Collections.unmodifiableSortedSet;
 public class EphemerisDataFile implements Comparable<EphemerisDataFile> {
     private static final Logger logger = Logger.getLogger(EphemerisDataFile.class);
 
-    private static final EphemerisDataFile ASCP1900 = new EphemerisDataFile("ASCP1900.txt", 230, 2414992.5, 2422320.5);
-    private static final EphemerisDataFile ASCP1920 = new EphemerisDataFile("ASCP1920.txt", 229, 2422320.5, 2429616.5);
-    private static final EphemerisDataFile ASCP1940 = new EphemerisDataFile("ASCP1940.txt", 230, 2429616.5, 2436912.5);
-    private static final EphemerisDataFile ASCP1960 = new EphemerisDataFile("ASCP1960.txt", 229, 2436912.5, 2444208.5);
-    private static final EphemerisDataFile ASCP1980 = new EphemerisDataFile("ASCP1980.txt", 230, 2444208.5, 2451536.5);
-    private static final EphemerisDataFile ASCP2000 = new EphemerisDataFile("ASCP2000.txt", 229, 2451536.5, 2458832.5);
-    private static final EphemerisDataFile ASCP2020 = new EphemerisDataFile("ASCP2020.txt", 229, 2458832.5, 2466128.5);
-    private static final EphemerisDataFile ASCP2040 = new EphemerisDataFile("ASCP2040.txt", 230, 2466128.5, 2473456.5);
-    private static final EphemerisDataFile ASCP2060 = new EphemerisDataFile("ASCP2060.txt", 229, 2473456.5, 2480752.5);
-    private static final EphemerisDataFile ASCP2080 = new EphemerisDataFile("ASCP2080.txt", 229, 2480752.5, 2488048.5);
-    private static final EphemerisDataFile ASCP2100 = new EphemerisDataFile("ASCP2100.txt", 229, 2488048.5, 2495344.5);
-    private static final EphemerisDataFile ASCP2120 = new EphemerisDataFile("ASCP2120.txt", 230, 2495344.5, 2502672.5);
-    private static final EphemerisDataFile ASCP2140 = new EphemerisDataFile("ASCP2140.txt", 229, 2502672.5, 2509968.5);
-    private static final EphemerisDataFile ASCP2160 = new EphemerisDataFile("ASCP2160.txt", 229, 2509968.5, 2517264.5);
-    private static final EphemerisDataFile ASCP2180 = new EphemerisDataFile("ASCP2180.txt", 230, 2517264.5, 2524624.5);
+    private static final EphemerisDataFile ASCP1900 = new EphemerisDataFile("ascp1900.405", 230, 2414992.5, 2422320.5);
+    private static final EphemerisDataFile ASCP1920 = new EphemerisDataFile("ascp1920.405", 229, 2422320.5, 2429616.5);
+    private static final EphemerisDataFile ASCP1940 = new EphemerisDataFile("ascp1940.405", 230, 2429616.5, 2436912.5);
+    private static final EphemerisDataFile ASCP1960 = new EphemerisDataFile("ascp1960.405", 229, 2436912.5, 2444208.5);
+    private static final EphemerisDataFile ASCP1980 = new EphemerisDataFile("ascp1980.405", 230, 2444208.5, 2451536.5);
+    private static final EphemerisDataFile ASCP2000 = new EphemerisDataFile("ascp2000.405", 229, 2451536.5, 2458832.5);
+    private static final EphemerisDataFile ASCP2020 = new EphemerisDataFile("ascp2020.405", 229, 2458832.5, 2466128.5);
+    private static final EphemerisDataFile ASCP2040 = new EphemerisDataFile("ascp2040.405", 230, 2466128.5, 2473456.5);
+    private static final EphemerisDataFile ASCP2060 = new EphemerisDataFile("ascp2060.405", 229, 2473456.5, 2480752.5);
+    private static final EphemerisDataFile ASCP2080 = new EphemerisDataFile("ascp2080.405", 229, 2480752.5, 2488048.5);
+    private static final EphemerisDataFile ASCP2100 = new EphemerisDataFile("ascp2100.405", 229, 2488048.5, 2495344.5);
+    private static final EphemerisDataFile ASCP2120 = new EphemerisDataFile("ascp2120.405", 230, 2495344.5, 2502672.5);
+    private static final EphemerisDataFile ASCP2140 = new EphemerisDataFile("ascp2140.405", 229, 2502672.5, 2509968.5);
+    private static final EphemerisDataFile ASCP2160 = new EphemerisDataFile("ascp2160.405", 229, 2509968.5, 2517264.5);
+    private static final EphemerisDataFile ASCP2180 = new EphemerisDataFile("ascp2180.405", 230, 2517264.5, 2524624.5);
 
     private static Map<double[], EphemerisDataFile> LOOKUP_BY_DATE = new HashMap<double[], EphemerisDataFile>();
     private static Map<String, EphemerisDataFile> LOOKUP_BY_NAME = new HashMap<String, EphemerisDataFile>();
