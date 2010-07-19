@@ -5,78 +5,38 @@
   <artifactId>oneau-web</artifactId>
   <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>Oneau Web Application</name>
+  <parent>
+    <groupId>com.oneau</groupId>
+    <artifactId>oneau-application</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+  <name>OneAU Web Application</name>
   <url>http://maven.apache.org</url>
   <build>
     <finalName>${project.artifactId}</finalName>
-    <pluginManagement>
-      <plugins>
-	<plugin>
-	  <artifactId>maven-compiler-plugin</artifactId>
-	  <configuration>
-	    <encoding>utf-8</encoding>
-	    <source>1.6</source>
-	    <target>1.6</target>
-	  </configuration>
-	</plugin>
-	<plugin>
-	  <artifactId>maven-resources-plugin</artifactId>
-	  <configuration>
-	    <encoding>utf-8</encoding>
-	  </configuration>
-	</plugin>
-      </plugins>
-    </pluginManagement>
   </build>
   <dependencies>
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
-      <version>1.2.15</version>
-      <exclusions>
-	<exclusion>
-	  <groupId>javax.mail</groupId>
-	  <artifactId>mail</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>javax.jms</groupId>
-	  <artifactId>jms</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>com.sun.jdmk</groupId>
-	  <artifactId>jmxtools</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>com.sun.jmx</groupId>
-	  <artifactId>jmxri</artifactId>
-	</exclusion>
-	<exclusion>
-	  <groupId>xalan</groupId>
-	  <artifactId>xalan</artifactId>
-	</exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
-      <version>2.5</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.5</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.oneau.core</groupId>
       <artifactId>oneau-resources</artifactId>
-      <version>1.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.oneau.core</groupId>
       <artifactId>oneau-core</artifactId>
-      <version>1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 </project>
