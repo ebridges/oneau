@@ -1,6 +1,7 @@
 package com.oneau.core;
 
 import com.oneau.core.util.HeavenlyBody;
+import com.oneau.core.util.Range;
 import org.apache.log4j.Logger;
 
 import java.io.File;
@@ -9,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static com.oneau.core.util.Utility.isBetween;
 import static com.oneau.core.util.Utility.isEmpty;
 import static java.lang.String.format;
 import static java.util.Collections.unmodifiableSortedSet;
@@ -37,7 +37,7 @@ public class EphemerisDataFile implements Comparable<EphemerisDataFile> {
     private static final EphemerisDataFile ASCP2160 = new EphemerisDataFile("ascp2160.405", 229, 2509968.5, 2517264.5);
     private static final EphemerisDataFile ASCP2180 = new EphemerisDataFile("ascp2180.405", 230, 2517264.5, 2524624.5);
 
-    private static Map<double[], EphemerisDataFile> LOOKUP_BY_DATE = new HashMap<double[], EphemerisDataFile>();
+    private static Map<Range<Double>, EphemerisDataFile> LOOKUP_BY_DATE = new HashMap<Range<Double>, EphemerisDataFile>();
     private static Map<String, EphemerisDataFile> LOOKUP_BY_NAME = new HashMap<String, EphemerisDataFile>();
 
     /**
@@ -53,21 +53,21 @@ public class EphemerisDataFile implements Comparable<EphemerisDataFile> {
     public final static int NUMBERS_PER_INTERVAL = 816;
 
     static {
-        LOOKUP_BY_DATE.put(ASCP1900.getDateRange(), ASCP1900);
-        LOOKUP_BY_DATE.put(ASCP1920.getDateRange(), ASCP1920);
-        LOOKUP_BY_DATE.put(ASCP1940.getDateRange(), ASCP1940);
-        LOOKUP_BY_DATE.put(ASCP1960.getDateRange(), ASCP1960);
-        LOOKUP_BY_DATE.put(ASCP1980.getDateRange(), ASCP1980);
-        LOOKUP_BY_DATE.put(ASCP2000.getDateRange(), ASCP2000);
-        LOOKUP_BY_DATE.put(ASCP2020.getDateRange(), ASCP2020);
-        LOOKUP_BY_DATE.put(ASCP2040.getDateRange(), ASCP2040);
-        LOOKUP_BY_DATE.put(ASCP2060.getDateRange(), ASCP2060);
-        LOOKUP_BY_DATE.put(ASCP2080.getDateRange(), ASCP2080);
-        LOOKUP_BY_DATE.put(ASCP2100.getDateRange(), ASCP2100);
-        LOOKUP_BY_DATE.put(ASCP2120.getDateRange(), ASCP2120);
-        LOOKUP_BY_DATE.put(ASCP2140.getDateRange(), ASCP2140);
-        LOOKUP_BY_DATE.put(ASCP2160.getDateRange(), ASCP2160);
-        LOOKUP_BY_DATE.put(ASCP2180.getDateRange(), ASCP2180);
+        LOOKUP_BY_DATE.put(ASCP1900.getBeginEndDates(), ASCP1900);
+        LOOKUP_BY_DATE.put(ASCP1920.getBeginEndDates(), ASCP1920);
+        LOOKUP_BY_DATE.put(ASCP1940.getBeginEndDates(), ASCP1940);
+        LOOKUP_BY_DATE.put(ASCP1960.getBeginEndDates(), ASCP1960);
+        LOOKUP_BY_DATE.put(ASCP1980.getBeginEndDates(), ASCP1980);
+        LOOKUP_BY_DATE.put(ASCP2000.getBeginEndDates(), ASCP2000);
+        LOOKUP_BY_DATE.put(ASCP2020.getBeginEndDates(), ASCP2020);
+        LOOKUP_BY_DATE.put(ASCP2040.getBeginEndDates(), ASCP2040);
+        LOOKUP_BY_DATE.put(ASCP2060.getBeginEndDates(), ASCP2060);
+        LOOKUP_BY_DATE.put(ASCP2080.getBeginEndDates(), ASCP2080);
+        LOOKUP_BY_DATE.put(ASCP2100.getBeginEndDates(), ASCP2100);
+        LOOKUP_BY_DATE.put(ASCP2120.getBeginEndDates(), ASCP2120);
+        LOOKUP_BY_DATE.put(ASCP2140.getBeginEndDates(), ASCP2140);
+        LOOKUP_BY_DATE.put(ASCP2160.getBeginEndDates(), ASCP2160);
+        LOOKUP_BY_DATE.put(ASCP2180.getBeginEndDates(), ASCP2180);
 
         LOOKUP_BY_NAME.put(ASCP1900.getFileName(), ASCP1900);
         LOOKUP_BY_NAME.put(ASCP1920.getFileName(), ASCP1920);
@@ -88,8 +88,8 @@ public class EphemerisDataFile implements Comparable<EphemerisDataFile> {
 
     public static EphemerisDataFile lookupByDate(Double julianTime) {
         if (null != julianTime) {
-            for (Map.Entry<double[], EphemerisDataFile> entry : LOOKUP_BY_DATE.entrySet()) {
-                if (isBetween(julianTime, entry.getKey())) {
+            for (Map.Entry<Range<Double>, EphemerisDataFile> entry : LOOKUP_BY_DATE.entrySet()) {
+                if (entry.getKey().contains(julianTime)) {
                     return entry.getValue();
                 }
             }
@@ -108,18 +108,22 @@ public class EphemerisDataFile implements Comparable<EphemerisDataFile> {
         return unmodifiableSortedSet(new TreeSet<EphemerisDataFile>(LOOKUP_BY_NAME.values()));
     }
 
-    private double[] dateRange;
+    private Double[] dateRange;
     private String fileName;
     private Integer recordCount;
 
     private EphemerisDataFile(String fileName, Integer recordCount, double dateRangeBegin, double dateRangeEnd) {
         this.fileName = fileName;
         this.recordCount = recordCount;
-        this.dateRange = new double[]{dateRangeBegin, dateRangeEnd};
+        this.dateRange = new Double[]{dateRangeBegin, dateRangeEnd};
     }
 
-    public double[] getDateRange() {
+    public Double[] getDateRange() {
         return dateRange;
+    }
+
+    public Range<Double> getBeginEndDates() {
+        return new Range<Double>(dateRange);
     }
 
     public double getBeginDate() {
@@ -176,5 +180,22 @@ public class EphemerisDataFile implements Comparable<EphemerisDataFile> {
     @Override
     public int compareTo(EphemerisDataFile that) {
         return this.fileName.compareTo(that.fileName);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        EphemerisDataFile that = (EphemerisDataFile) o;
+
+        if (!fileName.equals(that.fileName)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return fileName.hashCode();
     }
 }

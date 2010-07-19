@@ -10,7 +10,6 @@ import java.io.InputStreamReader;
 
 import static com.oneau.core.EphemerisDataFile.INTERVAL_DURATION;
 import static com.oneau.core.util.Utility.newDouble;
-import static com.oneau.core.util.AssertionUtil.copy;
 import static java.lang.String.format;
 
 /**
@@ -23,9 +22,9 @@ public class EphemerisReferenceImplementation {
     public EphemerisReferenceImplementation() {
     }
 
-    public EphemerisReferenceImplementation(double[] ephemeris_coefficients, double[] ephemeris_dates) {
-        this.ephemerisCoefficients = copy(ephemeris_coefficients);
-        this.ephemerisDates = copy(ephemeris_dates);
+    public EphemerisReferenceImplementation(Double[] ephemeris_coefficients, Double[] ephemeris_dates) {
+        this.ephemerisCoefficients = ephemeris_coefficients;
+        this.ephemerisDates = ephemeris_dates;
     }
 
     public static int getInterval(Double asOf, EphemerisDataFile dataFile) {

@@ -2,8 +2,6 @@ package com.oneau.core;
 
 import com.oneau.core.util.HeavenlyBody;
 import com.oneau.core.util.PositionAndVelocity;
-import com.oneau.core.util.Utility;
-import com.oneau.core.util.AssertionUtil;
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,8 +41,8 @@ public class PositionAndVelocityTest {
     public void testCalculatePositionAndVelocity_OneDate() throws IOException {
         EphemerisData data = new EphemerisData(DATA_FILE);
         Double[] ephemeris_coefficients = data.getEphemerisCoefficients();
-        double[] ephemeris_dates = DATA_FILE.getDateRange();
-        EphemerisReferenceImplementation expected = new EphemerisReferenceImplementation(AssertionUtil.copy(ephemeris_coefficients), ephemeris_dates);
+        Double[] ephemeris_dates = DATA_FILE.getDateRange();
+        EphemerisReferenceImplementation expected = new EphemerisReferenceImplementation(ephemeris_coefficients, ephemeris_dates);
         double[] expectedEphemerisR = new double[4];
         double[] expectedEphemerisRPrime = new double[4];
         logger.info("Calculating expected position & velocity from reference implementation.");
@@ -72,15 +70,15 @@ public class PositionAndVelocityTest {
         String line;
         EphemerisData data = new EphemerisData(DATA_FILE);
         Double[] ephemeris_coefficients = data.getEphemerisCoefficients();
-        double[] ephemeris_dates = DATA_FILE.getDateRange();
-        EphemerisReferenceImplementation expected = new EphemerisReferenceImplementation(AssertionUtil.copy(ephemeris_coefficients), ephemeris_dates);
+        Double[] ephemeris_dates = DATA_FILE.getDateRange();
+        EphemerisReferenceImplementation expected = new EphemerisReferenceImplementation(ephemeris_coefficients, ephemeris_dates);
 
         try {
             while((line = r.readLine()) != null) {
                 String[] vals = line.split(",");
                 if(vals.length == 2) {
                     Double asOf = Double.valueOf(vals[1]);
-                    if(Utility.isBetween(asOf, DATA_FILE.getDateRange())) {
+                    if(DATA_FILE.getBeginEndDates().contains(asOf)) {
                         double[] expectedEphemerisR = new double[4];
                         double[] expectedEphemerisRPrime = new double[4];
                         logger.info("Calculating expected position & velocity from reference implementation.");

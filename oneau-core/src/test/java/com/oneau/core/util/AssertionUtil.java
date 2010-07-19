@@ -32,6 +32,7 @@ public class AssertionUtil {
         }
     }
 
+    /*
     public static void assertArraysEqual(double[] expected, double[] actual) {
         assertEquals(expected.length, actual.length);
         int sz = expected.length;
@@ -39,24 +40,5 @@ public class AssertionUtil {
             assertEquals(format("idx[%d]",i),expected[i], actual[i], 0.000000001);
         }
     }
-
-    public static Double[] copy(double[] from) {
-        Double[] to = new Double[from.length];
-        for(int i=0; i<from.length; i++){
-            to[i] = from[i];
-        }
-        return to;
-    }
-
-    public static double[] copy(Double[] from) {
-        double[] to = new double[from.length];
-        for(int i=0; i<from.length; i++){
-            if(null == from[i]) {
-                to[i]=0;
-            } else {
-                to[i] = from[i];
-            }
-        }
-        return to;
-    }
+    */
 }
