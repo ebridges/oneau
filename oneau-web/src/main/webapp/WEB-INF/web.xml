@@ -10,7 +10,7 @@
         <servlet-class>com.oneau.web.EphemerisServlet</servlet-class>
         <init-param>
             <param-name>ephemeris-data</param-name>
-            <param-value>ASCP2000.txt</param-value>
+            <param-value>ascp2000.405</param-value>
             <description>Comma-separated list of Ephemerides Data File(s)</description>
         </init-param>
         <load-on-startup>10</load-on-startup>
