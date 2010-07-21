@@ -154,7 +154,7 @@ public class Ephemeris {
             DATAFILE_CACHE.put(dataFile, new EphemerisData(dataFile));
         }
         EphemerisData data = DATAFILE_CACHE.get(dataFile);
-        EphemerisData.EphemerisDataView dataView = data.getDataForBody(heavenlyBody, jultime);
+        EphemerisDataView dataView = data.getDataForBody(heavenlyBody, jultime);
 
         Converter c;
         if (null != resultConverter && resultConverter.length > 0) {
@@ -169,7 +169,7 @@ public class Ephemeris {
         return new PositionAndVelocity(jultime, heavenlyBody, position, velocity);
     }
 
-    private Double[] calculateVelocity(EphemerisData.EphemerisDataView ephemerisData, Converter resultConverter) {
+    private Double[] calculateVelocity(EphemerisDataView ephemerisData, Converter resultConverter) {
         Double[] velocity = newDouble(3);
         double chebyshevTime = ephemerisData.getChebyshevTime();
         int coefficientCount = ephemerisData.getBody().getNumberOfChebyshevCoefficients();
@@ -210,7 +210,7 @@ public class Ephemeris {
         return velocity;
     }
 
-    private Double[] calculatePosition(EphemerisData.EphemerisDataView ephemerisData, Converter resultConverter) {
+    private Double[] calculatePosition(EphemerisDataView ephemerisData, Converter resultConverter) {
         /*  Calculate the Chebyshev position polynomials   */
         /* Chebyshev Polynomials of the first kind:
             Tn+1(x) = 2 x Tn(x) - Tn-1(x)

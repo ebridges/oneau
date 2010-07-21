@@ -13,6 +13,7 @@ import java.util.TimeZone;
 import java.util.regex.Matcher;
 
 import static com.oneau.core.util.Constants.ISO_DATE_RE_PATTERN;
+import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
 import static java.lang.System.arraycopy;
 import static java.util.Arrays.sort;
@@ -28,7 +29,7 @@ public final class Utility {
     }
 
     public static boolean isEmpty(String s) {
-        return null == s || s.length() < 1;
+        return null == s || s.trim().length() < 1;
     }
 
     public static Double[] newDouble(int size) {
@@ -258,5 +259,49 @@ public final class Utility {
             field = "0";
         }
         return Integer.valueOf(field);
+    }
+
+    public static <T> T instantiate(Class<? extends T> clazz) {
+        try {
+            return clazz.newInstance();
+        } catch (InstantiationException e) {
+            throw new IllegalStateException(format("Caught %s when trying to create instance of %s", e.getClass().getSimpleName(), clazz.getSimpleName()), e);
+        } catch (IllegalAccessException e) {
+            throw new IllegalStateException(format("Caught %s when trying to create instance of %s", e.getClass().getSimpleName(), clazz.getSimpleName()), e);
+        }
+    }
+
+    public static double buildCoefficient(int mantissa1, int mantissa2, int exponent, boolean isCoefficientNegative, boolean isExponentNegative) {
+        double coefficient;
+        if (isExponentNegative) {
+            coefficient = mantissa1 * Math.pow(10, -(exponent + 9)) + mantissa2 * Math.pow(10, -(exponent + 18));
+        } else {
+            coefficient = mantissa1 * Math.pow(10, (exponent - 9)) + mantissa2 * Math.pow(10, (exponent - 18));
+        }
+        return (isCoefficientNegative ? -coefficient : +coefficient);
+    }
+
+    public static double parseCoefficient(String val) {
+        if(val.length() != 25) {
+            throw new IllegalArgumentException("number not in correct format!");
+        }
+
+        //-0.857149831817633490D-01
+        //0123456789012345678901234
+        //1234567890123456789012345
+        int mantissa1 = parseInt(val.substring(3, 12));
+        int mantissa2 = parseInt(val.substring(12, 21));
+        int exponent = parseInt(val.substring(23, 25));
+        boolean isCoefficientNegative = (val.charAt(0) == '-');
+        boolean isExponentNegative = (val.charAt(22) == '-');
+
+
+        return buildCoefficient(
+                mantissa1,
+                mantissa2,
+                exponent,
+                isCoefficientNegative,
+                isExponentNegative
+        );
     }
 }

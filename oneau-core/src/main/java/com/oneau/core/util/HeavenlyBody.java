@@ -24,7 +24,9 @@ public enum HeavenlyBody {
     NEPTUNE(8, "Neptune", 1, 6),
     PLUTO(9, "Pluto", 1, 6),
     MOON(10, "Moon", 8, 13),
-    SUN(11, "Sun", 2, 11);
+    SUN(11, "Sun", 2, 11),
+    NUTATIONS(12, "Nutations", 4, 10),
+    LIBRATIONS(13, "Librations", 4, 10);
 
     private static final Map<Integer, HeavenlyBody> BY_ID = new HashMap<Integer, HeavenlyBody>();
     private static final Map<String, HeavenlyBody> BY_NAME = new HashMap<String, HeavenlyBody>();
@@ -69,6 +71,14 @@ public enum HeavenlyBody {
 
     public static SortedSet<HeavenlyBody> orderedByIndex() {
         return unmodifiableSortedSet(ORDERED_BY_INDEX);
+    }
+
+    public static HeavenlyBody lookup(Integer id) {
+        if (null != id && BY_ID.containsKey(id)) {
+            return BY_ID.get(id);
+        } else {
+            return null;
+        }
     }
 
     public static HeavenlyBody lookup(String name) {

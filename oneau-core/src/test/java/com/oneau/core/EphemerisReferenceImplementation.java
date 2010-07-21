@@ -1,5 +1,6 @@
 package com.oneau.core;
 
+import com.oneau.core.util.Constants;
 import com.oneau.core.util.HeavenlyBody;
 import org.apache.log4j.Logger;
 
@@ -123,7 +124,7 @@ public class EphemerisReferenceImplementation {
     }
 
     private BufferedReader readEphemerisData(EphemerisDataFile data) {
-        String filename = format("/%s", data.getFileName());
+        String filename = format(Constants.EPHMERIS_FILE_ROOT, data.getFileName());
         logger.info(format("Opening file from location [%s].", filename));
         InputStream is = getClass().getResourceAsStream(filename);
         if (null == is) {

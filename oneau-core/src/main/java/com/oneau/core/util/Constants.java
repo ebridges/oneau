@@ -52,6 +52,7 @@ public final class Constants {
     public static final String LONGITUDE_PARAM = "lon";
     public static final String LATITUDE_PARAM = "lat";
     public static final String ELEVATION_PARAM = "ele";
+    public static final String EPHMERIS_FILE_ROOT = "/ephemeris/%s";
 
     private Constants() {
     }

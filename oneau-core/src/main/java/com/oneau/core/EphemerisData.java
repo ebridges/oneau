@@ -1,6 +1,8 @@
 package com.oneau.core;
 
+import com.oneau.core.util.Constants;
 import com.oneau.core.util.HeavenlyBody;
+import com.oneau.core.util.Utility;
 import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
@@ -33,7 +35,7 @@ public class EphemerisData {
         if (null == body) {
             throw new IllegalArgumentException("body cannot be null");
         }
-        return new EphemerisDataView(body, asOf);
+        return new EphemerisDataViewImpl(body, asOf);
     }
 
     public EphemerisDataFile getDataFile() {
@@ -87,7 +89,7 @@ public class EphemerisData {
                             logger.trace(format("1st entry (record:%d,coefficient:%d): [mantissa1:%d] [mantissa2:%d] [exponent:%d]", record, coefficient, mantissa1, mantissa2, exponent));
                         }
                         int idx = (record - 1) * 816 + (3 * (coefficient - 2) - 1);
-                        coefficients[idx] = buildCoefficient(
+                        coefficients[idx] = Utility.buildCoefficient(
                                 mantissa1,
                                 mantissa2,
                                 exponent,
@@ -107,7 +109,7 @@ public class EphemerisData {
                             logger.trace(format("2nd entry (record:%d,coefficient:%d): [mantissa1:%d] [mantissa2:%d] [exponent:%d]", record, coefficient, mantissa1, mantissa2, exponent));
                         }
                         int idx = (record - 1) * 816 + 3 * (coefficient - 2);
-                        coefficients[idx] = buildCoefficient(
+                        coefficients[idx] = Utility.buildCoefficient(
                                 mantissa1,
                                 mantissa2,
                                 exponent,
@@ -127,7 +129,7 @@ public class EphemerisData {
                             logger.trace(format("3rd entry (record:%d,coefficient:%d): [mantissa1:%d] [mantissa2:%d] [exponent:%d]", record, coefficient, mantissa1, mantissa2, exponent));
                         }
                         int idx = (record - 1) * 816 + (3 * (coefficient - 2) + 1);
-                        coefficients[idx] = buildCoefficient(
+                        coefficients[idx] = Utility.buildCoefficient(
                                 mantissa1,
                                 mantissa2,
                                 exponent,
@@ -160,18 +162,8 @@ public class EphemerisData {
         return coefficients;
     }
 
-    private double buildCoefficient(int mantissa1, int mantissa2, int exponent, boolean isCoefficientNegative, boolean isExponentNegative) {
-        double coefficient;
-        if (isExponentNegative) {
-            coefficient = mantissa1 * Math.pow(10, -(exponent + 9)) + mantissa2 * Math.pow(10, -(exponent + 18));
-        } else {
-            coefficient = mantissa1 * Math.pow(10, (exponent - 9)) + mantissa2 * Math.pow(10, (exponent - 18));
-        }
-        return (isCoefficientNegative ? -coefficient : +coefficient);
-    }
-
     private BufferedReader readEphemerisData() {
-        String filename = format("/%s", dataFile.getFileName());
+        String filename = format(Constants.EPHMERIS_FILE_ROOT, dataFile.getFileName());
         logger.info(format("Opening file from location [%s].", filename));
         InputStream is = getClass().getResourceAsStream(filename);
         if (null == is) {
@@ -181,16 +173,17 @@ public class EphemerisData {
         return new BufferedReader(isr);
     }
 
-    class EphemerisDataView {
+    class EphemerisDataViewImpl implements EphemerisDataView {
         private final HeavenlyBody body;
         private final Double asOf;
 
-        public EphemerisDataView(HeavenlyBody body, Double julianEphemerisDate) {
+        public EphemerisDataViewImpl(HeavenlyBody body, Double julianEphemerisDate) {
             this.body = body;
             this.asOf = julianEphemerisDate;
         }
 
-        List<Double> getCoefficients() {
+        @Override
+        public List<Double> getCoefficients() {
             List<Double> coefficients = asList(ephemerisCoefficients);
             return unmodifiableList(coefficients.subList(
                     getViewBegin(),
@@ -198,19 +191,23 @@ public class EphemerisData {
             ));
         }
 
+        @Override
         public HeavenlyBody getBody() {
             return body;
         }
 
+        @Override
         public Double getAsOf() {
             return asOf;
         }
 
+        @Override
         public double getChebyshevTime() {
             return 2 * (asOf - ((dataFile.getSubinterval(body, asOf) - 1) * dataFile.getSubintervalDuration(body) + dataFile.getIntervalStartTime(asOf))) / dataFile.getSubintervalDuration(body) - 1;
         }
 
-        private int getViewBegin() {
+        @Override
+        public int getViewBegin() {
             int interval = dataFile.getInterval(asOf);
             int subinterval = dataFile.getSubinterval(body, asOf);
             int numbersToSkip = (interval - 1) * EphemerisDataFile.NUMBERS_PER_INTERVAL;
@@ -239,7 +236,8 @@ public class EphemerisData {
             return pointer;
         }
 
-        private int getViewEnd() {
+        @Override
+        public int getViewEnd() {
             return getViewBegin() + (3 * body.getNumberOfChebyshevCoefficients());
         }
     }
