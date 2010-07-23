@@ -1,5 +1,6 @@
 package com.oneau.parser.ephemeris;
 
+import com.oneau.core.util.Constants;
 import com.oneau.core.util.HeavenlyBody;
 
 import java.io.BufferedReader;
@@ -21,7 +22,7 @@ import static java.lang.String.format;
  */
 public class HeaderParser {
     private static final Logger logger = Logger.getLogger(HeaderParser.class.getName());
-    public static final String HEADER_405 = "/ephemeris/header.405";
+    public static final String HEADER_405 = "header.405";
     private String filename;
 
     public HeaderParser(String filename) {
@@ -30,22 +31,27 @@ public class HeaderParser {
 
     public Header readHeader() throws IOException {
         BufferedReader reader = readFile();
-        Header header = new Header(filename);
-        String line = null;
-        while( (line = reader.readLine()) != null) {
-            if(isEmpty(line)) {
-                continue;
+        try {
+            Header header = new Header(filename);
+            String line = null;
+            while( (line = reader.readLine()) != null) {
+                if(isEmpty(line)) {
+                    continue;
+                }
+                HeaderHandler h = HeaderHandlerFactory.getHandler(line);
+                h.handle(header, reader);
             }
-            HeaderHandler h = HeaderHandlerFactory.getHandler(line);
-            h.handle(header, reader);
+            return header;
+        } finally {
+            reader.close();
         }
-        return header;
     }
 
     private BufferedReader readFile() throws IOException {
-        InputStream is = getClass().getResourceAsStream(filename);
+        String file = format(Constants.EPHMERIS_FILE_ROOT, filename);
+        InputStream is = getClass().getResourceAsStream(file);
         if(null == is) {
-            throw new IllegalStateException(format("unable to locate header file [%s] on classpath", filename));
+            throw new IllegalStateException(format("unable to locate header file [%s] on classpath", file));
         }
         return new BufferedReader(
             new InputStreamReader(

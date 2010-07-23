@@ -44,7 +44,7 @@ public class Group1050HandlerTest {
         for(HeavenlyBody body : HeavenlyBody.orderedByIndex()) {
             CoefficientInfo nfo = coeffInfo.get(body);
             System.out.println(nfo);
-            assertEquals(EXPECTED_VALUES[i++], (int)nfo.getStartIndex());
+            assertEquals(EXPECTED_VALUES[i++], (int)nfo.getFileStartIndex());
             assertEquals(EXPECTED_VALUES[i++], (int)nfo.getCoeffCount());
             assertEquals(EXPECTED_VALUES[i++], (int)nfo.getCoeffSets());
         }

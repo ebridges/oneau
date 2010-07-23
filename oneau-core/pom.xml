@@ -36,10 +36,14 @@
     </resources>
   </build>
   <dependencies>
-    <dependency>
-      <groupId>com.oneau.core</groupId>
-      <artifactId>oneau-resources</artifactId>
-    </dependency>
+      <dependency>
+        <groupId>com.oneau.resources</groupId>
+        <artifactId>oneau-resources</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>com.oneau.loader</groupId>
+        <artifactId>oneau-loader</artifactId>
+      </dependency>
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>

@@ -10,7 +10,7 @@ import static java.lang.String.format;
  */
 public class CoefficientInfo {
     private HeavenlyBody body;
-    private Integer startIndex;
+    private Integer fileStartIndex;
     private Integer coeffCount;
     private Integer coeffSets;
 
@@ -22,12 +22,18 @@ public class CoefficientInfo {
         return body;
     }
 
-    public Integer getStartIndex() {
-        return startIndex;
+    public Integer getAdjustedIndex() {
+        return fileStartIndex  // provides the begin position for a set of coefficients in the file
+                - 1  // adjusts this since the index in the file is "1" based: we need it to be "0" based
+                - 2; // further adjusts this index since we don't include the 2 date fields that begin every observation
     }
 
-    public void setStartIndex(Integer startIndex) {
-        this.startIndex = startIndex;
+    public Integer getFileStartIndex() {
+        return fileStartIndex;
+    }
+
+    public void setFileStartIndex(Integer fileStartIndex) {
+        this.fileStartIndex = fileStartIndex;
     }
 
     public Integer getCoeffCount() {
@@ -48,6 +54,6 @@ public class CoefficientInfo {
 
     @Override
     public String toString() {
-        return format("[%s:%d,%d,%d]",this.getBody().getName(),this.getStartIndex(),this.getCoeffCount(),this.getCoeffSets());
+        return format("[%s:%d,%d,%d]",this.getBody().getName(),this.getFileStartIndex(),this.getCoeffCount(),this.getCoeffSets());
     }
 }

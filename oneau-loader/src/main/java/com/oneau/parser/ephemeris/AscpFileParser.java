@@ -1,11 +1,11 @@
 package com.oneau.parser.ephemeris;
 
+import com.oneau.core.util.Constants;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import static com.oneau.core.util.Utility.isEmpty;
@@ -25,30 +25,41 @@ public class AscpFileParser {
         this.filename = filename;
     }
 
-    public List<Observation> readObservationsFromFile() throws IOException {
+    public void readObservationsFromFile(ObservationWriter writer) throws IOException {
         BufferedReader reader = readFile();
         String line = null;
-        List<Observation> observations = new LinkedList<Observation>();
-        while( (line = reader.readLine()) != null) {
-            if(isEmpty(line)) {
-                continue;
+        try {
+            while( (line = reader.readLine()) != null) {
+                if(isEmpty(line)) {
+                    continue;
+                }
+
+                if(line.startsWith("    ")) {
+                    String[] fields = line.trim().split("\\s+");
+                    logger.finer(format("line: (%s) [fields[0]=%s, fields[1]=%s]", line, fields[0], fields[1]));
+                    Integer observationNum = Integer.parseInt(fields[0]);
+                    Integer coefficientCount = Integer.parseInt(fields[1]);
+
+                    ObservationParser parser = new ObservationParser(header, filename, observationNum, coefficientCount);
+                    Observation observation = parser.parseObservation(reader);
+
+                    writer.write(header, observation);
+                }
             }
-            AscpHandler h = AscpHandlerFactory.getHandler(line);
-            Observation observation = h.handle(header, reader);
-            observations.add(observation);
+        } finally {
+            reader.close();
         }
-        return observations;
-        
     }
 
     private BufferedReader readFile() throws IOException {
-        InputStream is = getClass().getResourceAsStream(filename);
+        String file = format(Constants.EPHMERIS_FILE_ROOT, filename);
+        InputStream is = getClass().getResourceAsStream(file);
         if(null == is) {
-            throw new IllegalStateException(format("unable to locate header file [%s] on classpath", filename));
+            throw new IllegalStateException(format("unable to locate ascp file [%s] on classpath", filename));
         }
         return new BufferedReader(
             new InputStreamReader(
-                    is
+                is
             )
         );
     }

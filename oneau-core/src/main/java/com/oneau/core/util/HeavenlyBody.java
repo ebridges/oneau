@@ -14,19 +14,19 @@ import static java.util.Collections.unmodifiableSortedSet;
  * Date: Feb 19, 2010
  */
 public enum HeavenlyBody {
-    MERCURY(1, "Mercury", 4, 14),
-    VENUS(2, "Venus", 2, 10),
-    EARTH(3, "Earth", 2, 13),
-    MARS(4, "Mars", 1, 11),
-    JUPITER(5, "Jupiter", 1, 8),
-    SATURN(6, "Saturn", 1, 7),
-    URANUS(7, "Uranus", 1, 6),
-    NEPTUNE(8, "Neptune", 1, 6),
-    PLUTO(9, "Pluto", 1, 6),
-    MOON(10, "Moon", 8, 13),
-    SUN(11, "Sun", 2, 11),
-    NUTATIONS(12, "Nutations", 4, 10),
-    LIBRATIONS(13, "Librations", 4, 10);
+    MERCURY(1, "Mercury", 4, 14, 3),
+    VENUS(2, "Venus", 2, 10, 3),
+    EARTH(3, "Earth", 2, 13, 3),
+    MARS(4, "Mars", 1, 11, 3),
+    JUPITER(5, "Jupiter", 1, 8, 3),
+    SATURN(6, "Saturn", 1, 7, 3),
+    URANUS(7, "Uranus", 1, 6, 3),
+    NEPTUNE(8, "Neptune", 1, 6, 3),
+    PLUTO(9, "Pluto", 1, 6, 3),
+    MOON(10, "Moon", 8, 13, 3),
+    SUN(11, "Sun", 2, 11, 3),
+    NUTATIONS(12, "Nutations", 4, 10, 2),
+    LIBRATIONS(13, "Librations", 4, 10, 3);
 
     private static final Map<Integer, HeavenlyBody> BY_ID = new HashMap<Integer, HeavenlyBody>();
     private static final Map<String, HeavenlyBody> BY_NAME = new HashMap<String, HeavenlyBody>();
@@ -43,14 +43,16 @@ public enum HeavenlyBody {
 
     private Integer id;
     private String name;
+    private Integer dimensions;
     private Integer numberOfChebyshevCoefficients;
     private Integer numberOfCoefficientSets;
 
-    HeavenlyBody(Integer index, String name, Integer coefficientSets, Integer chebyshevCoefficients) {
+    HeavenlyBody(Integer index, String name, Integer coefficientSets, Integer chebyshevCoefficients, Integer dimensions) {
         this.id = index;
         this.name = name;
         this.numberOfChebyshevCoefficients = chebyshevCoefficients;
         this.numberOfCoefficientSets = coefficientSets;
+        this.dimensions = dimensions;
     }
 
     public Integer getId() {
@@ -59,6 +61,10 @@ public enum HeavenlyBody {
 
     public String getName() {
         return name;
+    }
+
+    public Integer getDimensions() {
+        return dimensions;
     }
 
     public Integer getNumberOfChebyshevCoefficients() {

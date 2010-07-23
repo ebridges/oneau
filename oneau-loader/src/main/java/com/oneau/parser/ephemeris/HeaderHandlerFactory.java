@@ -1,7 +1,6 @@
 package com.oneau.parser.ephemeris;
 
 import com.oneau.core.util.HeavenlyBody;
-import com.oneau.core.util.Utility;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -231,11 +230,7 @@ public class HeaderHandlerFactory {
                         if(isEmpty(val)){
                             throw new IllegalArgumentException("got empty val!");
                         }
-                        String v = val.trim();
-                        if(!v.startsWith("-")) {
-                            v = "+"+v;
-                        }
-                        constantValues.add(parseCoefficient(v));
+                        constantValues.add(parseCoefficient(val.trim()));
                     }
                     if(constantValues.size() == constantsCount) {
                         break;
@@ -282,7 +277,7 @@ public class HeaderHandlerFactory {
                     for(int i=0; i<13; i++) {
                         switch(rowCount) {
                             case(1):
-                                bodyList[i].setStartIndex(parseInt(fields[i]));
+                                bodyList[i].setFileStartIndex(parseInt(fields[i]));
                                 break;
                             case(2):
                                 bodyList[i].setCoeffCount(parseInt(fields[i]));

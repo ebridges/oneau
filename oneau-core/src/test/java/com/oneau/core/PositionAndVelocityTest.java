@@ -46,9 +46,9 @@ public class PositionAndVelocityTest {
         double[] expectedEphemerisR = new double[4];
         double[] expectedEphemerisRPrime = new double[4];
         logger.info("Calculating expected position & velocity from reference implementation.");
-        expected.getPlanetPositionAndVelocity(TEST_DATE, HeavenlyBody.SUN.getId(), expectedEphemerisR, expectedEphemerisRPrime);
+        expected.getPlanetPositionAndVelocity(TEST_DATE, HeavenlyBody.MERCURY.getId(), expectedEphemerisR, expectedEphemerisRPrime);
         logger.info("Calculating actual position & velocity from develped code.");
-        PositionAndVelocity actual = underTest.getPlanetPositionAndVelocity(TEST_DATE, HeavenlyBody.SUN);
+        PositionAndVelocity actual = underTest.getPlanetPositionAndVelocity(TEST_DATE, HeavenlyBody.MERCURY);
 
         // note: legacy code uses fortran-conventions for array indices -- therefore the index to be used for
         //       the heavenlyBody needs to be +1 from the 0-based "getIndex()" method -- hence the special 'copy' method

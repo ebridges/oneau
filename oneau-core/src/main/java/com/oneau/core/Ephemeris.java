@@ -6,6 +6,9 @@ import com.oneau.core.util.ConverterFactory;
 import com.oneau.core.util.HeavenlyBody;
 import com.oneau.core.util.PositionAndVelocity;
 import com.oneau.core.util.Utility;
+import com.oneau.parser.ephemeris.AscpFileParser;
+import com.oneau.parser.ephemeris.Header;
+import com.oneau.parser.ephemeris.HeaderParser;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -155,6 +158,7 @@ public class Ephemeris {
         }
         EphemerisData data = DATAFILE_CACHE.get(dataFile);
         EphemerisDataView dataView = data.getDataForBody(heavenlyBody, jultime);
+//        EphemerisDataView dataView = getViewForDate(heavenlyBody, jultime);
 
         Converter c;
         if (null != resultConverter && resultConverter.length > 0) {
@@ -167,6 +171,24 @@ public class Ephemeris {
         Double[] velocity = calculateVelocity(dataView, c);
 
         return new PositionAndVelocity(jultime, heavenlyBody, position, velocity);
+    }
+
+    private EphemerisDataView getViewForDate(HeavenlyBody heavenlyBody, double jultime) {
+        HeaderParser headerParser = new HeaderParser(HeaderParser.HEADER_405);
+        Header header = null;
+        EphemerisDataFile file = EphemerisDataFile.lookupByDate(jultime);
+        EphemerisDataViewObservationWriter viewWriter = new EphemerisDataViewObservationWriter(file, heavenlyBody, jultime);
+        try {
+            header = headerParser.readHeader();
+
+            logger.info("found file: "+file.getFileName()+" for date: " + jultime);
+            AscpFileParser coeffParser = new AscpFileParser(header, file.getFileName());
+            coeffParser.readObservationsFromFile(viewWriter);
+
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
+        return viewWriter;
     }
 
     private Double[] calculateVelocity(EphemerisDataView ephemerisData, Converter resultConverter) {

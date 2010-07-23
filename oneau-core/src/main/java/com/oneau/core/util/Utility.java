@@ -282,8 +282,15 @@ public final class Utility {
     }
 
     public static double parseCoefficient(String val) {
+        if(isEmpty(val)) {
+            throw new IllegalArgumentException("coefficient was empty.");
+        }
+        if(!val.trim().startsWith("-")) {
+            val = ("+" + val);
+        }
+
         if(val.length() != 25) {
-            throw new IllegalArgumentException("number not in correct format!");
+            throw new IllegalArgumentException(format("number [%s] not in correct format!", val));
         }
 
         //-0.857149831817633490D-01

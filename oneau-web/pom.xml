@@ -31,7 +31,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>com.oneau.core</groupId>
+      <groupId>com.oneau.resources</groupId>
       <artifactId>oneau-resources</artifactId>
     </dependency>
     <dependency>
