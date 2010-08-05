@@ -13,7 +13,7 @@ import java.util.Map;
  * User: ebridges
  * Date: Jul 23, 2010
  */
-public class EphemerisDataViewObservationWriter extends EphemerisDataViewImpl  implements ObservationWriter {
+public class EphemerisDataViewObservationWriter extends EphemerisDataViewImpl {// implements ObservationWriter {
     private static final Logger logger = Logger.getLogger(EphemerisDataViewObservationWriter.class);
 
     private List<Double> coefficients;
@@ -30,7 +30,7 @@ public class EphemerisDataViewObservationWriter extends EphemerisDataViewImpl  i
         return this.coefficients;
     }
 
-    @Override
+//    @Override
     public void write(Header header, Observation observation) {
         if(observation.getBeginEndDates().contains(super.getAsOf())) {
             Map<HeavenlyBody, List<Double>> coeffs = observation.getCoefficients();

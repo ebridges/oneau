@@ -1,4 +1,4 @@
-package com.oneau.core.util;
+package com.oneau.parser.ephemeris.util;
 
 import org.apache.log4j.Logger;
 
@@ -35,7 +35,7 @@ public class AssertionUtil {
     }
 
     public static void assertArraysEqual(List<Double> expected, List<Double> actual) {
-        assertEquals(expected.size(), actual.size());
+        assertEquals("arrays not equal in size.", expected.size(), actual.size());
         int sz = expected.size();
         for(int i=0; i<sz; i++) {
             if(null == expected.get(i)) {

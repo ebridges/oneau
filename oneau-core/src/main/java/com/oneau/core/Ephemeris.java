@@ -6,9 +6,11 @@ import com.oneau.core.util.ConverterFactory;
 import com.oneau.core.util.HeavenlyBody;
 import com.oneau.core.util.PositionAndVelocity;
 import com.oneau.core.util.Utility;
+/*
 import com.oneau.parser.ephemeris.AscpFileParser;
 import com.oneau.parser.ephemeris.Header;
 import com.oneau.parser.ephemeris.HeaderParser;
+*/
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -172,7 +174,7 @@ public class Ephemeris {
 
         return new PositionAndVelocity(jultime, heavenlyBody, position, velocity);
     }
-
+    /*
     private EphemerisDataView getViewForDate(HeavenlyBody heavenlyBody, double jultime) {
         HeaderParser headerParser = new HeaderParser(HeaderParser.HEADER_405);
         Header header = null;
@@ -190,6 +192,7 @@ public class Ephemeris {
         }
         return viewWriter;
     }
+    */
 
     private Double[] calculateVelocity(EphemerisDataView ephemerisData, Converter resultConverter) {
         Double[] velocity = newDouble(3);
