@@ -1,13 +1,16 @@
 package com.oneau.parser.ephemeris;
 
+import com.oneau.common.ObservationWriter;
 import com.oneau.core.EphemerisDataFile;
 import com.oneau.core.util.Constants;
+import com.oneau.loader.ephemeris.SqlObservationWriter;
+/*
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
-
+*/
 import java.io.IOException;
-import java.util.Set;
+import java.io.OutputStreamWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -36,9 +39,15 @@ public class EphemerisParser {
         HeaderParser headerParser = new HeaderParser(HeaderParser.HEADER_405);
         Header header = headerParser.readHeader();
 
-        for(EphemerisDataFile file : EphemerisDataFile.values()) {
-            AscpFileParser coeffParser = new AscpFileParser(header, file.getFileName());
-            coeffParser.readObservationsFromFile(new StdoutObservationWriter());
+        OutputStreamWriter osw = new OutputStreamWriter(System.out);
+        ObservationWriter ow = new SqlObservationWriter(osw);
+        try {
+            for(EphemerisDataFile file : EphemerisDataFile.values()) {
+                AscpFileParser coeffParser = new AscpFileParser(header, file.getFileName());
+                coeffParser.readObservationsFromFile(ow);
+            }
+        } finally {
+            osw.flush();
         }
     }
 
@@ -46,6 +55,7 @@ public class EphemerisParser {
         if (logger.isLoggable(Level.FINER)) {
             logger.entering(EphemerisParser.class.getName(), "parseArgs", args);
         }
+        /*
         Options o = new Options();
         Option observationWriter = OptionBuilder
                 .hasArg()
@@ -62,6 +72,7 @@ public class EphemerisParser {
                 .withArgName("FILENAME(s)")
                 .create();
         o.addOption(ephemerisFiles);
+        */
     }
 
 }

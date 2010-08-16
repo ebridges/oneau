@@ -1,6 +1,6 @@
 package com.oneau.parser.ephemeris;
 
-import com.oneau.core.util.Coordinate;
+import com.oneau.common.ObservationWriter;
 import com.oneau.core.util.HeavenlyBody;
 
 import java.util.List;

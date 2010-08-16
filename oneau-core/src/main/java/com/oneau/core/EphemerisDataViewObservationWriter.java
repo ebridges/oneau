@@ -3,7 +3,6 @@ package com.oneau.core;
 import com.oneau.core.util.HeavenlyBody;
 import com.oneau.parser.ephemeris.Header;
 import com.oneau.parser.ephemeris.Observation;
-import com.oneau.parser.ephemeris.ObservationWriter;
 import org.apache.log4j.Logger;
 
 import java.util.List;

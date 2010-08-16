@@ -61,16 +61,16 @@ public class Range<T extends Number> implements Serializable {
 
         Range range = (Range) o;
 
-        if (!left.equals(range.left)) return false;
-        if (!right.equals(range.right)) return false;
+        if (!left.toString().equals(range.left.toString())) return false;
+        if (!right.toString().equals(range.right.toString())) return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = left.hashCode();
-        result = 31 * result + right.hashCode();
+        int result = left.toString().hashCode();
+        result = 31 * result + right.toString().hashCode();
         return result;
     }
 

@@ -1,5 +1,6 @@
 package com.oneau.parser.ephemeris;
 
+import com.oneau.common.ObservationWriter;
 import com.oneau.core.util.Constants;
 
 import java.io.BufferedReader;
