@@ -1,12 +1,9 @@
 package com.oneau.core;
 
 import com.oneau.core.util.HeavenlyBody;
-import com.oneau.parser.ephemeris.Header;
-import com.oneau.parser.ephemeris.Observation;
 import org.apache.log4j.Logger;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * User: ebridges
@@ -30,6 +27,7 @@ public class EphemerisDataViewObservationWriter extends EphemerisDataViewImpl {/
     }
 
 //    @Override
+    /*
     public void write(Header header, Observation observation) {
         if(observation.getBeginEndDates().contains(super.getAsOf())) {
             Map<HeavenlyBody, List<Double>> coeffs = observation.getCoefficients();
@@ -38,4 +36,5 @@ public class EphemerisDataViewObservationWriter extends EphemerisDataViewImpl {/
             logger.info("skipping observation: "+observation);
         }
     }
+    */
 }

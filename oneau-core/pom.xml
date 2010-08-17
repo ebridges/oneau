@@ -41,10 +41,10 @@
         <artifactId>oneau-resources</artifactId>
       </dependency>
 
-      <dependency>
+      <!-- dependency>
         <groupId>com.oneau.loader</groupId>
         <artifactId>oneau-loader</artifactId>
-      </dependency>
+      </dependency -->
 
     <dependency>
       <groupId>log4j</groupId>
