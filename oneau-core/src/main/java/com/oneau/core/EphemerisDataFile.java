@@ -21,22 +21,44 @@ import static java.util.Collections.unmodifiableSortedSet;
 public class EphemerisDataFile implements Comparable<EphemerisDataFile> {
     private static final Logger logger = Logger.getLogger(EphemerisDataFile.class);
 
+    private static final EphemerisDataFile ASCP1600 = new EphemerisDataFile("ascp1600.405", 1, 1, 1);
+    private static final EphemerisDataFile ASCP1620 = new EphemerisDataFile("ascp1620.405", 1, 1, 1);
+    private static final EphemerisDataFile ASCP1640 = new EphemerisDataFile("ascp1640.405", 1, 1, 1);
+    private static final EphemerisDataFile ASCP1660 = new EphemerisDataFile("ascp1660.405", 1, 1, 1);
+    private static final EphemerisDataFile ASCP1680 = new EphemerisDataFile("ascp1680.405", 1, 1, 1);
+
+    private static final EphemerisDataFile ASCP1700 = new EphemerisDataFile("ascp1700.405", 1, 1, 1);
+    private static final EphemerisDataFile ASCP1720 = new EphemerisDataFile("ascp1720.405", 1, 1, 1);
+    private static final EphemerisDataFile ASCP1740 = new EphemerisDataFile("ascp1740.405", 1, 1, 1);
+    private static final EphemerisDataFile ASCP1760 = new EphemerisDataFile("ascp1760.405", 1, 1, 1);
+    private static final EphemerisDataFile ASCP1780 = new EphemerisDataFile("ascp1780.405", 1, 1, 1);
+
+    private static final EphemerisDataFile ASCP1800 = new EphemerisDataFile("ascp1600.405", 1, 1, 1);
+    private static final EphemerisDataFile ASCP1820 = new EphemerisDataFile("ascp1620.405", 1, 1, 1);
+    private static final EphemerisDataFile ASCP1840 = new EphemerisDataFile("ascp1640.405", 1, 1, 1);
+    private static final EphemerisDataFile ASCP1860 = new EphemerisDataFile("ascp1660.405", 1, 1, 1);
+    private static final EphemerisDataFile ASCP1880 = new EphemerisDataFile("ascp1680.405", 1, 1, 1);
+
     private static final EphemerisDataFile ASCP1900 = new EphemerisDataFile("ascp1900.405", 230, 2414992.5, 2422320.5);
     private static final EphemerisDataFile ASCP1920 = new EphemerisDataFile("ascp1920.405", 229, 2422320.5, 2429616.5);
     private static final EphemerisDataFile ASCP1940 = new EphemerisDataFile("ascp1940.405", 230, 2429616.5, 2436912.5);
     private static final EphemerisDataFile ASCP1960 = new EphemerisDataFile("ascp1960.405", 229, 2436912.5, 2444208.5);
     private static final EphemerisDataFile ASCP1980 = new EphemerisDataFile("ascp1980.405", 230, 2444208.5, 2451536.5);
+
     private static final EphemerisDataFile ASCP2000 = new EphemerisDataFile("ascp2000.405", 229, 2451536.5, 2458832.5);
     private static final EphemerisDataFile ASCP2020 = new EphemerisDataFile("ascp2020.405", 229, 2458832.5, 2466128.5);
     private static final EphemerisDataFile ASCP2040 = new EphemerisDataFile("ascp2040.405", 230, 2466128.5, 2473456.5);
     private static final EphemerisDataFile ASCP2060 = new EphemerisDataFile("ascp2060.405", 229, 2473456.5, 2480752.5);
     private static final EphemerisDataFile ASCP2080 = new EphemerisDataFile("ascp2080.405", 229, 2480752.5, 2488048.5);
+
     private static final EphemerisDataFile ASCP2100 = new EphemerisDataFile("ascp2100.405", 229, 2488048.5, 2495344.5);
     private static final EphemerisDataFile ASCP2120 = new EphemerisDataFile("ascp2120.405", 230, 2495344.5, 2502672.5);
     private static final EphemerisDataFile ASCP2140 = new EphemerisDataFile("ascp2140.405", 229, 2502672.5, 2509968.5);
     private static final EphemerisDataFile ASCP2160 = new EphemerisDataFile("ascp2160.405", 229, 2509968.5, 2517264.5);
     private static final EphemerisDataFile ASCP2180 = new EphemerisDataFile("ascp2180.405", 230, 2517264.5, 2524624.5);
+    private static final EphemerisDataFile ASCP2200 = new EphemerisDataFile("ascp2200.405", 1, 1, 1);
 
+    
     private static Map<Range<Double>, EphemerisDataFile> LOOKUP_BY_DATE = new HashMap<Range<Double>, EphemerisDataFile>();
     private static Map<String, EphemerisDataFile> LOOKUP_BY_NAME = new HashMap<String, EphemerisDataFile>();
 
@@ -69,21 +91,43 @@ public class EphemerisDataFile implements Comparable<EphemerisDataFile> {
         LOOKUP_BY_DATE.put(ASCP2160.getBeginEndDates(), ASCP2160);
         LOOKUP_BY_DATE.put(ASCP2180.getBeginEndDates(), ASCP2180);
 
+        LOOKUP_BY_NAME.put(ASCP1600.getFileName(), ASCP1600);
+        LOOKUP_BY_NAME.put(ASCP1620.getFileName(), ASCP1620);
+        LOOKUP_BY_NAME.put(ASCP1640.getFileName(), ASCP1640);
+        LOOKUP_BY_NAME.put(ASCP1660.getFileName(), ASCP1660);
+        LOOKUP_BY_NAME.put(ASCP1680.getFileName(), ASCP1680);
+
+        LOOKUP_BY_NAME.put(ASCP1700.getFileName(), ASCP1700);
+        LOOKUP_BY_NAME.put(ASCP1720.getFileName(), ASCP1720);
+        LOOKUP_BY_NAME.put(ASCP1740.getFileName(), ASCP1740);
+        LOOKUP_BY_NAME.put(ASCP1760.getFileName(), ASCP1760);
+        LOOKUP_BY_NAME.put(ASCP1780.getFileName(), ASCP1780);
+
+        LOOKUP_BY_NAME.put(ASCP1800.getFileName(), ASCP1800);
+        LOOKUP_BY_NAME.put(ASCP1820.getFileName(), ASCP1820);
+        LOOKUP_BY_NAME.put(ASCP1840.getFileName(), ASCP1840);
+        LOOKUP_BY_NAME.put(ASCP1860.getFileName(), ASCP1860);
+        LOOKUP_BY_NAME.put(ASCP1880.getFileName(), ASCP1880);
+
         LOOKUP_BY_NAME.put(ASCP1900.getFileName(), ASCP1900);
         LOOKUP_BY_NAME.put(ASCP1920.getFileName(), ASCP1920);
         LOOKUP_BY_NAME.put(ASCP1940.getFileName(), ASCP1940);
         LOOKUP_BY_NAME.put(ASCP1960.getFileName(), ASCP1960);
         LOOKUP_BY_NAME.put(ASCP1980.getFileName(), ASCP1980);
+
         LOOKUP_BY_NAME.put(ASCP2000.getFileName(), ASCP2000);
         LOOKUP_BY_NAME.put(ASCP2020.getFileName(), ASCP2020);
         LOOKUP_BY_NAME.put(ASCP2040.getFileName(), ASCP2040);
         LOOKUP_BY_NAME.put(ASCP2060.getFileName(), ASCP2060);
         LOOKUP_BY_NAME.put(ASCP2080.getFileName(), ASCP2080);
+
         LOOKUP_BY_NAME.put(ASCP2100.getFileName(), ASCP2100);
         LOOKUP_BY_NAME.put(ASCP2120.getFileName(), ASCP2120);
         LOOKUP_BY_NAME.put(ASCP2140.getFileName(), ASCP2140);
         LOOKUP_BY_NAME.put(ASCP2160.getFileName(), ASCP2160);
         LOOKUP_BY_NAME.put(ASCP2180.getFileName(), ASCP2180);
+
+        LOOKUP_BY_NAME.put(ASCP2200.getFileName(), ASCP2200);
     }
 
     public static EphemerisDataFile lookupByDate(Double julianTime) {
