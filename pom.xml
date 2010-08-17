@@ -11,6 +11,7 @@
     <module>oneau-web</module>
     <module>oneau-resources</module>
     <module>oneau-loader</module>
+    <module>oneau-data</module>
   </modules>
   <build>
     <plugins>
