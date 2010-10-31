@@ -136,6 +136,7 @@ public class HeaderHandlerFactory {
                 if(fields.length == 3) {
                     header.setStartEpoch( Double.parseDouble(fields[0]));
                     header.setEndEpoch( Double.parseDouble(fields[1]));
+                    header.setDaysInInterval( Integer.parseInt(fields[2]) );
                     return;
                 }
             }
@@ -254,6 +255,51 @@ public class HeaderHandlerFactory {
      *     14    10    13    11     8     7     6     6     6    13    11    10    10
      *      4     2     2     1     1     1     1     1     1     8     2     4     4
      *
+     The roadmap to the contents of the 32-day or 64-day blocks is given by
+      "pointers", contained in the first record of the binary files or in the
+      "GROUP 1050" of the ascii headers. The pointers consist of 3 sets of 13
+      integers each. (In the binary version, the first 12 members of the three sets
+      are stored together; the 13th members of each set are stored later in the
+      record.) The 13 triplets give information about the location, order and, time-
+      coverage of the chebychev polynomials corresponding to the following 13 items:
+
+         Mercury
+         Venus
+         Earth-Moon barycenter
+         Mars
+         Jupiter
+         Saturn
+         Uranus
+         Neptune
+         Pluto
+         Moon (geocentric)
+         Sun
+         Nutations
+         Librations
+
+      For the ith item, pointer(1,i) is the starting location in each data record of
+      the chebychev coefficients; pointer(2,i) is the number of coefficients per
+      component; pointer(3,i) is the number of complete sets of coefficients in each
+      data record.
+
+       For example, the pointers for DE405 look like,
+
+        3  171  231  309  342  366  387  405  423  441  753  819  899
+       14  10  13  11   8   7   6   6   6  13  11  10  10
+        4   2   2   1   1   1   1   1   1   8   2   4   4
+
+       For the moon, starting in the 441st double precision word, there are 13
+       coefficients for the x-coordinate which apply over the first 4 (32/8) days of
+       the 32-day interval covered by this block of data. The next 13 coefficients
+       are for the y-coordinate; then, 13 for z. Seven similar sets follow for the
+       moon, making 13x3x8=312 words in all. The coefficients for the Sun follow
+       the moon, starting in the 753rd location.
+
+      There are three cartesian components (x, y, z), for each of the items #1-11;
+      there are two components for the 12th item, nutations : d(psi) and d(epsilon);
+      there are three components for the 13th item, librations : three euler angles.
+      Velocites are obtained by interpolating the position polynomials.
+
      */
     static class Group1050Handler implements HeaderHandler {
         @Override

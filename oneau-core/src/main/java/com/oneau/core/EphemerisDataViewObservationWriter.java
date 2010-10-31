@@ -9,7 +9,7 @@ import java.util.List;
  * User: ebridges
  * Date: Jul 23, 2010
  */
-public class EphemerisDataViewObservationWriter extends EphemerisDataViewImpl {// implements ObservationWriter {
+public class EphemerisDataViewObservationWriter extends EphemerisDataFileViewImpl {// implements ObservationWriter {
     private static final Logger logger = Logger.getLogger(EphemerisDataViewObservationWriter.class);
 
     private List<Double> coefficients;
@@ -21,7 +21,7 @@ public class EphemerisDataViewObservationWriter extends EphemerisDataViewImpl {/
     @Override
     public List<Double> getCoefficients() {
         if(null == this.coefficients || this.coefficients.isEmpty()) {
-            throw new IllegalArgumentException("no coefficients found for body "+super.getBody().getName()+" and date "+super.getAsOf());
+            throw new IllegalArgumentException("no coefficients found for body "+super.getBody().getName()+" and date "+super.asOf);
         }
         return this.coefficients;
     }

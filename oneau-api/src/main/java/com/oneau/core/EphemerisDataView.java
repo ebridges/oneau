@@ -13,11 +13,6 @@ public interface EphemerisDataView {
 
     HeavenlyBody getBody();
 
-    Double getAsOf();
+    Double getChebyshevTime();
 
-    double getChebyshevTime();
-
-    int getViewBegin();
-
-    int getViewEnd();
 }

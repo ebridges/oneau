@@ -21,6 +21,7 @@ public class Header {
     private List<String> constantNames;
     private List<Double> constantValues;
     private Map<HeavenlyBody, CoefficientInfo> coeffInfo;
+    private Integer daysInInterval;
 
 
     public Header(String filename) {
@@ -105,5 +106,13 @@ public class Header {
 
     public void setCoeffInfo(Map<HeavenlyBody, CoefficientInfo> coeffInfo) {
         this.coeffInfo = coeffInfo;
+    }
+
+    public void setDaysInInterval(int daysInInterval) {
+        this.daysInInterval = daysInInterval;
+    }
+
+    public Integer getDaysInInterval() {
+        return daysInInterval;
     }
 }

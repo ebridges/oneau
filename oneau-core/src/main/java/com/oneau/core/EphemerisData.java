@@ -1,7 +1,6 @@
 package com.oneau.core;
 
 import com.oneau.core.util.Constants;
-import com.oneau.core.util.HeavenlyBody;
 import com.oneau.core.util.Utility;
 import org.apache.log4j.Logger;
 
@@ -9,12 +8,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.List;
 
 import static com.oneau.core.util.Utility.newDouble;
 import static java.lang.String.format;
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableList;
 
 /**
  * User: EBridges
@@ -31,14 +27,16 @@ public class EphemerisData {
         this.ephemerisCoefficients = parseEphemerisCoefficients(this.dataFile);
     }
 
+    /*
     public EphemerisDataView getDataForBody(HeavenlyBody body, Double asOf) {
         if (null == body) {
             throw new IllegalArgumentException("body cannot be null");
         }
-        EphemerisDataViewImpl view = new EphemerisDataViewImpl(dataFile, body, asOf);
+        EphemerisDataFileViewImpl view = new EphemerisDataFileViewImpl(dataFile, body, asOf);
         view.setCoefficients(ephemerisCoefficients);
         return view;
     }
+    */
 
     public EphemerisDataFile getDataFile() {
         return dataFile;

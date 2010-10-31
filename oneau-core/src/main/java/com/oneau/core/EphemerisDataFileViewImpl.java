@@ -13,14 +13,14 @@ import static java.util.Collections.unmodifiableList;
  * User: ebridges
  * Date: Jul 23, 2010
  */
-class EphemerisDataViewImpl implements EphemerisDataView {
-    private static final Logger logger = Logger.getLogger(EphemerisDataViewImpl.class);
+class EphemerisDataFileViewImpl implements EphemerisDataView {
+    private static final Logger logger = Logger.getLogger(EphemerisDataFileViewImpl.class);
     private final HeavenlyBody body;
-    private final Double asOf;
+    protected final Double asOf;
     private List<Double> ephemerisCoefficients;
     private EphemerisDataFile dataFile;
 
-    public EphemerisDataViewImpl(EphemerisDataFile dataFile, HeavenlyBody body, Double julianEphemerisDate) {
+    public EphemerisDataFileViewImpl(EphemerisDataFile dataFile, HeavenlyBody body, Double julianEphemerisDate) {
         this.dataFile = dataFile;
         this.body = body;
         this.asOf = julianEphemerisDate;
@@ -32,6 +32,7 @@ class EphemerisDataViewImpl implements EphemerisDataView {
 
     @Override
     public List<Double> getCoefficients() {
+        logger.info(format("viewBegin [%d] :: viewEnd [%d]", getViewBegin(), getViewEnd()));
         return unmodifiableList(ephemerisCoefficients.subList(
                 getViewBegin(),
                 getViewEnd()
@@ -43,18 +44,29 @@ class EphemerisDataViewImpl implements EphemerisDataView {
         return body;
     }
 
+    /**
+     * The value of NSEG is the 0-based subinterval number.  Finally, the
+     * scaled Chebyshev time must be computed, which is to convert times over
+     * the subinterval to the range [-1,+1].  This is done as following:
+     * 
+     *    TSEG = 2*(TINT - NSEG) - 1
+     *
+     * @return
+     */
     @Override
-    public Double getAsOf() {
-        return asOf;
+    public Double getChebyshevTime() {
+        return 2 *
+                (asOf - (
+                        dataFile.getIntervalStartTime(asOf)
+                        + ( dataFile.getSubinterval(body, asOf) - 1 )
+                        * dataFile.getSubintervalDuration(body) 
+
+                        )
+                ) / dataFile.getSubintervalDuration(body) - 1;
     }
 
-    @Override
-    public double getChebyshevTime() {
-        return 2 * (asOf - ((dataFile.getSubinterval(body, asOf) - 1) * dataFile.getSubintervalDuration(body) + dataFile.getIntervalStartTime(asOf))) / dataFile.getSubintervalDuration(body) - 1;
-    }
 
-    @Override
-    public int getViewBegin() {
+    int getViewBegin() {
         int interval = dataFile.getInterval(asOf);
         int subinterval = dataFile.getSubinterval(body, asOf);
         int numbersToSkip = (interval - 1) * EphemerisDataFile.NUMBERS_PER_INTERVAL;
@@ -83,8 +95,19 @@ class EphemerisDataViewImpl implements EphemerisDataView {
         return pointer;
     }
 
-    @Override
-    public int getViewEnd() {
+    int getViewEnd() {
         return getViewBegin() + (3 * body.getNumberOfChebyshevCoefficients());
+    }
+
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("EphemerisDataFileViewImpl");
+        sb.append("{body=").append(body);
+        sb.append(", asOf=").append(asOf);
+        sb.append(", # of ephemerisCoefficients=").append(ephemerisCoefficients.size());
+        sb.append(", dataFile=").append(dataFile);
+        sb.append('}');
+        return sb.toString();
     }
 }

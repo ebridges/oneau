@@ -1,5 +1,5 @@
-PROJ_HOME=/Users/ebridges/Documents/Projects/1au/oneau-util
-M2_REPO=/Users/ebridges/.m2/repository
+PROJ_HOME=../../../..
+M2_REPO=~/.m2/repository
 
 CP=.
 CP=${CP}:${PROJ_HOME}/oneau-loader/target/classes

@@ -3,6 +3,7 @@ package com.oneau.parser.ephemeris;
 import com.oneau.common.ObservationWriter;
 import com.oneau.core.EphemerisDataFile;
 import com.oneau.core.util.Constants;
+import com.oneau.loader.ephemeris.NoOpObservationWriter;
 import com.oneau.loader.ephemeris.SqlObservationWriter;
 /*
 import org.apache.commons.cli.Option;
@@ -41,6 +42,7 @@ public class EphemerisParser {
 
         OutputStreamWriter osw = new OutputStreamWriter(System.out);
         ObservationWriter ow = new SqlObservationWriter(osw);
+//        ObservationWriter ow = new NoOpObservationWriter();
         try {
             for(EphemerisDataFile file : EphemerisDataFile.values()) {
                 AscpFileParser coeffParser = new AscpFileParser(header, file.getFileName());

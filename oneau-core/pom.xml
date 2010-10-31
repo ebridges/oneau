@@ -40,6 +40,14 @@
         <groupId>com.oneau.resources</groupId>
         <artifactId>oneau-resources</artifactId>
       </dependency>
+      <dependency>
+        <groupId>com.oneau.core</groupId>
+        <artifactId>oneau-api</artifactId>
+      </dependency>
+      <dependency>
+        <groupId>com.oneau.data</groupId>
+        <artifactId>oneau-data</artifactId>
+      </dependency>
 
       <!-- dependency>
         <groupId>com.oneau.loader</groupId>

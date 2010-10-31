@@ -18,7 +18,7 @@ public class Range<T extends Number> implements Serializable {
 
     @SuppressWarnings("unchecked")
     public Range(final T ... vals) {
-        if(isEmpty(vals)) {
+        if(Utility.isEmpty(vals)) {
             throw new IllegalArgumentException("Range requires a value for initialization.");
         }
 
@@ -26,8 +26,8 @@ public class Range<T extends Number> implements Serializable {
         arraycopy(vals, 0, valsCopy, 0, vals.length);
         sort(valsCopy);
 
-        this.left = throwIfNull("leftValue", (T)valsCopy[0]);
-        this.right = throwIfNull("rightValue", (T)valsCopy[valsCopy.length-1]);
+        this.left = Utility.throwIfNull("leftValue", (T)valsCopy[0]);
+        this.right = Utility.throwIfNull("rightValue", (T)valsCopy[valsCopy.length-1]);
     }
 
     public T getLeft() {

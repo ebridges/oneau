@@ -6,11 +6,9 @@ import com.oneau.core.util.ConverterFactory;
 import com.oneau.core.util.HeavenlyBody;
 import com.oneau.core.util.PositionAndVelocity;
 import com.oneau.core.util.Utility;
-/*
-import com.oneau.parser.ephemeris.AscpFileParser;
-import com.oneau.parser.ephemeris.Header;
-import com.oneau.parser.ephemeris.HeaderParser;
-*/
+
+import com.oneau.data.DAOFactory;
+import com.oneau.data.EphemerisDAO;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -84,6 +82,7 @@ public class Ephemeris {
      * @return Map<HeavenlyBody, PositionAndVelocity> Results of calculations of position and velocity for given heavenly bodies.
      * @throws java.io.IOException Thrown when I/O error.
      */
+    @SuppressWarnings({"JavaDoc"})
     public Map<HeavenlyBody, PositionAndVelocity> calculatePlanetaryEphemeris(double jultime, HeavenlyBody... heavenlyBodies) throws IOException {
         if (logger.isTraceEnabled()) {
             logger.trace("calculatePlanetaryEphemeris() called.");
@@ -158,9 +157,15 @@ public class Ephemeris {
         if (!DATAFILE_CACHE.containsKey(dataFile)) {
             DATAFILE_CACHE.put(dataFile, new EphemerisData(dataFile));
         }
-        EphemerisData data = DATAFILE_CACHE.get(dataFile);
-        EphemerisDataView dataView = data.getDataForBody(heavenlyBody, jultime);
+//        EphemerisData data = DATAFILE_CACHE.get(dataFile);
+//        EphemerisDataView dataView = data.getDataForBody(heavenlyBody, jultime);
 //        EphemerisDataView dataView = getViewForDate(heavenlyBody, jultime);
+
+        EphemerisDAO dao = DAOFactory.instance().getEphemerisDAO();
+        EphemerisDataView dataView = dao.getCoefficientsByDate(dataFile, heavenlyBody, jultime);
+
+        logger.info(format("EphemerisDataView: %s",dataView.toString()));
+       // compareResults(dataView.getCoefficients(), dataFile.getFileName(), heavenlyBody.getId(), jultime);
 
         Converter c;
         if (null != resultConverter && resultConverter.length > 0) {
@@ -174,6 +179,32 @@ public class Ephemeris {
 
         return new PositionAndVelocity(jultime, heavenlyBody, position, velocity);
     }
+
+    /*
+    private void compareResults(List<Double> c, String filename, Integer planetId, Double jultime) {
+        List<Double> coefficientsFile = new ArrayList<Double>(c);
+        logger.info("getting link to ephemeris database...");
+        EphemerisDAO dao = DAOFactory.instance().getEphemerisDAO();
+        logger.info(format("getCoefficientsByDate(%s, %d, %f)", filename, planetId, jultime));
+        List<Double> coefficientsDb = dao.getCoefficientsByDate(filename, planetId, jultime);
+        if(coefficientsDb.size() != coefficientsFile.size()) {
+            throw new IllegalArgumentException(format("num coefficientsDb mismatch f[%d] :: db[%d]", coefficientsFile.size(), coefficientsDb.size()) );
+        }
+ //       Collections.sort(coefficientsFile);
+ //       Collections.sort(coefficientsDb);
+        for(int i=0; i< coefficientsDb.size(); i++) {
+            // logger.info(format("%d: db:[%f] == file[%f]", i, coefficientsDb.get(i), coefficientsFile.get(i)));
+            if(compare(coefficientsDb.get(i), coefficientsFile.get(i)) != 0) {
+                logger.warn(format("%d: db:[%f] != file[%f]", i, coefficientsDb.get(i), coefficientsFile.get(i)));
+//                throw new IllegalArgumentException(format("%d: db:[%f] != file[%f]", i, coefficientsDb.get(i), coefficientsFile.get(i)));
+            } else {
+                logger.info(format("%d: db:[%f] == file[%f]", i, coefficientsDb.get(i), coefficientsFile.get(i)));                
+            }
+        }
+        
+    }
+    */
+
     /*
     private EphemerisDataView getViewForDate(HeavenlyBody heavenlyBody, double jultime) {
         HeaderParser headerParser = new HeaderParser(HeaderParser.HEADER_405);
