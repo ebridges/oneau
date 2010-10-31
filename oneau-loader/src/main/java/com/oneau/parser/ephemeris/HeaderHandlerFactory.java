@@ -136,7 +136,8 @@ public class HeaderHandlerFactory {
                 if(fields.length == 3) {
                     header.setStartEpoch( Double.parseDouble(fields[0]));
                     header.setEndEpoch( Double.parseDouble(fields[1]));
-                    header.setDaysInInterval( Integer.parseInt(fields[2]) );
+                    Double d = Double.parseDouble(fields[2]);
+                    header.setDaysInInterval( d.intValue() );
                     return;
                 }
             }

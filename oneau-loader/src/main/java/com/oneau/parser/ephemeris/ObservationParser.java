@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.oneau.core.util.Utility.isEmpty;
@@ -41,9 +42,13 @@ public class ObservationParser {
         
         List<Double> coefficients = readAllCoefficients(reader);
 
+        if(logger.isLoggable(Level.INFO)){
+            logger.info("Read "+coefficients.size()+" coefficients.");
+        }
+
         o.setBeginEndDates(new Range<Double>(
-            coefficients.remove(0),
-            coefficients.remove(0)
+            coefficients.get(0),
+            coefficients.get(1)
         ));
 
         o.setCoefficients(
@@ -54,7 +59,10 @@ public class ObservationParser {
     }
 
     private List<Double> readAllCoefficients(BufferedReader reader) throws IOException {
-        List<Double> coefficients = new ArrayList<Double>(coefficientCount);
+        // add 2 to account for begin & end dates at beginning of list of coefficients
+        int numCount = coefficientCount+2;
+
+        List<Double> coefficients = new ArrayList<Double>(numCount);
 
         String line = null;
 
@@ -71,14 +79,15 @@ public class ObservationParser {
             for(String f : fields) {
                 Double d = parseCoefficient(f);
                 coefficients.add(d);
-                if(coefficients.size() == coefficientCount) {
-                    return coefficients;
-                }
             }
             
         }
 
-        throw new IllegalStateException(format("observation #%d in file %s had incorrect number of coefficients. Expected %d, but was %d", observationNum, filename, coefficientCount, coefficients.size()));
+        if(coefficients.size() != numCount) {
+            throw new IllegalStateException(format("observation #%d in file %s had incorrect number of coefficients. Expected %d, but was %d", observationNum, filename, coefficientCount, coefficients.size()));
+        }
+        
+        return coefficients;
     }
 
     /**
@@ -100,10 +109,10 @@ public class ObservationParser {
             CoefficientInfo ci = header.getCoeffInfo().get(b);
 
             final int start = ci.getAdjustedIndex();
-//            final int numCoefficients =  ci.getCoeffSets() * ci.getCoeffCount() * b.getDimensions();
-            final int numCoefficients = ci.getCoeffCount() * b.getDimensions();
-            final int end = start + numCoefficients;
-            final int dims = b.getDimensions();
+            final int numCoefficients =  ci.getCoeffSets() * ci.getCoeffCount() * b.getDimensions();
+//            final int numCoefficients = ci.getCoeffCount() * b.getDimensions();
+            final int end = ci.getAdjustedIndex() + numCoefficients;
+//            final int dims = b.getDimensions();
 
             // there's nothing special about this method, it's just to ensure
             // that rounding up when needed happens

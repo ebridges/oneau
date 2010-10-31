@@ -10,7 +10,7 @@
   <groupId>com.oneau.core</groupId>
   <artifactId>oneau-api</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>oneau-api</name>
+  <name>OneAU API</name>
   <url>http://maven.apache.org</url>
   <dependencies>
     <dependency>

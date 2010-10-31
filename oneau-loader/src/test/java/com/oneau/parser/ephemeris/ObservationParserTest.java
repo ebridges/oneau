@@ -39,6 +39,7 @@ public class ObservationParserTest {
         List<Double> expectedResults = parseExpectedResults();
         List<Double> actualResults = extractActualResults(o);
 
+        //System.out.println("Expect "+ getExpectedCount() + " coefficients.");
         assertArraysEqual(expectedResults, actualResults);
     }
 
@@ -59,10 +60,22 @@ public class ObservationParserTest {
         while( (line = r.readLine()) != null ){
             String[] fields = line.trim().split("\\s+");
             for(String f : fields) {
-                list.add(Utility.parseCoefficient(f));
+                Double coeff = Utility.parseCoefficient(f);
+                if(coeff != 0.00)
+                    list.add(coeff);
             }
         }
         return list;
+    }
+
+    private Integer getExpectedCount() {
+        Integer count = 2; // include begin & end dates
+        for(HeavenlyBody h : HeavenlyBody.values()) {
+            CoefficientInfo ci = this.header.getCoeffInfo().get(h);
+//            System.out.println(String.format("sets[%d] * cnt[%d]",ci.getCoeffSets(),ci.getCoeffCount()));
+            count += ci.getCoeffSets() * ci.getCoeffCount() * h.getDimensions();
+        }
+        return count;
     }
 
     private static final String ONE_OBSERVATION =
