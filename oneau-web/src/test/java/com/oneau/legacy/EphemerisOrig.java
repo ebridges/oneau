@@ -103,7 +103,8 @@ class EphemerisOrig {
 
     public static void main(String args[]) {
         /* USER MUST SPECIFY jultime HERE.  Example value is 2451545.0 */
-        double jultime = 2451545.0;
+        //double jultime = 2451545.0;
+        double jultime = 2417757.5;
         EphemerisOrig testBody = new EphemerisOrig();
         /*
             This is the call to "planetary_ephemeris", which will put planetary positions into the array "planet_r",
@@ -268,7 +269,7 @@ class EphemerisOrig {
             Tested and verified 7-16-99.
 	*/
         int mantissa = 0, mantissa1 = 0, mantissa2 = 0, exponent = 0, i = 0, records = 0, j = 0;
-        String s, filename = " ", line = " ";
+        String s, filename = null, line = " ";
         try {
             /*  Select the proper ephemeris file  */
             if ((jultime >= 2414992.5) && (jultime < 2422320.5)) {
@@ -348,7 +349,8 @@ class EphemerisOrig {
                 records = 230;
             }
             BufferedReader buff = null;
-            dataFile = "/ascp2000.405";
+           // dataFile = "/ephemeris/ascp2000.405";
+            dataFile = "/ephemeris/"+filename;
             if(null == dataFile) {
                 System.out.println(format("OPening file from default location [%s].", filename));
                 FileReader file = new FileReader(filename);

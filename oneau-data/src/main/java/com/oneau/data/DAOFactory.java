@@ -16,6 +16,8 @@ public class DAOFactory {
     private static final String JDBC_PASSWORD="";
     private static final String JDBC_DRIVER="org.hsqldb.jdbcDriver";
 
+    private EphemerisDAO readOnlyDaoInstance;
+
     static {
         try {
             Class.forName(JDBC_DRIVER);
@@ -28,10 +30,11 @@ public class DAOFactory {
     }
 
     private DAOFactory() {
+        this.readOnlyDaoInstance = new EphemerisDAOImpl(configureReadOnlyDataSource());
     }
 
     public EphemerisDAO getEphemerisDAO() {
-        return new EphemerisDAOImpl(configureReadOnlyDataSource());
+        return this.readOnlyDaoInstance;
     }
 
     private DataSource configureReadOnlyDataSource() {

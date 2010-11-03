@@ -61,14 +61,18 @@ public class ObservationParser {
     private List<Double> readAllCoefficients(BufferedReader reader) throws IOException {
         // add 2 to account for begin & end dates at beginning of list of coefficients
         int numCount = coefficientCount+2;
+        int lines = numCount/3;
+        int lineCount = 0;
 
         List<Double> coefficients = new ArrayList<Double>(numCount);
 
         String line = null;
 
-        while( (line = reader.readLine()) != null ) {
+        while( lineCount < lines ) {
+            line = reader.readLine();
+
             if(isEmpty(line)) {
-                continue;
+                throw new IllegalArgumentException("premature end of observation!");
             }
 
             logger.finest(line);
@@ -80,7 +84,8 @@ public class ObservationParser {
                 Double d = parseCoefficient(f);
                 coefficients.add(d);
             }
-            
+
+            lineCount++;
         }
 
         if(coefficients.size() != numCount) {
