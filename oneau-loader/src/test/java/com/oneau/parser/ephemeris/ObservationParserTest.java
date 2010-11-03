@@ -68,6 +68,7 @@ public class ObservationParserTest {
         return list;
     }
 
+    /*
     private Integer getExpectedCount() {
         Integer count = 2; // include begin & end dates
         for(HeavenlyBody h : HeavenlyBody.values()) {
@@ -77,7 +78,8 @@ public class ObservationParserTest {
         }
         return count;
     }
-
+	*/
+    
     private static final String ONE_OBSERVATION =
             "  0.230542450000000000D+07  0.230545650000000000D+07 -0.170607698480945826D+08  \n" +
             "  0.128001717053831909D+08  0.213151978085375478D+06 -0.252343651776121515D+05  \n" +

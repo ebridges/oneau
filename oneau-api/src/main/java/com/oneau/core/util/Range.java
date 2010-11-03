@@ -2,8 +2,6 @@ package com.oneau.core.util;
 
 import java.io.Serializable;
 
-import static com.oneau.core.util.Utility.isEmpty;
-import static com.oneau.core.util.Utility.throwIfNull;
 import static java.lang.String.format;
 import static java.lang.System.arraycopy;
 import static java.util.Arrays.sort;
@@ -13,7 +11,9 @@ import static java.util.Arrays.sort;
  * Date: Jul 18, 2010
  */
 public class Range<T extends Number> implements Serializable {
-    private T left;
+	private static final long serialVersionUID = 4880743930340470793L;
+	
+	private T left;
     private T right;
 
     @SuppressWarnings("unchecked")
@@ -59,7 +59,8 @@ public class Range<T extends Number> implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Range range = (Range) o;
+        @SuppressWarnings("unchecked")
+		Range<T> range = (Range<T>)o;
 
         if (!left.toString().equals(range.left.toString())) return false;
         if (!right.toString().equals(range.right.toString())) return false;

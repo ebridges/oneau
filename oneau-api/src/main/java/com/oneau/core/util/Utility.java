@@ -40,7 +40,6 @@ public final class Utility {
         return d;
     }
 
-    @SuppressWarnings("unused")
     public static String toCsv(double[] o) {
         StringBuilder sb = new StringBuilder(256);
         for (int i = 0; i < o.length; i++) {
@@ -301,7 +300,6 @@ public final class Utility {
         int exponent = parseInt(val.substring(23, 25));
         boolean isCoefficientNegative = (val.charAt(0) == '-');
         boolean isExponentNegative = (val.charAt(22) == '-');
-
 
         return buildCoefficient(
                 mantissa1,

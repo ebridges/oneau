@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import static com.oneau.core.util.Utility.isEmpty;
 import static com.oneau.core.util.Utility.parseCoefficient;
@@ -22,8 +21,6 @@ import static java.util.Collections.unmodifiableMap;
  * Date: Jul 20, 2010
  */
 public class HeaderHandlerFactory {
-    private static final Logger logger = Logger.getLogger(HeaderParser.class.getName());
-
     public static HeaderHandler getHandler(String line) {
         if(line.startsWith("KSIZE")) {
             return new FirstLineHandler(line);
@@ -53,15 +50,6 @@ public class HeaderHandlerFactory {
                 throw new IllegalArgumentException(format("got invalid groupId [%d]",groupId));
         }
 
-    }
-
-    private static void skipBlankLines(BufferedReader reader) throws IOException {
-        String line = null;
-        while( (line = reader.readLine()) != null ) {
-            if(!isEmpty(line)) {
-                return;
-            }
-        }
     }
 
     static class NoOpHeaderHandler implements HeaderHandler {

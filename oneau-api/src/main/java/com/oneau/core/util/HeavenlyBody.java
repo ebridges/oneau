@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import static com.oneau.core.util.Utility.isEmpty;
 import static java.util.Collections.unmodifiableSortedSet;
 
 /**

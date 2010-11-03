@@ -1,6 +1,5 @@
 package com.oneau.parser.ephemeris;
 
-import com.oneau.core.util.Coordinate;
 import com.oneau.core.util.HeavenlyBody;
 import com.oneau.core.util.Range;
 

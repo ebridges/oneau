@@ -7,7 +7,9 @@ import java.sql.SQLException;
  * Time: 4:13:51 PM
  */
 public class PersistenceError extends Error {
-    private SQLException sqlException;
+	private static final long serialVersionUID = -8523500546479422473L;
+	
+	private SQLException sqlException;
     public PersistenceError(SQLException e) {
         this.sqlException = e;
         this.initCause(e);

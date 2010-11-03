@@ -2,8 +2,6 @@ package com.oneau.parser.ephemeris;
 
 import com.oneau.common.ObservationWriter;
 import com.oneau.core.EphemerisDataFile;
-import com.oneau.core.util.Constants;
-import com.oneau.loader.ephemeris.NoOpObservationWriter;
 import com.oneau.loader.ephemeris.SqlObservationWriter;
 /*
 import org.apache.commons.cli.Option;
@@ -14,8 +12,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import static java.lang.String.format;
 
 /**
  * User: ebridges

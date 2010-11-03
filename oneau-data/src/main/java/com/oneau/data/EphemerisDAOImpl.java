@@ -4,7 +4,6 @@ import com.oneau.core.EphemerisDataFile;
 import com.oneau.core.EphemerisDataView;
 import com.oneau.core.EphemerisDataViewImpl;
 import com.oneau.core.util.ChebyshevTime;
-import com.oneau.core.util.Constants;
 import com.oneau.core.util.HeavenlyBody;
 
 import javax.sql.DataSource;

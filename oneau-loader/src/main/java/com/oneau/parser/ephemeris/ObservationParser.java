@@ -5,8 +5,6 @@ import com.oneau.core.util.Range;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -163,10 +161,12 @@ public class ObservationParser {
         return unmodifiableMap(c);
     }
 
+    /*
     private int deriveCoordListSize(int numCoefficients, int dims) {
         BigDecimal numerator = new BigDecimal(numCoefficients);
         BigDecimal denominator = new BigDecimal(dims);
         BigDecimal quotient = numerator.divide(denominator, 0, RoundingMode.HALF_UP);
         return quotient.intValue();
     }
+    */
 }

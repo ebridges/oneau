@@ -4,14 +4,12 @@ import com.oneau.core.util.HeavenlyBody;
 
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * User: ebridges
  * Date: Jul 20, 2010
  */
 public class Header {
-    private static final Logger logger = Logger.getLogger(Header.class.getName());
     private String filename;
     private Integer ksize;
     private Integer numCoeff;
