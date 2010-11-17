@@ -91,4 +91,8 @@ public class EphemerisDAOImpl implements EphemerisDAO {
             }
         }
     }
+
+    DataSource getDataSource() {
+        return dataSource;
+    }
 }

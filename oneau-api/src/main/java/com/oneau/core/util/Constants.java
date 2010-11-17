@@ -54,6 +54,11 @@ public final class Constants {
     public static final String ELEVATION_PARAM = "ele";
     public static final String EPHMERIS_FILE_ROOT = "/ephemeris/%s";
 
+    public static final String JDBC_URL_KEY = "jdbc_url";
+    public static final String JDBC_USERNAME_KEY = "jdbc_username";
+    public static final String JDBC_PASSWORD_KEY = "jdbc_password";
+    public static final String JDBC_DRIVER_KEY = "jdbc_driver";
+
     private Constants() {
     }
 }

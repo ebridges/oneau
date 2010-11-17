@@ -11,36 +11,60 @@ import java.sql.SQLException;
  * Time: 3:17:56 PM
  */
 public class DAOFactory {
-    private static final String JDBC_URL="jdbc:hsqldb:file:/Users/ebridges/Documents/Projects/1au/oneau-application/db/oneau-db";
-    private static final String JDBC_USERNAME="SA";
-    private static final String JDBC_PASSWORD="";
-    private static final String JDBC_DRIVER="org.hsqldb.jdbcDriver";
+    static final String JDBC_URL="jdbc:hsqldb:file:/Users/ebridges/Documents/Projects/1au/oneau-application/db/oneau-db";
+    static final String JDBC_USERNAME="SA";
+    static final String JDBC_PASSWORD="";
+    static final String JDBC_DRIVER="org.hsqldb.jdbcDriver";
+
+    private String jdbcUrl;
+    private String jdbcUsername;
+    private String jdbcPassword;
+    private String jdbcDriver;
 
     private EphemerisDAO readOnlyDaoInstance;
 
-    static {
-        try {
-            Class.forName(JDBC_DRIVER);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException(e);
-        }
+    public static DAOFactory instance(String jdbcUrl, String jdbcUsername, String jdbcPassword, String jdbcDriver) {
+        return new DAOFactory(jdbcUrl, jdbcUsername, jdbcPassword, jdbcDriver);
     }
+
     public static DAOFactory instance() {
         return new DAOFactory();
     }
 
+    private DAOFactory(String jdbcUrl, String jdbcUsername, String jdbcPassword, String jdbcDriver) {
+        this.jdbcUrl = jdbcUrl;
+        this.jdbcUsername = jdbcUsername;
+        this.jdbcPassword = jdbcPassword;
+        this.jdbcDriver = jdbcDriver;
+        try {
+            Class.forName(this.jdbcDriver);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException(e);
+        }
+        this.readOnlyDaoInstance = new EphemerisDAOImpl(configureReadOnlyDataSource(jdbcUrl, jdbcUsername, jdbcPassword));
+    }
+
     private DAOFactory() {
-        this.readOnlyDaoInstance = new EphemerisDAOImpl(configureReadOnlyDataSource());
+        this.jdbcUrl = JDBC_URL;
+        this.jdbcUsername = JDBC_USERNAME;
+        this.jdbcPassword = JDBC_PASSWORD;
+        this.jdbcDriver = JDBC_DRIVER;
+        try {
+            Class.forName(this.jdbcDriver);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException(e);
+        }
+        this.readOnlyDaoInstance = new EphemerisDAOImpl(configureReadOnlyDataSource(jdbcUrl, jdbcUsername, jdbcPassword));
     }
 
     public EphemerisDAO getEphemerisDAO() {
         return this.readOnlyDaoInstance;
     }
 
-    private DataSource configureReadOnlyDataSource() {
+    private DataSource configureReadOnlyDataSource(final String jdbcUrl, final String jdbcUsername, final String jdbcPassword) {
         return new DataSource() {
             public Connection getConnection() throws SQLException {
-                Connection c = DriverManager.getConnection(JDBC_URL, JDBC_USERNAME, JDBC_PASSWORD);
+                Connection c = DriverManager.getConnection(jdbcUrl, jdbcUsername, jdbcPassword);
                 c.setAutoCommit(true);
                 c.setReadOnly(true);
                 return c;

@@ -15,6 +15,16 @@ import static java.lang.System.out;
  */
 public class StdoutObservationWriter implements ObservationWriter {
     @Override
+    public void init() {
+
+    }
+
+    @Override
+    public void finish() {
+        
+    }
+
+    @Override
     public void write(Header header, Observation observation) {
         out.println(format("Header Filename: [%s]",header.getFilename()));
         out.println(format("Name: [%s]",header.getName()));

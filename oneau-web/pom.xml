@@ -42,5 +42,9 @@
       <groupId>com.oneau.core</groupId>
       <artifactId>oneau-api</artifactId>
     </dependency>
+    <dependency>
+        <groupId>com.oneau.data</groupId>
+        <artifactId>oneau-data</artifactId>
+    </dependency>
   </dependencies>
 </project>

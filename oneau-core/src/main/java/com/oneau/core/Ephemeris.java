@@ -50,7 +50,13 @@ public class Ephemeris {
     private static final Logger logger = Logger.getLogger(Ephemeris.class);
     private final Map<EphemerisDataFile, EphemerisData> DATAFILE_CACHE = new HashMap<EphemerisDataFile, EphemerisData>();
 
+    private EphemerisDAO ephemerisDao;
+
     public Ephemeris() {
+    }
+
+    public Ephemeris(EphemerisDAO ephemerisDao) {
+        this.ephemerisDao = ephemerisDao;
     }
 
     public void loadData(String... files) throws IOException {
@@ -154,15 +160,15 @@ public class Ephemeris {
             to load a new set.
           */
         EphemerisDataFile dataFile = EphemerisDataFile.lookupByDate(jultime);
-        if (!DATAFILE_CACHE.containsKey(dataFile)) {
-            DATAFILE_CACHE.put(dataFile, new EphemerisData(dataFile));
-        }
+//        if (!DATAFILE_CACHE.containsKey(dataFile)) {
+//            DATAFILE_CACHE.put(dataFile, new EphemerisData(dataFile));
+//        }
 //        EphemerisData data = DATAFILE_CACHE.get(dataFile);
 //        EphemerisDataView dataView = data.getDataForBody(heavenlyBody, jultime);
 //        EphemerisDataView dataView = getViewForDate(heavenlyBody, jultime);
 
-        EphemerisDAO dao = DAOFactory.instance().getEphemerisDAO();
-        EphemerisDataView dataView = dao.getCoefficientsByDate(dataFile, heavenlyBody, jultime);
+ //       EphemerisDAO dao = DAOFactory.instance().getEphemerisDAO();
+        EphemerisDataView dataView = ephemerisDao.getCoefficientsByDate(dataFile, heavenlyBody, jultime);
 
         logger.info(format("EphemerisDataView: %s",dataView.toString()));
        // compareResults(dataView.getCoefficients(), dataFile.getFileName(), heavenlyBody.getId(), jultime);
@@ -335,7 +341,7 @@ public class Ephemeris {
 
     public static void main(String args[]) throws Exception {
         /* USER MUST SPECIFY jultime HERE.  Example value is 2451545.0 */
-        double jultime = 2451545.0;
+        double jultime = 2452275.5;
 
         long start = System.currentTimeMillis();
         Ephemeris testBody = new Ephemeris();

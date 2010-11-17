@@ -40,9 +40,11 @@ public class ObservationParser {
         
         List<Double> coefficients = readAllCoefficients(reader);
 
+        /*
         if(logger.isLoggable(Level.INFO)){
             logger.info("Read "+coefficients.size()+" coefficients.");
         }
+        */
 
         o.setBeginEndDates(new Range<Double>(
             coefficients.get(0),
@@ -73,7 +75,7 @@ public class ObservationParser {
                 throw new IllegalArgumentException("premature end of observation!");
             }
 
-            logger.finest(line);
+           // logger.finest(line);
 
             String[] fields = line.trim().split("\\s+");
             assert fields.length == 3;

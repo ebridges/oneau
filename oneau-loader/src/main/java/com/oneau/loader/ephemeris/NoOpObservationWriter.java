@@ -8,9 +8,9 @@ import com.oneau.parser.ephemeris.Observation;
  * User: ebridges
  * Date: Aug 28, 2010
  */
-public class NoOpObservationWriter implements ObservationWriter {
+public class NoOpObservationWriter extends AbstractObservationWriter {
     @Override
     public void write(Header header, Observation observation) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        
     }
 }

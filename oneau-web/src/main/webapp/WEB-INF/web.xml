@@ -9,6 +9,26 @@
         <description>Loads an instance of Ephemeris into the Servlet Context, and remains available to fulfill requests.</description>
         <servlet-class>com.oneau.web.EphemerisServlet</servlet-class>
         <init-param>
+            <param-name>jdbc_url</param-name>
+            <param-value>jdbc:hsqldb:file:/var/local/db/oneau/ephemeris-db</param-value>
+            <description>JDBC Url</description>
+        </init-param>
+        <init-param>
+            <param-name>jdbc_username</param-name>
+            <param-value>SA</param-value>
+            <description>JDBC Username</description>
+        </init-param>
+        <init-param>
+            <param-name>jdbc_password</param-name>
+            <param-value/>
+            <description>JDBC Password</description>
+        </init-param>
+        <init-param>
+            <param-name>jdbc_driver</param-name>
+            <param-value>org.hsqldb.jdbcDriver</param-value>
+            <description>JDBC Driver</description>
+        </init-param>
+        <init-param>
             <param-name>ephemeris-data</param-name>
             <param-value>ascp2000.405</param-value>
             <description>Comma-separated list of Ephemerides Data File(s)</description>

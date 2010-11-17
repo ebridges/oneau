@@ -1,11 +1,13 @@
 package com.oneau.web;
 
 import com.oneau.core.Ephemeris;
+import com.oneau.core.util.Constants;
 import com.oneau.core.util.Converter;
 import com.oneau.core.util.ConverterFactory;
 import com.oneau.core.util.HeavenlyBody;
 import com.oneau.core.util.PositionAndVelocity;
 import com.oneau.core.util.Utility;
+import com.oneau.data.DAOFactory;
 import com.oneau.web.view.View;
 import com.oneau.web.view.ViewFactory;
 import org.apache.log4j.Logger;
@@ -56,12 +58,25 @@ public class EphemerisServlet extends HttpServlet {
         super.init(config);
         String ephemerides = config.getInitParameter(EPHEMERIS_DATA);
 
+        String jdbcUrl = config.getInitParameter(Constants.JDBC_URL_KEY);
+        String jdbcUsername = config.getInitParameter(Constants.JDBC_USERNAME_KEY);
+        String jdbcPassword = config.getInitParameter(Constants.JDBC_PASSWORD_KEY);
+        String jdbcDriver = config.getInitParameter(Constants.JDBC_DRIVER_KEY);
+
         if (logger.isDebugEnabled()) {
-            logger.debug(format("creating ephemeris with configured datafile location(s) [%s]", ephemerides));
+            logger.debug(format("building database connection to (%s)", jdbcUrl));
         }
 
-        Ephemeris ephemeris = new Ephemeris();
+        DAOFactory factory = DAOFactory.instance(
+                jdbcUrl,
+                jdbcUsername,
+                jdbcPassword,
+                jdbcDriver
+        );
 
+        Ephemeris ephemeris = new Ephemeris(factory.getEphemerisDAO());
+
+        /*
         if (!isEmpty(ephemerides)) {
             try {
                 String[] dataFiles = ephemerides.split(",");
@@ -74,6 +89,7 @@ public class EphemerisServlet extends HttpServlet {
                 throw new ServletException(e);
             }
         }
+        */
 
         this.getServletContext().setAttribute(EPHEMERIS_DATA, ephemeris);
     }

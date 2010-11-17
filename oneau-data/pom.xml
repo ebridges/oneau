@@ -22,6 +22,11 @@
             <groupId>com.oneau.core</groupId>
             <artifactId>oneau-api</artifactId>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
     
 </project>

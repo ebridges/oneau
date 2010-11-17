@@ -10,8 +10,12 @@ import org.apache.commons.cli.Options;
 */
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static com.oneau.core.util.Utility.isEmpty;
 
 /**
  * User: ebridges
@@ -19,40 +23,61 @@ import java.util.logging.Logger;
  */
 public class EphemerisParser {
     private static final Logger logger = Logger.getLogger(EphemerisParser.class.getName());
+    private static final String OBSERVATION_WRITER_ARG = "-w";
+    private static final String DEFAULT_OBSERVATION_WRITER_CLASS = "com.oneau.loader.ephemeris.StdoutSqlObservationWriter";
+
+
+    private Map<String,String> arguments;
 
     public static void main( String[] args ) throws Exception {
+
         EphemerisParser parser = new EphemerisParser(args);
         parser.run();
     }
 
     public EphemerisParser(String[] args) {
+        this.arguments = new HashMap<String,String>();
         parseArgs(args);
     }
 
-    public void run() throws IOException {
+    public void run() throws Exception {
         if (logger.isLoggable(Level.FINER)) {
             logger.entering(EphemerisParser.class.getName(), "run");
         }
         HeaderParser headerParser = new HeaderParser(HeaderParser.HEADER_405);
         Header header = headerParser.readHeader();
 
-        OutputStreamWriter osw = new OutputStreamWriter(System.out);
-        ObservationWriter ow = new SqlObservationWriter(osw);
-//        ObservationWriter ow = new NoOpObservationWriter();
+        ObservationWriter ow = initializeObservationWriter(arguments.get(OBSERVATION_WRITER_ARG));
+        ow.init();
         try {
             for(EphemerisDataFile file : EphemerisDataFile.values()) {
                 AscpFileParser coeffParser = new AscpFileParser(header, file.getFileName());
                 coeffParser.readObservationsFromFile(ow);
             }
         } finally {
-            osw.flush();
+            ow.finish();
         }
+    }
+
+    private ObservationWriter initializeObservationWriter(String arg) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+        String clazz;
+        if(isEmpty(arg)) {
+            clazz = DEFAULT_OBSERVATION_WRITER_CLASS;
+        } else {
+            clazz = arg;
+        }
+        return ObservationWriter.class.cast(Class.forName(clazz).newInstance());
     }
 
     private void parseArgs(String[] args) {
         if (logger.isLoggable(Level.FINER)) {
             logger.entering(EphemerisParser.class.getName(), "parseArgs", args);
         }
+
+        for(int i=0; i<args.length; i++) {
+            arguments.put(args[i], args[++i]);
+        }
+
         /*
         Options o = new Options();
         Option observationWriter = OptionBuilder

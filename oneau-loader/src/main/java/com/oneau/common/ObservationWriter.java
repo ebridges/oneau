@@ -8,5 +8,7 @@ import com.oneau.parser.ephemeris.Observation;
  * Date: Jul 21, 2010
  */
 public interface ObservationWriter {
+    void init();
     void write(Header header, Observation observation);
+    void finish();
 }

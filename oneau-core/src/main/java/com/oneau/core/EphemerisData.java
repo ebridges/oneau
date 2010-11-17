@@ -1,6 +1,7 @@
 package com.oneau.core;
 
 import com.oneau.core.util.Constants;
+import com.oneau.core.util.HeavenlyBody;
 import com.oneau.core.util.Utility;
 import org.apache.log4j.Logger;
 
@@ -27,7 +28,7 @@ public class EphemerisData {
         this.ephemerisCoefficients = parseEphemerisCoefficients(this.dataFile);
     }
 
-    /*
+
     public EphemerisDataView getDataForBody(HeavenlyBody body, Double asOf) {
         if (null == body) {
             throw new IllegalArgumentException("body cannot be null");
@@ -36,7 +37,7 @@ public class EphemerisData {
         view.setCoefficients(ephemerisCoefficients);
         return view;
     }
-    */
+
 
     public EphemerisDataFile getDataFile() {
         return dataFile;

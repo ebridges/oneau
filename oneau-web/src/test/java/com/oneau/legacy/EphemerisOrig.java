@@ -136,13 +136,13 @@ class EphemerisOrig {
         double[] moon_r = new double[4];
         double[] moon_rprime = new double[4];
         /*  Get the ephemeris positions and velocities of each major planet  */
-        //for (int i = 1; i <= 11; i++) {
+        for (int i = 1; i <= 11; i++) {
             get_planet_posvel(jultime, 11, ephemeris_r, ephemeris_rprime);
             for (int j = 1; j <= 3; j++) {
                 planet_r[11][j] = ephemeris_r[j];
                 planet_rprime[11][j] = ephemeris_rprime[j];
             }
-        //}
+        }
         /*  The positions and velocities of the Earth and Moon are found indirectly.  We already have the pos/vel of the
         Earth-Moon barycenter (i = 3).  We have also calculated planet_r(10,j), a geocentric vector from the Earth to
         the Moon.  Using the ratio of masses, we get vectors from the Earth-Moon barycenter to the Moon and to the Earth.  */
