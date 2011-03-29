@@ -5,7 +5,9 @@ package com.oneau.data;
  * Date: Nov 21, 2010
  */
 public class EphemerisIntervalNotFound extends EphemerisLookupError {
-    public Double getJulianDate() {
+	private static final long serialVersionUID = -1644890601692198657L;
+
+	public Double getJulianDate() {
         return julianDate;
     }
 

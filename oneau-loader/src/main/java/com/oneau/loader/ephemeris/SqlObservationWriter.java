@@ -1,20 +1,10 @@
 package com.oneau.loader.ephemeris;
 
-import com.oneau.common.ObservationWriter;
-import com.oneau.core.util.HeavenlyBody;
-import com.oneau.core.util.Range;
-import com.oneau.parser.ephemeris.CoefficientInfo;
 import com.oneau.parser.ephemeris.Header;
 import com.oneau.parser.ephemeris.Observation;
 
-import java.io.IOException;
 import java.io.Writer;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
-
-import static java.lang.String.format;
 
 /**
  * User: ebridges

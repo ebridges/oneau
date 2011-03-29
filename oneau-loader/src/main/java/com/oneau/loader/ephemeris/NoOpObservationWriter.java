@@ -1,6 +1,5 @@
 package com.oneau.loader.ephemeris;
 
-import com.oneau.common.ObservationWriter;
 import com.oneau.parser.ephemeris.Header;
 import com.oneau.parser.ephemeris.Observation;
 

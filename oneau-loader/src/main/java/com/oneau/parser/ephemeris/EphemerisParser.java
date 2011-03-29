@@ -2,14 +2,11 @@ package com.oneau.parser.ephemeris;
 
 import com.oneau.common.ObservationWriter;
 import com.oneau.core.EphemerisDataFile;
-import com.oneau.loader.ephemeris.SqlObservationWriter;
 /*
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 */
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;

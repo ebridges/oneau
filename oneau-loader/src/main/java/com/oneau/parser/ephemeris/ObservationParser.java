@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.oneau.core.util.Utility.isEmpty;
@@ -107,8 +106,8 @@ public class ObservationParser {
     private Map<HeavenlyBody, List<Double>> gatherPlanetaryCoefficients(final Header header, final List<Double> coefficients) {
         Map<HeavenlyBody, List<Double>> c = new HashMap<HeavenlyBody, List<Double>>();
 
-//        int expectedNum = coefficients.size();
-//        int actualNum = 0;
+        int expectedNum = coefficients.size();
+        int actualNum = 0;
         
         for(HeavenlyBody b : HeavenlyBody.orderedByIndex()) {
             CoefficientInfo ci = header.getCoeffInfo().get(b);
@@ -127,7 +126,7 @@ public class ObservationParser {
 
             // this is the subset related to this body
             List<Double> subset = coefficients.subList(start, end);
-//            actualNum += subset.size();
+            actualNum += subset.size();
             /*
             for(int i=start; i<end; i++) {
                 Double x = subset.get(i++);
@@ -153,13 +152,13 @@ public class ObservationParser {
 
             c.put(b, subset);
         }
-/*
+
         if(actualNum == expectedNum) {
             logger.info("parsed expected number of coefficients.");
         } else {
             logger.warning(format("expected to parse [%d] coefficients, but parsed [%d] instead", expectedNum, actualNum));
         }
-*/
+
         return unmodifiableMap(c);
     }
 

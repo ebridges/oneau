@@ -1,5 +1,7 @@
 package com.oneau.core.util;
 
+import com.oneau.core.util.HeavenlyBody;
+
 /**
  * User: EBridges
  * Created: 2010-04-15

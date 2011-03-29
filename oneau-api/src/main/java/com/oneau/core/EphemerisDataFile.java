@@ -1,6 +1,5 @@
 package com.oneau.core;
 
-import com.oneau.core.util.HeavenlyBody;
 import com.oneau.core.util.Range;
 import com.oneau.core.util.Utility;
 

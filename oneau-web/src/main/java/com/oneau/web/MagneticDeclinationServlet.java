@@ -27,6 +27,7 @@ import static com.oneau.core.util.Utility.isEmpty;
  * User: ebridges
  * Date: Jul 5, 2010
  */
+@SuppressWarnings("serial")
 public class MagneticDeclinationServlet extends HttpServlet {
     private static final Logger logger = Logger.getLogger(MagneticDeclinationServlet.class);
 

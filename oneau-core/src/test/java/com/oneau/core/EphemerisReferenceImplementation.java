@@ -37,7 +37,7 @@ public class EphemerisReferenceImplementation {
     }
 
     public static double getSubintervalDuration(HeavenlyBody body, EphemerisDataFile file) {
-        return (file.INTERVAL_DURATION / body.getNumberOfCoefficientSets());
+        return (EphemerisDataFile.INTERVAL_DURATION / body.getNumberOfCoefficientSets());
     }
 
     public static int getSubinterval(double asOf, HeavenlyBody body, EphemerisDataFile file) {

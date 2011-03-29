@@ -7,7 +7,6 @@ import com.oneau.core.util.HeavenlyBody;
 import com.oneau.core.util.PositionAndVelocity;
 import com.oneau.core.util.Utility;
 
-import com.oneau.data.DAOFactory;
 import com.oneau.data.EphemerisDAO;
 import org.apache.log4j.Logger;
 
@@ -47,7 +46,7 @@ import static java.lang.String.format;
  * adjusted to use the DE200 ephemeris, whose format is quite similar.
  */
 public class Ephemeris {
-    private static final Logger logger = Logger.getLogger(Ephemeris.class);
+	private static final Logger logger = Logger.getLogger(Ephemeris.class);
     private final Map<EphemerisDataFile, EphemerisData> DATAFILE_CACHE = new HashMap<EphemerisDataFile, EphemerisData>();
 
     private EphemerisDAO ephemerisDao;
@@ -88,7 +87,6 @@ public class Ephemeris {
      * @return Map<HeavenlyBody, PositionAndVelocity> Results of calculations of position and velocity for given heavenly bodies.
      * @throws java.io.IOException Thrown when I/O error.
      */
-    @SuppressWarnings({"JavaDoc"})
     public Map<HeavenlyBody, PositionAndVelocity> calculatePlanetaryEphemeris(double jultime, HeavenlyBody... heavenlyBodies) throws IOException {
         if (logger.isTraceEnabled()) {
             logger.trace("calculatePlanetaryEphemeris() called.");
@@ -159,7 +157,7 @@ public class Ephemeris {
             Begin by determining whether the current ephemeris coefficients are appropriate for jultime, or if we need
             to load a new set.
           */
-      //  EphemerisDataFile dataFile = EphemerisDataFile.lookupByDate(jultime);
+        EphemerisDataFile dataFile = EphemerisDataFile.lookupByDate(jultime);
 //        if (!DATAFILE_CACHE.containsKey(dataFile)) {
 //            DATAFILE_CACHE.put(dataFile, new EphemerisData(dataFile));
 //        }
@@ -168,7 +166,7 @@ public class Ephemeris {
 //        EphemerisDataView dataView = getViewForDate(heavenlyBody, jultime);
 
  //       EphemerisDAO dao = DAOFactory.instance().getEphemerisDAO();
-        EphemerisDataView dataView = ephemerisDao.getCoefficientsByDate(heavenlyBody, jultime);
+        EphemerisDataView dataView = ephemerisDao.getCoefficientsByDate(dataFile, heavenlyBody, jultime);
 
         logger.info(format("EphemerisDataView: %s",dataView.toString()));
        // compareResults(dataView.getCoefficients(), dataFile.getFileName(), heavenlyBody.getId(), jultime);

@@ -23,6 +23,7 @@ public class EphemerisDataParseTest {
 
     @Test
     public void testCompareParsing() throws IOException {
+    	logger.debug("testCompareParsing() called.");
         EphemerisData data = new EphemerisData(DATA_FILE);
         EphemerisReferenceImplementation expected = new EphemerisReferenceImplementation();
         Double[] coefficients = expected.parseEphemerisCoefficients(DATA_FILE);

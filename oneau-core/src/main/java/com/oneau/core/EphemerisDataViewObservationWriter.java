@@ -16,6 +16,7 @@ public class EphemerisDataViewObservationWriter extends EphemerisDataFileViewImp
 
     public EphemerisDataViewObservationWriter(EphemerisDataFile dataFile, HeavenlyBody body, Double julianEphemerisDate) {
         super(dataFile, body, julianEphemerisDate);
+        logger.debug("EphemerisDataViewObservationWriter constructed.");
     }
 
     @Override

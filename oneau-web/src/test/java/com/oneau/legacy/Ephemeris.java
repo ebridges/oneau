@@ -140,6 +140,7 @@ the "main" method, which contains the call to "planetary_ephemeris".
 
 
 
+	@SuppressWarnings("unused")
 	void planetary_ephemeris(double jultime) {
 
 		/*
@@ -182,6 +183,7 @@ the "main" method, which contains the call to "planetary_ephemeris".
 
 
 
+	@SuppressWarnings("unused")
 	void get_planet_posvel(double jultime,int i,double ephemeris_r[],double ephemeris_rprime[]) {
 
 		/*
@@ -307,6 +309,7 @@ the "main" method, which contains the call to "planetary_ephemeris".
 
 
 
+	@SuppressWarnings("unused")
 	void get_ephemeris_coefficients(double jultime) {
 
 		/*  

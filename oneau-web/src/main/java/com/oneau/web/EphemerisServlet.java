@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -51,13 +52,14 @@ import static java.util.Collections.unmodifiableList;
  * User: ebridges
  * Date: Feb 15, 2010
  */
+@SuppressWarnings("serial")
 public class EphemerisServlet extends HttpServlet {
     private static final Logger logger = Logger.getLogger(EphemerisServlet.class);
 
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        String ephemerides = config.getInitParameter(EPHEMERIS_DATA);
+        //String ephemerides = config.getInitParameter(EPHEMERIS_DATA);
 
         String jdbcUrl = config.getInitParameter(Constants.JDBC_URL_KEY);
         String jdbcUsername = config.getInitParameter(Constants.JDBC_USERNAME_KEY);
@@ -104,6 +106,7 @@ public class EphemerisServlet extends HttpServlet {
         response.setContentType(view.getMimeType());
         HeavenlyBody[] bodies = toHeavenlyBody(request.getParameterValues(BODY_NAME_PARAM));
         Converter[] converters = getConvertersFromRequest(request);
+        logger.debug("Loaded converters from request: " + Arrays.toString(converters));
 
         PrintWriter writer = response.getWriter();
         try {
@@ -129,7 +132,7 @@ public class EphemerisServlet extends HttpServlet {
         String[] converterNames = request.getParameterValues(RESPONSE_UNITS_PARAM);
         if (!isEmpty(converterNames)) {
             Set<Converter> converters = new HashSet<Converter>();
-            int i = 0;
+ //           int i = 0;
             for (String name : converterNames) {
                 Converter.TYPE type = null;
                 try {

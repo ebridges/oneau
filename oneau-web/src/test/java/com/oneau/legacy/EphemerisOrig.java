@@ -122,7 +122,8 @@ class EphemerisOrig {
                 System.out.println(testBody.planet_rprime[i][j]);
         }
     }
-    void planetary_ephemeris(double jultime) {
+    @SuppressWarnings("unused")
+	void planetary_ephemeris(double jultime) {
         /*
             Procedure to calculate the position and velocity at jultime of the major planets.
             Note that the planets are enumerated as follows:  Mercury = 1, Venus = 2, Earth-Moon barycenter = 3,
@@ -153,7 +154,8 @@ class EphemerisOrig {
             planet_rprime[10][j] = planet_rprime[3][j] + planet_rprime[10][j];
         }
     }
-    void get_planet_posvel(double jultime, int i, double ephemeris_r[], double ephemeris_rprime[]) {
+    @SuppressWarnings("unused")
+	void get_planet_posvel(double jultime, int i, double ephemeris_r[], double ephemeris_rprime[]) {
         /*
             Procedure to calculate the position and velocity of planet i, subject to the JPL DE405 ephemeris.  The
             positions and velocities are calculated using Chebyshev polynomials, the coefficients of which are stored
@@ -260,7 +262,8 @@ class EphemerisOrig {
             ephemeris_rprime[j] = ephemeris_rprime[j] / au;
         }
     }
-    public void get_ephemeris_coefficients(double jultime) {
+    @SuppressWarnings("unused")
+	public void get_ephemeris_coefficients(double jultime) {
         /*
             Procedure to read the DE405 ephemeris file corresponding to jultime.  The start and end dates of the
             ephemeris file are returned, as are the Chebyshev coefficients for Mercury, Venus, Earth-Moon, Mars,
