@@ -69,7 +69,7 @@ class EphemerisDataFileViewImpl implements EphemerisDataView {
     int getViewBegin() {
         int interval = dataFile.getInterval(asOf);
         int subinterval = dataFile.getSubinterval(body, asOf);
-        int numbersToSkip = (interval - 1) * EphemerisDataFile.NUMBERS_PER_INTERVAL;
+        int numbersToSkip = (interval - 1) * dataFile.getNumbersPerInterval();
 
         /*
          * Starting at the beginning of the coefficient array, skip the first "numbersToSkip"
