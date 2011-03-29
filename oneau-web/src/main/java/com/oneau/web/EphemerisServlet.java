@@ -8,6 +8,7 @@ import com.oneau.core.util.HeavenlyBody;
 import com.oneau.core.util.PositionAndVelocity;
 import com.oneau.core.util.Utility;
 import com.oneau.data.DAOFactory;
+import com.oneau.data.EphemerisLookupError;
 import com.oneau.web.view.View;
 import com.oneau.web.view.ViewFactory;
 import org.apache.log4j.Logger;
@@ -113,6 +114,11 @@ public class EphemerisServlet extends HttpServlet {
                     logger.debug(format("retrieved position and velocity for %d bodies for date %f.", model.keySet().size(), julianDate));
                 }
                 view.writeModel(writer, model);
+            }
+        } catch(EphemerisLookupError e) {
+            writer.println(e.toString());
+            for( StackTraceElement ee  : e.getStackTrace()) {
+                writer.println(ee.toString());
             }
         } finally {
             writer.flush();
