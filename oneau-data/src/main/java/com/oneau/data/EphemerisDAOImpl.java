@@ -15,6 +15,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static java.lang.String.format;
+
 /**
  * Date: Aug 17, 2010
  * Time: 3:23:26 PM
@@ -30,7 +32,7 @@ public class EphemerisDAOImpl implements EphemerisDAO {
     }
 
     public EphemerisDataView getCoefficientsByDate(EphemerisDataFile source, HeavenlyBody planet, Double julianDate) {
-        logger.entering("EphemerisDAOImpl", "getCoefficientsByDate", new Object[]{source, planet.getName(), julianDate});
+        logger.info(format("EphemerisDAOImpl#getCoefficientsByDate('%s', '%s')",  planet.getName(), julianDate.toString()));
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -80,7 +82,7 @@ public class EphemerisDAOImpl implements EphemerisDAO {
             if(rs.next()) {
                 return rs.getInt("interval_id");
             } else {
-                throw new SQLException("no interval found for julianDate ["+julianDate+"]");
+                throw new EphemerisIntervalNotFound(julianDate);
             }
         } finally {
             if(null != rs) {

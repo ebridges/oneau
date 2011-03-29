@@ -196,7 +196,6 @@ public class EphemerisDataFile implements Comparable<EphemerisDataFile> {
         File f = new File(this.fileName);
         return f.exists();
     }
-    */
 
     int getInterval(Double julianDate) {
         return (int) (Math.floor((julianDate - dateRange[0]) / INTERVAL_DURATION) + 1);
@@ -215,6 +214,7 @@ public class EphemerisDataFile implements Comparable<EphemerisDataFile> {
         return (int) (Math.floor((asOf - this.getIntervalStartTime(asOf)) / subIntervalDuration) + 1);
     }
 
+    */
     @Override
     public int compareTo(EphemerisDataFile that) {
         return this.fileName.compareTo(that.fileName);

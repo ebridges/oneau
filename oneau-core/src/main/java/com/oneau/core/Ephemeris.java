@@ -159,7 +159,7 @@ public class Ephemeris {
             Begin by determining whether the current ephemeris coefficients are appropriate for jultime, or if we need
             to load a new set.
           */
-        EphemerisDataFile dataFile = EphemerisDataFile.lookupByDate(jultime);
+      //  EphemerisDataFile dataFile = EphemerisDataFile.lookupByDate(jultime);
 //        if (!DATAFILE_CACHE.containsKey(dataFile)) {
 //            DATAFILE_CACHE.put(dataFile, new EphemerisData(dataFile));
 //        }
@@ -168,7 +168,7 @@ public class Ephemeris {
 //        EphemerisDataView dataView = getViewForDate(heavenlyBody, jultime);
 
  //       EphemerisDAO dao = DAOFactory.instance().getEphemerisDAO();
-        EphemerisDataView dataView = ephemerisDao.getCoefficientsByDate(dataFile, heavenlyBody, jultime);
+        EphemerisDataView dataView = ephemerisDao.getCoefficientsByDate(heavenlyBody, jultime);
 
         logger.info(format("EphemerisDataView: %s",dataView.toString()));
        // compareResults(dataView.getCoefficients(), dataFile.getFileName(), heavenlyBody.getId(), jultime);
