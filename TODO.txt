@@ -1,0 +1,12 @@
+xx 1.  Modify DAOFactory to accept jdbc params as args.
+xx. 2. Create test of DAOFactory to confirm it
+3XX. Modify EphemerisServlet.init() to:
+     a. get jdbc params from properties file
+XX     b. initialize the DAOFactory
+XX     c. get an instance of EphemerisDAO
+XX     d. initialize instance of Ephemeris with the dao
+XX 4. Modify Ephemeris to use a member dao instead of calling the factory directly.
+5. Change UI to include appropriate date ranges, and to include option to select different ephemeris data.
+
+
+
