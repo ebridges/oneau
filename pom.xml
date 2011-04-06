@@ -13,6 +13,7 @@
     <module>oneau-loader</module>
     <module>oneau-data</module>
     <module>oneau-api</module>
+    <module>oneau-test</module>
   </modules>
   <build>
       <pluginManagement>

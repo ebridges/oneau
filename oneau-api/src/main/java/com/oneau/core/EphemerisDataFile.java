@@ -1,8 +1,10 @@
 package com.oneau.core;
 
+import com.oneau.core.util.HeavenlyBody;
 import com.oneau.core.util.Range;
 import com.oneau.core.util.Utility;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -181,7 +183,7 @@ public class EphemerisDataFile implements Comparable<EphemerisDataFile> {
         return recordCount;
     }
 
-    /*
+    // /* -- comment removed 4/5/2011
     public boolean existsOnClasspath() {
         return getClass().getResourceAsStream(this.fileName) != null;
     }
@@ -213,7 +215,13 @@ public class EphemerisDataFile implements Comparable<EphemerisDataFile> {
         return (int) (Math.floor((asOf - this.getIntervalStartTime(asOf)) / subIntervalDuration) + 1);
     }
 
-    */
+	public int getNumbersPerInterval() {
+		// TODO Auto-generated method stub
+		// 4/5/2011 added so that project would compile
+		return 1;
+	}
+    
+    // */ -- comment removed 4/5/2011
     @Override
     public int compareTo(EphemerisDataFile that) {
         return this.fileName.compareTo(that.fileName);

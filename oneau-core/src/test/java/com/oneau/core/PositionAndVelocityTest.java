@@ -13,7 +13,7 @@ import java.io.InputStreamReader;
 import java.util.zip.GZIPInputStream;
 
 import static com.oneau.core.util.Utility.toCsv;
-import static com.oneau.core.util.AssertionUtil.assertArraysEqual;
+import com.oneau.core.util.AssertionUtil;
 import static java.lang.String.format;
 
 /**
@@ -60,8 +60,8 @@ public class PositionAndVelocityTest {
         logger.info(format("expected value for velocity: [%s]", toCsv(expectedVelocity)));
         logger.info(format("actual   value for velocity: [%s]", toCsv(actual.getVelocity())));
 
-        assertArraysEqual(expectedPosition, actual.getPosition());
-        assertArraysEqual(expectedVelocity, actual.getVelocity());
+        AssertionUtil.assertArraysEqual(expectedPosition, actual.getPosition());
+        AssertionUtil.assertArraysEqual(expectedVelocity, actual.getVelocity());
     }
 
     @Test
@@ -89,8 +89,8 @@ public class PositionAndVelocityTest {
 
                         // note: legacy code uses fortran-conventions for array indices -- therefore the index to be used for
                         //       the heavenlyBody needs to be +1 from the 0-based "getIndex()" method -- hence the special 'copy' method
-                        assertArraysEqual(copy(expectedEphemerisR), actual.getPosition());
-                        assertArraysEqual(copy(expectedEphemerisRPrime), actual.getVelocity());
+                        AssertionUtil.assertArraysEqual(copy(expectedEphemerisR), actual.getPosition());
+                        AssertionUtil.assertArraysEqual(copy(expectedEphemerisRPrime), actual.getVelocity());
                     } else {
                         logger.debug(format("skipping date [%f] since it's outside date range of data [%f:%f].", asOf, DATA_FILE.getBeginDate(), DATA_FILE.getEndDate()));
                     }

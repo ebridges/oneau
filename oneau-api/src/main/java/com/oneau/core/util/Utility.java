@@ -78,13 +78,8 @@ public final class Utility {
 
     public static double toJulianDay(String isoDate) {
         Calendar c = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-        SimpleDateFormat fmt = new SimpleDateFormat(Constants.ISO_DATE_PATTERN);
-        try {
-            Date d = fmt.parse(isoDate);
-            c.setTime(d);
-        } catch (ParseException e) {
-            throw new IllegalArgumentException(format("unable to parse [%s] as date",isoDate),e);
-        }
+        Date d = convertDate(isoDate, Constants.ISO_DATE_PATTERN);
+        c.setTime(d);
         return toJulianDay(
                 c.get(Calendar.YEAR),
                 c.get(Calendar.MONTH)+1,
@@ -246,6 +241,22 @@ public final class Utility {
         return t;
     }
 
+    public static String throwIfEmpty(String field, String t) {
+        if (isEmpty(t)) {
+            throw new IllegalArgumentException(format("%s cannot be empty", field));
+        }
+        return t;
+    }
+
+    public static Date convertDate(String dateField, String dateFormat) {
+        SimpleDateFormat fmt = new SimpleDateFormat(dateFormat);
+        try {
+            return fmt.parse(dateField);
+        } catch (ParseException e) {
+            throw new IllegalArgumentException(format("unable to parse [%s] as date",dateField),e);
+        }
+    }
+    
     public static Double convertDouble(String field) {
         if(isEmpty(field)) {
             field = "0.0";

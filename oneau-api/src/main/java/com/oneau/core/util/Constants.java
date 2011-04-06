@@ -26,6 +26,11 @@ public final class Constants {
      * Date format for ISO8601 date for parsing by SimpleDateFormat
      */
     public static final String ISO_DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSSz";
+    
+    /**
+     * Date format used in the TESTPO.405 test data file
+     */
+    public static final String TESTPO_DATE_PATTERN = "yyyy.MM.dd";
 
     /**
      * Servlet init-param for identifying data files intended to be pre-loaded.

@@ -1,13 +1,14 @@
 package com.oneau.core;
 
-import org.apache.log4j.Logger;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
-import static com.oneau.core.util.AssertionUtil.assertArraysEqual;
-import static org.junit.Assert.assertNotNull;
+import com.oneau.core.util.AssertionUtil;
+
+import org.apache.log4j.Logger;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * User: EBridges
@@ -29,7 +30,7 @@ public class EphemerisDataParseTest {
         Double[] coefficients = expected.parseEphemerisCoefficients(DATA_FILE);
         assertNotNull(coefficients);
         assertNotNull(data.getEphemerisCoefficients());
-        assertArraysEqual(coefficients, data.getEphemerisCoefficients());
+        AssertionUtil.assertArraysEqual(coefficients, data.getEphemerisCoefficients());
     }
 
 }

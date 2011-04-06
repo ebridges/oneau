@@ -2,7 +2,7 @@ package com.oneau.core;
 
 import com.oneau.core.util.Constants;
 import com.oneau.core.util.Converter;
-import com.oneau.core.util.ConverterFactory;
+import static com.oneau.core.util.ConverterFactory.getConverter;
 import com.oneau.core.util.HeavenlyBody;
 import com.oneau.core.util.PositionAndVelocity;
 import com.oneau.core.util.Utility;
@@ -175,7 +175,7 @@ public class Ephemeris {
         if (null != resultConverter && resultConverter.length > 0) {
             c = resultConverter[0];
         } else {
-            c = ConverterFactory.getConverter(Converter.TYPE.AU);
+            c = getConverter(Converter.TYPE.AU);
         }
 
         Double[] position = calculatePosition(dataView, c);
