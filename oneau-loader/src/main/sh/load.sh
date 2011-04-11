@@ -18,12 +18,17 @@ CP=${CP}:${M2_REPO}/hsqldb/hsqldb/1.8.0.10/hsqldb-1.8.0.10.jar
 CP=${CP}:${M2_REPO}/log4j/log4j/1.2.15/log4j-1.2.15.jar
 
 
-java -cp ${CP} \
+# build up comma separated list of all ascp files from jar file:
+EPH_FILES=`jar tf ${PROJ_HOME}/oneau-resources/target/oneau-resources.jar | egrep 'ascp|header' | sort -r | perl -e 'while (<>) { chomp; if($notfirst) {print ",";} print "/$_"; $notfirst=1 }'`
+
+
+ java -cp ${CP} \
    -DjdbcUrl=${jdbc_url} \
-   -DjdbcUsername=${jdbc_username} \
-   -DjdbcPassword=${jdbc_password} \
+   -DjdbcUsername=postgres \
+   -DjdbcPassword=postgres \
    -DjdbcDriver=${jdbc_driver} \
    com.oneau.parser.ephemeris.EphemerisParser \
-   -w com.oneau.loader.ephemeris.JdbcObservationWriter
+   --observation-writer com.oneau.loader.ephemeris.JdbcObservationWriter \
+   --ephemeris-files ${EPH_FILES}
 
 #gzip ${FILE}

@@ -1,6 +1,5 @@
 package com.oneau.parser.ephemeris;
 
-import com.oneau.core.util.Constants;
 import com.oneau.core.util.HeavenlyBody;
 
 import java.io.BufferedReader;
@@ -19,7 +18,6 @@ import static java.lang.String.format;
  */
 public class HeaderParser {
     private static final Logger logger = Logger.getLogger(HeaderParser.class.getName());
-    public static final String HEADER_405 = "header.405";
     private String filename;
 
     public HeaderParser(String filename) {
@@ -45,10 +43,9 @@ public class HeaderParser {
     }
 
     private BufferedReader readFile() throws IOException {
-        String file = format(Constants.EPHMERIS_FILE_ROOT, filename);
-        InputStream is = getClass().getResourceAsStream(file);
+        InputStream is = getClass().getResourceAsStream(filename);
         if(null == is) {
-            throw new IllegalStateException(format("unable to locate header file [%s] on classpath", file));
+            throw new IllegalStateException(format("unable to locate header file [%s] on classpath", filename));
         }
         return new BufferedReader(
             new InputStreamReader(
@@ -58,7 +55,7 @@ public class HeaderParser {
     }
 
     public static void main(String[] args) throws IOException {
-        HeaderParser parser = new HeaderParser(HEADER_405);
+        HeaderParser parser = new HeaderParser("header.405");
         Header h = parser.readHeader();
         logger.info(format("Filename: [%s]",h.getFilename()));
         logger.info(format("Name: [%s]",h.getName()));

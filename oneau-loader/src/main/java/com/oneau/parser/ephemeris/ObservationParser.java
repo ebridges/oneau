@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.oneau.core.util.Utility.isEmpty;
@@ -39,15 +40,14 @@ public class ObservationParser {
         
         List<Double> coefficients = readAllCoefficients(reader);
 
-        /*
         if(logger.isLoggable(Level.INFO)){
-            logger.info("Read "+coefficients.size()+" coefficients.");
+            logger.info(format("Read %d coefficients for observation %s#%d.", coefficients.size(), filename,observationNum ));
         }
-        */
 
+        // first two coefficients are begin/end dates.
         o.setBeginEndDates(new Range<Double>(
-            coefficients.get(0),
-            coefficients.get(1)
+            coefficients.remove(0),
+            coefficients.remove(0)
         ));
 
         o.setCoefficients(
@@ -62,11 +62,14 @@ public class ObservationParser {
         int numCount = coefficientCount+2;
         int lines = numCount/3;
         int lineCount = 0;
-
+        int coefficientCountCheck = 0;
+        
         List<Double> coefficients = new ArrayList<Double>(numCount);
 
         String line = null;
 
+        logger.info("Expecting to read " + lines + " lines for this observation.");
+        
         while( lineCount < lines ) {
             line = reader.readLine();
 
@@ -81,20 +84,24 @@ public class ObservationParser {
 
             for(String f : fields) {
                 Double d = parseCoefficient(f);
+            	logger.finer(format("coefficient parsed from %s to %f", f, d));
                 coefficients.add(d);
+                coefficientCountCheck++;
             }
 
             lineCount++;
         }
 
-        if(coefficients.size() != numCount) {
-            throw new IllegalStateException(format("observation #%d in file %s had incorrect number of coefficients. Expected %d, but was %d", observationNum, filename, coefficientCount, coefficients.size()));
+        if(coefficientCountCheck != numCount) {
+            throw new IllegalStateException(format("observation #%d in file %s had incorrect number of coefficients. Expected %d, but was %d", observationNum, filename, numCount, coefficientCountCheck));
+        } else {
+        	logger.info(format("observation #%d in file %s had correct number of coefficients. Expected %d, and was %d", observationNum, filename, numCount, coefficientCountCheck));
         }
         
         return coefficients;
     }
 
-    /**
+	/**
      * Takes the overall list of all coefficients, extracts a reference to the subset that is related to the
      * current body, and then divides those into a list of n-dim coordinates.  ('n' is 3 in all cases except for
      * nutations, which is 2 -- see HeavenlyBody).
@@ -106,15 +113,13 @@ public class ObservationParser {
     private Map<HeavenlyBody, List<Double>> gatherPlanetaryCoefficients(final Header header, final List<Double> coefficients) {
         Map<HeavenlyBody, List<Double>> c = new HashMap<HeavenlyBody, List<Double>>();
 
-        int expectedNum = coefficients.size();
+        int expectedNum = getExpectedCountOfObservationCoefficients(header.getCoeffInfo());
         int actualNum = 0;
         
         for(HeavenlyBody b : HeavenlyBody.orderedByIndex()) {
             CoefficientInfo ci = header.getCoeffInfo().get(b);
-
             final int start = ci.getAdjustedIndex();
             final int numCoefficients =  ci.getCoeffSets() * ci.getCoeffCount() * b.getDimensions();
-//            final int numCoefficients = ci.getCoeffCount() * b.getDimensions();
             final int end = ci.getAdjustedIndex() + numCoefficients;
 //            final int dims = b.getDimensions();
 
@@ -127,6 +132,12 @@ public class ObservationParser {
             // this is the subset related to this body
             List<Double> subset = coefficients.subList(start, end);
             actualNum += subset.size();
+            
+            if(subset.size() != numCoefficients) {
+            	throw new IllegalStateException(format("unexpected subset for %s. Expected %d, actual %d.", b.getName(), numCoefficients, subset.size()));
+            } else {
+            	logger.finer(format("added %d coefficients for body %s", subset.size(), b.getName()));
+            }
             /*
             for(int i=start; i<end; i++) {
                 Double x = subset.get(i++);
@@ -154,13 +165,22 @@ public class ObservationParser {
         }
 
         if(actualNum == expectedNum) {
-            logger.info("parsed expected number of coefficients.");
+            logger.finer(format("parsed %d coefficients for all bodies in this observation.", actualNum));
         } else {
-            logger.warning(format("expected to parse [%d] coefficients, but parsed [%d] instead", expectedNum, actualNum));
+            throw new IllegalStateException(format("expected to parse [%d] coefficients, but parsed [%d] instead", expectedNum, actualNum));
         }
 
         return unmodifiableMap(c);
     }
+
+	private int getExpectedCountOfObservationCoefficients(Map<HeavenlyBody, CoefficientInfo> map) {
+		int expectedCoefficientCount = 0;
+        for(HeavenlyBody b : HeavenlyBody.orderedByIndex()) {
+        	CoefficientInfo ci = map.get(b);
+        	expectedCoefficientCount +=  ci.getCoeffSets() * ci.getCoeffCount() * b.getDimensions();
+        }
+		return expectedCoefficientCount;
+	}
 
     /*
     private int deriveCoordListSize(int numCoefficients, int dims) {

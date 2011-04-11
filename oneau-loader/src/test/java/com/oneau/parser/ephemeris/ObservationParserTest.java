@@ -25,7 +25,7 @@ public class ObservationParserTest {
 
     @Before
     public void setUp() throws IOException {
-        HeaderParser headerParser = new HeaderParser(HeaderParser.HEADER_405);
+        HeaderParser headerParser = new HeaderParser("header.405");
         this.header = headerParser.readHeader();
         this.underTest = new ObservationParser(header, "filename", 1, 1018);
         assertNotNull(this.underTest);

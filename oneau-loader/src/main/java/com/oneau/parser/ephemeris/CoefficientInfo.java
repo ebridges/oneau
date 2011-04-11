@@ -25,7 +25,6 @@ public class CoefficientInfo {
     public Integer getAdjustedIndex() {
         return fileStartIndex  // provides the begin position for a set of coefficients in the file
                 - 1  // adjusts this since the index in the file is "1" based: we need it to be "0" based
-              //  - 2 // further adjusts this index since we don't include the 2 date fields that begin every observation
         ;
     }
 

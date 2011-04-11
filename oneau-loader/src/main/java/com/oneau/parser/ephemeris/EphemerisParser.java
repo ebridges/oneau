@@ -1,13 +1,15 @@
 package com.oneau.parser.ephemeris;
 
 import com.oneau.common.ObservationWriter;
-import com.oneau.core.EphemerisDataFile;
 /*
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 */
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,14 +22,13 @@ import static com.oneau.core.util.Utility.isEmpty;
  */
 public class EphemerisParser {
     private static final Logger logger = Logger.getLogger(EphemerisParser.class.getName());
-    private static final String OBSERVATION_WRITER_ARG = "-w";
+    private static final String OBSERVATION_WRITER_OPTION = "observation-writer";
+    private static final String EPHEMERIS_FILE_LIST_OPTION = "ephemeris-files";
     private static final String DEFAULT_OBSERVATION_WRITER_CLASS = "com.oneau.loader.ephemeris.StdoutSqlObservationWriter";
-
 
     private Map<String,String> arguments;
 
     public static void main( String[] args ) throws Exception {
-
         EphemerisParser parser = new EphemerisParser(args);
         parser.run();
     }
@@ -41,22 +42,39 @@ public class EphemerisParser {
         if (logger.isLoggable(Level.FINER)) {
             logger.entering(EphemerisParser.class.getName(), "run");
         }
-        HeaderParser headerParser = new HeaderParser(HeaderParser.HEADER_405);
+        String[] ephemerisFiles = arguments.get(EPHEMERIS_FILE_LIST_OPTION).split(",");
+        String headerFile = removeHeader(ephemerisFiles);
+        
+        HeaderParser headerParser = new HeaderParser(headerFile);
         Header header = headerParser.readHeader();
 
-        ObservationWriter ow = initializeObservationWriter(arguments.get(OBSERVATION_WRITER_ARG));
+        ObservationWriter ow = initializeObservationWriter(arguments.get(OBSERVATION_WRITER_OPTION));
         ow.init();
+        
         try {
-            for(EphemerisDataFile file : EphemerisDataFile.values()) {
-                AscpFileParser coeffParser = new AscpFileParser(header, file.getFileName());
-                coeffParser.readObservationsFromFile(ow);
+            for(String file : ephemerisFiles) {
+            	if(!isEmpty(file)) {
+	                AscpFileParser coeffParser = new AscpFileParser(header, file);
+	                coeffParser.readObservationsFromFile(ow);
+            	}
             }
         } finally {
             ow.finish();
         }
     }
 
-    private ObservationWriter initializeObservationWriter(String arg) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
+    private String removeHeader(String[] arr) {
+    	for(int i=0; i<arr.length; i++) {
+    		if(arr[i].contains("header")) {
+    			String header = arr[i];
+    			arr[i] = null;
+    			return header;
+    		}
+    	}
+    	throw new IllegalArgumentException("ephemeris header file not found in file list.");
+	}
+
+	private ObservationWriter initializeObservationWriter(String arg) throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         String clazz;
         if(isEmpty(arg)) {
             clazz = DEFAULT_OBSERVATION_WRITER_CLASS;
@@ -66,13 +84,17 @@ public class EphemerisParser {
         return ObservationWriter.class.cast(Class.forName(clazz).newInstance());
     }
 
-    private void parseArgs(String[] args) {
+    private void parseArgs(String[] a) {
         if (logger.isLoggable(Level.FINER)) {
-            logger.entering(EphemerisParser.class.getName(), "parseArgs", args);
+            logger.entering(EphemerisParser.class.getName(), "parseArgs", a);
         }
 
-        for(int i=0; i<args.length; i++) {
-            arguments.put(args[i], args[++i]);
+        List<String> args = copy(a);
+        
+        for(int i=0; i<args.size(); i++) {
+        	if(args.get(i).startsWith("--")) {
+                arguments.put(args.get(i).replaceAll("--", ""), args.get(++i));
+        	}
         }
 
         /*
@@ -95,4 +117,13 @@ public class EphemerisParser {
         */
     }
 
+	private List<String> copy(String[] aaa) {
+		List<String> bbb = new ArrayList<String>(aaa.length);
+		for(String a : aaa) {
+			if(!isEmpty(a)) {
+				bbb.add(a.trim());
+			}
+		}
+		return Collections.unmodifiableList(bbb);
+	}
 }

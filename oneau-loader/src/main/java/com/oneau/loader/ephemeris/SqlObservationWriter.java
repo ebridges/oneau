@@ -15,9 +15,11 @@ public class SqlObservationWriter extends AbstractObservationWriter {
     private SqlGenerator sqlGenerator;
     private Writer out;
 
-    public SqlObservationWriter(Writer w) {
+    public SqlObservationWriter(Writer w, String dbtype) {
         this.out = w;
-        this.sqlGenerator = new SqlGenerator();
+
+        logger.info("Using database type: "+dbtype);
+        this.sqlGenerator = SqlGeneratorFactory.instance(dbtype);
     }
 
     @Override

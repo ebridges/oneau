@@ -10,8 +10,8 @@ import java.io.OutputStreamWriter;
  * Date: Nov 13, 2010
  */
 public class StdoutSqlObservationWriter  extends SqlObservationWriter {
-    public StdoutSqlObservationWriter() {
-        super(new OutputStreamWriter(System.out));
+    public StdoutSqlObservationWriter(String dbtype) {
+        super(new OutputStreamWriter(System.out), dbtype);
     }
 
     @Override

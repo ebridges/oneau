@@ -21,7 +21,7 @@ public final class Constants {
      * Regular expression that can match and parse an ISO8601 formatted date (yyyy-mm-ddThh:mm:ss).
      */
     public static final Pattern ISO_DATE_RE_PATTERN = Pattern.compile("([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})");
-
+    
     /**
      * Date format for ISO8601 date for parsing by SimpleDateFormat
      */
@@ -57,7 +57,6 @@ public final class Constants {
     public static final String LONGITUDE_PARAM = "lon";
     public static final String LATITUDE_PARAM = "lat";
     public static final String ELEVATION_PARAM = "ele";
-    public static final String EPHMERIS_FILE_ROOT = "/ephemeris/%s";
 
     public static final String JDBC_URL_KEY = "jdbc_url";
     public static final String JDBC_USERNAME_KEY = "jdbc_username";

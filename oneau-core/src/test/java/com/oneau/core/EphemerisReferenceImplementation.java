@@ -19,6 +19,7 @@ import static java.lang.String.format;
  */
 public class EphemerisReferenceImplementation {
     private static final Logger logger = Logger.getLogger(EphemerisReferenceImplementation.class);
+    private static final String EPHEMERIS_FILE_ROOT = "/ephemeris/%s";
 
     public EphemerisReferenceImplementation() {
     }
@@ -124,7 +125,7 @@ public class EphemerisReferenceImplementation {
     }
 
     private BufferedReader readEphemerisData(EphemerisDataFile data) {
-        String filename = format(Constants.EPHMERIS_FILE_ROOT, data.getFileName());
+        String filename = format(EPHEMERIS_FILE_ROOT, data.getFileName());
         logger.info(format("Opening file from location [%s].", filename));
         InputStream is = getClass().getResourceAsStream(filename);
         if (null == is) {
