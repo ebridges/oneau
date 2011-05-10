@@ -1,0 +1,41 @@
+package com.oneau.core;
+
+import com.oneau.core.util.Range;
+
+public class EphemerisDataFileImpl implements EphemerisDataFile {
+    private Double[] dateRange;
+    private String fileName;
+    private Integer recordCount;
+    
+
+    private EphemerisDataFileImpl(String fileName, Integer recordCount, double dateRangeBegin, double dateRangeEnd) {
+        this.fileName = fileName;
+        this.recordCount = recordCount;
+        this.dateRange = new Double[]{dateRangeBegin, dateRangeEnd};
+    }
+
+    public Double[] getDateRange() {
+        return dateRange;
+    }
+
+    public Range<Double> getBeginEndDates() {
+        return new Range<Double>(dateRange);
+    }
+
+    public double getBeginDate() {
+        return dateRange[0];
+    }
+
+    public double getEndDate() {
+        return dateRange[1];
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public int getRecordCount() {
+        return recordCount;
+    }
+
+}

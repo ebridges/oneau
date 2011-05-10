@@ -14,6 +14,9 @@ import java.util.zip.GZIPInputStream;
 
 import static com.oneau.core.util.Utility.toCsv;
 import com.oneau.core.util.AssertionUtil;
+import com.oneau.data.DAOFactory;
+import com.oneau.data.EphemerisDAO;
+
 import static java.lang.String.format;
 
 /**
@@ -22,10 +25,10 @@ import static java.lang.String.format;
  */
 public class PositionAndVelocityTest {
     private static final Logger logger = Logger.getLogger(EphemerisDataParseTest.class);
-    private static final EphemerisDataFile DATA_FILE= EphemerisDataFile.lookupByName("ascp2000.405");
-    //private static final Double TEST_DATE = 2451545.0; // 2000-01-01T12:00:00Z
+    private static final EphemerisDataFile DATA_FILE= EphemerisDataFile.lookupByName(format(EphemerisDataFile.EPHEMERIS_FILE_ROOT, "ascp2000.405"));
+    private static final Double TEST_DATE = 2451544.5; // 2000-01-01
     //private static final Double TEST_DATE = 2455302.500000000;
-    private static final Double TEST_DATE = 2452210.33056;
+    //private static final Double TEST_DATE = 2452210.33056;
 
     //private static final String TEST_DATE_FILE = "/julian-days.dat.gz";
     private static final String TEST_DATE_FILE = "/dates.txt";
@@ -34,7 +37,8 @@ public class PositionAndVelocityTest {
 
     @Before
     public void setUp() {
-        underTest = new Ephemeris();
+    	EphemerisDAO dao = DAOFactory.instance().getEphemerisDAO();
+        underTest = new Ephemeris(dao);
     }
 
     @Test
@@ -42,6 +46,12 @@ public class PositionAndVelocityTest {
         EphemerisData data = new EphemerisData(DATA_FILE);
         Double[] ephemeris_coefficients = data.getEphemerisCoefficients();
         Double[] ephemeris_dates = DATA_FILE.getDateRange();
+        
+        logger.info("dates: " + toCsv(ephemeris_dates));
+        for(int i = 0 ; i<5; i++) {
+        	logger.info("    coeff["+i+"]: "+ephemeris_coefficients[i]);
+        }
+        
         EphemerisReferenceImplementation expected = new EphemerisReferenceImplementation(ephemeris_coefficients, ephemeris_dates);
         double[] expectedEphemerisR = new double[4];
         double[] expectedEphemerisRPrime = new double[4];
@@ -55,6 +65,9 @@ public class PositionAndVelocityTest {
         Double[] expectedPosition = copy(expectedEphemerisR);
         Double[] expectedVelocity = copy(expectedEphemerisRPrime);
 
+        // de#  -- date -- -- jed -- t# c# x# -- coordinate ---
+        // 405  2000.01.01 2451544.5 10 13  2      -0.0015614617894
+        
         logger.info(format("expected value for position: [%s]", toCsv(expectedPosition)));
         logger.info(format("actual   value for position: [%s]", toCsv(actual.getPosition())));
         logger.info(format("expected value for velocity: [%s]", toCsv(expectedVelocity)));

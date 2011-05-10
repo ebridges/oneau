@@ -11,10 +11,16 @@ import java.sql.SQLException;
  * Time: 3:17:56 PM
  */
 public class DAOFactory {
+	/*
     static final String JDBC_URL="jdbc:hsqldb:file:/Users/ebridges/Documents/Projects/1au/oneau-application/db/oneau-db";
     static final String JDBC_USERNAME="SA";
     static final String JDBC_PASSWORD="";
     static final String JDBC_DRIVER="org.hsqldb.jdbcDriver";
+    */
+    static final String JDBC_URL="jdbc:postgresql:oneau";
+    static final String JDBC_USERNAME="postgres";
+    static final String JDBC_PASSWORD="postgres";
+    static final String JDBC_DRIVER="org.postgresql.Driver";
 
     private String jdbcUrl;
     private String jdbcUsername;

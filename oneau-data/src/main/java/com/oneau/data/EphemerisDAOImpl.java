@@ -51,7 +51,7 @@ public class EphemerisDAOImpl implements EphemerisDAO {
                 coefficients.add(rs.getDouble("coefficient"));
             }
 
-            return new EphemerisDataViewImpl(planet, julianDate, interpolatedTime, coefficients);
+            return new EphemerisDataViewImpl(source, planet, julianDate, interpolatedTime, coefficients);
         } catch (SQLException e) {
             throw new PersistenceError(e);
         }finally {

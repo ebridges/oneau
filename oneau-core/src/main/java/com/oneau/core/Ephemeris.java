@@ -291,6 +291,12 @@ public class Ephemeris {
          * 2-d matrix of coefficients flattened to a 1-d array. Therefore the indexing is a running sum of
          * the index "i".
          */
+        
+        int cnt = 0;
+        for(Double d : coefficients) {
+        	logger.debug(format("(%d): %f", cnt++, d));
+        }
+        
         int i = 0;
         for (int x = 0; x < 3; x++) {
             position[x] = 0.0;
@@ -298,7 +304,8 @@ public class Ephemeris {
                 if (logger.isDebugEnabled()) {
                     logger.debug(format("    a: position[%d](%f) += coefficient[%d](%f) * polynomial[%d](%f)", x, position[x], i, coefficients.get(i), y, polynomial[y]));
                 }
-                position[x] += coefficients.get(i++) * polynomial[y];
+                position[x] += coefficients.get(i) * polynomial[y];
+                i++;
             }
 
             if (logger.isDebugEnabled()) {

@@ -2,9 +2,11 @@ package com.oneau.parser.ephemeris;
 
 import com.oneau.core.util.HeavenlyBody;
 import com.oneau.core.util.Range;
+import com.oneau.core.util.Utility;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,10 +25,10 @@ import static java.util.Collections.unmodifiableMap;
  */
 public class ObservationParser {
     private static final Logger logger = Logger.getLogger(ObservationParser.class.getName());
-    private Header header;
-    private String filename;
-    private Integer observationNum;
-    private Integer coefficientCount;
+    private final Header header;
+    private final String filename;
+    private final Integer observationNum;
+    private final Integer coefficientCount;
 
     public ObservationParser(Header header, String filename, Integer observationNum, Integer coefficientCount) {
         this.header = header;
@@ -38,16 +40,16 @@ public class ObservationParser {
     public Observation parseObservation(BufferedReader reader) throws IOException {
         Observation o = new Observation(filename, observationNum);
         
-        List<Double> coefficients = readAllCoefficients(reader);
+        List<BigDecimal> coefficients = readAllCoefficients(reader);
 
         if(logger.isLoggable(Level.INFO)){
             logger.info(format("Read %d coefficients for observation %s#%d.", coefficients.size(), filename,observationNum ));
         }
 
         // first two coefficients are begin/end dates.
-        o.setBeginEndDates(new Range<Double>(
-            coefficients.remove(0),
-            coefficients.remove(0)
+        o.setBeginEndDates(new Range<BigDecimal>(
+            coefficients.get(0),
+            coefficients.get(1)
         ));
 
         o.setCoefficients(
@@ -57,18 +59,18 @@ public class ObservationParser {
         return o;
     }
 
-    private List<Double> readAllCoefficients(BufferedReader reader) throws IOException {
+    private List<BigDecimal> readAllCoefficients(BufferedReader reader) throws IOException {
         // add 2 to account for begin & end dates at beginning of list of coefficients
         int numCount = coefficientCount+2;
         int lines = numCount/3;
         int lineCount = 0;
         int coefficientCountCheck = 0;
         
-        List<Double> coefficients = new ArrayList<Double>(numCount);
+        List<BigDecimal> coefficients = new ArrayList<BigDecimal>(numCount);
 
         String line = null;
 
-        logger.info("Expecting to read " + lines + " lines for this observation.");
+        logger.info(format("Expecting to read %d lines and %d coefficients for this observation.", lines, numCount));
         
         while( lineCount < lines ) {
             line = reader.readLine();
@@ -77,14 +79,14 @@ public class ObservationParser {
                 throw new IllegalArgumentException("premature end of observation!");
             }
 
-           // logger.finest(line);
-
             String[] fields = line.trim().split("\\s+");
-            assert fields.length == 3;
+            if(fields.length != 3) {
+            	throw new IllegalArgumentException(format("expected 3 coefficients from line [%s]", line));
+            }
 
             for(String f : fields) {
-                Double d = parseCoefficient(f);
-            	logger.finer(format("coefficient parsed from %s to %f", f, d));
+            	BigDecimal d = parseCoefficient(f);
+            	logger.finest(format("coefficient #%d parsed from %s to %10.25f", coefficientCountCheck, f, d));
                 coefficients.add(d);
                 coefficientCountCheck++;
             }
@@ -97,7 +99,7 @@ public class ObservationParser {
         } else {
         	logger.info(format("observation #%d in file %s had correct number of coefficients. Expected %d, and was %d", observationNum, filename, numCount, coefficientCountCheck));
         }
-        
+                
         return coefficients;
     }
 
@@ -110,8 +112,8 @@ public class ObservationParser {
      * @param coefficients The list of all coefficients for this file.
      * @return The list of coefficients divided among the different bodies being observed.
      */
-    private Map<HeavenlyBody, List<Double>> gatherPlanetaryCoefficients(final Header header, final List<Double> coefficients) {
-        Map<HeavenlyBody, List<Double>> c = new HashMap<HeavenlyBody, List<Double>>();
+    private Map<HeavenlyBody, List<BigDecimal>> gatherPlanetaryCoefficients(final Header header, final List<BigDecimal> coefficients) {
+        Map<HeavenlyBody, List<BigDecimal>> c = new HashMap<HeavenlyBody, List<BigDecimal>>();
 
         int expectedNum = getExpectedCountOfObservationCoefficients(header.getCoeffInfo());
         int actualNum = 0;
@@ -121,35 +123,27 @@ public class ObservationParser {
             final int start = ci.getAdjustedIndex();
             final int numCoefficients =  ci.getCoeffSets() * ci.getCoeffCount() * b.getDimensions();
             final int end = ci.getAdjustedIndex() + numCoefficients;
-//            final int dims = b.getDimensions();
-
+            
+            /*
+            final int dims = b.getDimensions();
             // there's nothing special about this method, it's just to ensure
             // that rounding up when needed happens
-//            int numCoordinates = deriveCoordListSize(numCoefficients, dims);
-
-            //List<Coordinate> co = new ArrayList<Coordinate>(numCoordinates);
+            int numCoordinates = deriveCoordListSize(numCoefficients, dims);
+            List<Coordinate> co = new ArrayList<Coordinate>(numCoordinates);
+            */
 
             // this is the subset related to this body
-            List<Double> subset = coefficients.subList(start, end);
+            List<BigDecimal> subset = coefficients.subList(start, end);
             actualNum += subset.size();
+            logger.finest(format("    [%s]: %d->%d [%s]", b.getName(), start, end, Utility.toString(subset)));
             
             if(subset.size() != numCoefficients) {
             	throw new IllegalStateException(format("unexpected subset for %s. Expected %d, actual %d.", b.getName(), numCoefficients, subset.size()));
             } else {
             	logger.finer(format("added %d coefficients for body %s", subset.size(), b.getName()));
             }
+            
             /*
-            for(int i=start; i<end; i++) {
-                Double x = subset.get(i++);
-                Double y = subset.get(i++);
-                Double z = subset.get(i++);
-                Coordinate coo = new Coordinate(x, y, z);
-                co.add(coo);
-            }
-            */
-
-            /*
-            // this steps through
             int currIndex = start;
             while(currIndex < end) {
                 List<Double> coordinates = subset.subList(currIndex, (currIndex+dims-1));
@@ -157,7 +151,6 @@ public class ObservationParser {
                 co.add(coo);
                 currIndex += dims;
             }
-
             assert currIndex == end;
             */
 

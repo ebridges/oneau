@@ -18,6 +18,9 @@ import static java.util.Collections.unmodifiableSortedSet;
  * Created: 2010-04-07
  */
 public class EphemerisDataFile implements Comparable<EphemerisDataFile> {
+
+	public static final String EPHEMERIS_FILE_ROOT = "/ephemeris/%s";
+    
     private static final EphemerisDataFile ASCP1600 = new EphemerisDataFile("ascp1600.405", 1, 1, 1);
     private static final EphemerisDataFile ASCP1620 = new EphemerisDataFile("ascp1620.405", 1, 1, 1);
     private static final EphemerisDataFile ASCP1640 = new EphemerisDataFile("ascp1640.405", 1, 1, 1);
@@ -26,15 +29,15 @@ public class EphemerisDataFile implements Comparable<EphemerisDataFile> {
 
     private static final EphemerisDataFile ASCP1700 = new EphemerisDataFile("ascp1700.405", 1, 1, 1);
     private static final EphemerisDataFile ASCP1720 = new EphemerisDataFile("ascp1720.405", 1, 1, 1);
-    private static final EphemerisDataFile ASCP1740 = new EphemerisDataFile("ascp1740.405", 1, 1, 1);
+    private static final EphemerisDataFile ASCP1740 = new EphemerisDataFile("ascp1740.405", 229, 2356560.5, 2363888.5);
     private static final EphemerisDataFile ASCP1760 = new EphemerisDataFile("ascp1760.405", 1, 1, 1);
     private static final EphemerisDataFile ASCP1780 = new EphemerisDataFile("ascp1780.405", 1, 1, 1);
 
-    private static final EphemerisDataFile ASCP1800 = new EphemerisDataFile("ascp1600.405", 1, 1, 1);
-    private static final EphemerisDataFile ASCP1820 = new EphemerisDataFile("ascp1620.405", 1, 1, 1);
-    private static final EphemerisDataFile ASCP1840 = new EphemerisDataFile("ascp1640.405", 1, 1, 1);
-    private static final EphemerisDataFile ASCP1860 = new EphemerisDataFile("ascp1660.405", 1, 1, 1);
-    private static final EphemerisDataFile ASCP1880 = new EphemerisDataFile("ascp1680.405", 1, 1, 1);
+    private static final EphemerisDataFile ASCP1800 = new EphemerisDataFile("ascp1800.405", 1, 1, 1);
+    private static final EphemerisDataFile ASCP1820 = new EphemerisDataFile("ascp1820.405", 1, 1, 1);
+    private static final EphemerisDataFile ASCP1840 = new EphemerisDataFile("ascp1840.405", 1, 1, 1);
+    private static final EphemerisDataFile ASCP1860 = new EphemerisDataFile("ascp1860.405", 1, 1, 1);
+    private static final EphemerisDataFile ASCP1880 = new EphemerisDataFile("ascp1880.405", 1, 1, 1);
 
     private static final EphemerisDataFile ASCP1900 = new EphemerisDataFile("ascp1900.405", 230, 2414992.5, 2422320.5);
     private static final EphemerisDataFile ASCP1920 = new EphemerisDataFile("ascp1920.405", 229, 2422320.5, 2429616.5);
@@ -72,21 +75,43 @@ public class EphemerisDataFile implements Comparable<EphemerisDataFile> {
     public final static int NUMBERS_PER_INTERVAL = 816;
 
     static {
+        LOOKUP_BY_DATE.put(ASCP1600.getBeginEndDates(), ASCP1600);
+        LOOKUP_BY_DATE.put(ASCP1620.getBeginEndDates(), ASCP1620);
+        LOOKUP_BY_DATE.put(ASCP1640.getBeginEndDates(), ASCP1640);
+        LOOKUP_BY_DATE.put(ASCP1660.getBeginEndDates(), ASCP1660);
+        LOOKUP_BY_DATE.put(ASCP1680.getBeginEndDates(), ASCP1680);
+
+        LOOKUP_BY_DATE.put(ASCP1700.getBeginEndDates(), ASCP1700);
+        LOOKUP_BY_DATE.put(ASCP1720.getBeginEndDates(), ASCP1720);
+        LOOKUP_BY_DATE.put(ASCP1740.getBeginEndDates(), ASCP1740);
+        LOOKUP_BY_DATE.put(ASCP1760.getBeginEndDates(), ASCP1760);
+        LOOKUP_BY_DATE.put(ASCP1780.getBeginEndDates(), ASCP1780);
+
+        LOOKUP_BY_DATE.put(ASCP1800.getBeginEndDates(), ASCP1800);
+        LOOKUP_BY_DATE.put(ASCP1820.getBeginEndDates(), ASCP1820);
+        LOOKUP_BY_DATE.put(ASCP1840.getBeginEndDates(), ASCP1840);
+        LOOKUP_BY_DATE.put(ASCP1860.getBeginEndDates(), ASCP1860);
+        LOOKUP_BY_DATE.put(ASCP1880.getBeginEndDates(), ASCP1880);
+
         LOOKUP_BY_DATE.put(ASCP1900.getBeginEndDates(), ASCP1900);
         LOOKUP_BY_DATE.put(ASCP1920.getBeginEndDates(), ASCP1920);
         LOOKUP_BY_DATE.put(ASCP1940.getBeginEndDates(), ASCP1940);
         LOOKUP_BY_DATE.put(ASCP1960.getBeginEndDates(), ASCP1960);
         LOOKUP_BY_DATE.put(ASCP1980.getBeginEndDates(), ASCP1980);
+        
         LOOKUP_BY_DATE.put(ASCP2000.getBeginEndDates(), ASCP2000);
         LOOKUP_BY_DATE.put(ASCP2020.getBeginEndDates(), ASCP2020);
         LOOKUP_BY_DATE.put(ASCP2040.getBeginEndDates(), ASCP2040);
         LOOKUP_BY_DATE.put(ASCP2060.getBeginEndDates(), ASCP2060);
         LOOKUP_BY_DATE.put(ASCP2080.getBeginEndDates(), ASCP2080);
+        
         LOOKUP_BY_DATE.put(ASCP2100.getBeginEndDates(), ASCP2100);
         LOOKUP_BY_DATE.put(ASCP2120.getBeginEndDates(), ASCP2120);
         LOOKUP_BY_DATE.put(ASCP2140.getBeginEndDates(), ASCP2140);
         LOOKUP_BY_DATE.put(ASCP2160.getBeginEndDates(), ASCP2160);
         LOOKUP_BY_DATE.put(ASCP2180.getBeginEndDates(), ASCP2180);
+
+        LOOKUP_BY_DATE.put(ASCP2200.getBeginEndDates(), ASCP2200);
 
         LOOKUP_BY_NAME.put(ASCP1600.getFileName(), ASCP1600);
         LOOKUP_BY_NAME.put(ASCP1620.getFileName(), ASCP1620);
@@ -176,7 +201,7 @@ public class EphemerisDataFile implements Comparable<EphemerisDataFile> {
     }
 
     public String getFileName() {
-        return fileName;
+        return String.format(EPHEMERIS_FILE_ROOT, fileName);
     }
 
     public int getRecordCount() {
@@ -218,7 +243,7 @@ public class EphemerisDataFile implements Comparable<EphemerisDataFile> {
 	public int getNumbersPerInterval() {
 		// TODO Auto-generated method stub
 		// 4/5/2011 added so that project would compile
-		return 1;
+		return 816;  // taken from reference impl where it's hard coded
 	}
     
     // */ -- comment removed 4/5/2011

@@ -1,0 +1,15 @@
+package com.oneau.core;
+
+public interface EphemerisDataFile {
+    /**
+     * Chebyshev coefficients for the DE405 ephemeris are contained in the files "ASCPxxxx.txt".
+     * These files are broken into intervals of length "interval_duration", in days.
+     */
+    public final static int INTERVAL_DURATION = 32;
+    
+    /**
+     * Each interval contains an interval number, length, start and end jultimes, and Chebyshev coefficients.
+     * We keep only the coefficients.
+     */
+    public final static int NUMBERS_PER_INTERVAL = 816;
+}

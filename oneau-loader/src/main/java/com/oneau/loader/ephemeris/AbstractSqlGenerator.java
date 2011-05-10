@@ -6,6 +6,7 @@ import com.oneau.parser.ephemeris.CoefficientInfo;
 import com.oneau.parser.ephemeris.Header;
 import com.oneau.parser.ephemeris.Observation;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,19 +25,19 @@ abstract class AbstractSqlGenerator implements SqlGenerator {
     private long seq;
     private Long headerId;
     private Map<String, Long> fileIds;
-    private Map<Range<Double>, Long> rangeIds;
+    private Map<Range<BigDecimal>, Long> rangeIds;
 
     public AbstractSqlGenerator() {
         seq = 100L;
         this.headerId = null;
         this.fileIds = new HashMap<String, Long>();
-        this.rangeIds = new HashMap<Range<Double>, Long>();
+        this.rangeIds = new HashMap<Range<BigDecimal>, Long>();
     }
 
     protected abstract String getStatementTerminator();
     
     protected String generateInsertObservation() {
-    	return "INSERT INTO ONEAU.OBSERVATION (ID, FILE_ID, MEASURED_ITEM_ID, OBSERVATION_NUM, INTERVAL_ID, COEFFICIENT) VALUES (%d, %d, %d, %d, %d, %f)" + getStatementTerminator();   	
+    	return "INSERT INTO ONEAU.OBSERVATION (ID, FILE_ID, MEASURED_ITEM_ID, OBSERVATION_NUM, INTERVAL_ID, COEFFICIENT) VALUES (%d, %d, %d, %d, %d, %32.17f)" + getStatementTerminator();   	
     }
     
     protected String generateInsertRange(){
@@ -77,7 +78,7 @@ abstract class AbstractSqlGenerator implements SqlGenerator {
         }
 
         for(HeavenlyBody body : observation.getCoefficients().keySet()) {
-            for(Double coefficient : observation.getCoefficients().get(body)) {
+            for(BigDecimal coefficient : observation.getCoefficients().get(body)) {
                 sql.add(format(
                         this.generateInsertObservation(),
                         seq++,
@@ -146,7 +147,7 @@ abstract class AbstractSqlGenerator implements SqlGenerator {
         }
     }
 
-    private void writeConstants(StringBuilder out, List<String> names, List<Double> values) {
+    private void writeConstants(StringBuilder out, List<String> names, List<BigDecimal> values) {
         int sz = names.size();
         for(int i=0; i<sz; i++) {
             out.append(format(this.generateInsertConstant(), seq++, headerId, names.get(i), values.get(i)));

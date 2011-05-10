@@ -10,7 +10,7 @@ XX 4. Modify Ephemeris to use a member dao instead of calling the factory direct
 
 
 BUGS
-1. Missing ephemeris files: select * from oneau.EPHEMERIS_DATA where filename in (
+XX 1. Missing ephemeris files: select * from oneau.EPHEMERIS_DATA where filename in (
  'ascp1800.405',
   'ascp1820.405',
    'ascp1840.405',
@@ -18,12 +18,23 @@ BUGS
      'ascp1880.405'
  )
 	-- due to use of list in EphemerisDataFile, change to accept a list of filenames on cmd line
-2. ascp2200.405 seems to lose some accuracy when reading data.
+XX 2. ascp2200.405 seems to lose some accuracy when reading data.
    -- seems to be a bug in coefficient parsing logic which skips first digit + '.' in coefficients. this only occurs
       in the 2200 file -- all other files begin with 0 + '.', which is not significant (?).
-3. max observation_num is 99, but is expected to be 229/230.  Each observation should have a start & end date + 1018 coefficients.
+XX 3. max observation_num is 99, but is expected to be 229/230.  Each observation should have a start & end date + 1018 coefficients.
    -- bug in the way that loader was reading observations -- assumed that an observation started with exactly 5 blanks,
       but could be 3-5 blanks.
+XX 4. observation parsing is skipping the first two coefficients (after begin/end dates).  see query:
+   -- Before, first observation was 757058.861894
+   -- If correct, first observation should be 21290125.8767516427  
+   SELECT O.id, D.FILENAME, O.observation_num, I.range_from, I.range_to, M.NAME, O.COEFFICIENT 
+   FROM ONEAU.OBSERVATION O
+           LEFT JOIN ONEAU.EPHEMERIS_DATA D ON O.FILE_ID = D.ID 
+           LEFT JOIN oneau.measured_item M ON O.measured_item_id = M.id
+           LEFT JOIN oneau.ephemeris_interval I ON O.interval_id = I.id
+   WHERE D.FILENAME = '/ephemeris/ascp2000.405'
+   AND M.name = 'Mercury'
+   AND O.observation_num = 22
 
 
 

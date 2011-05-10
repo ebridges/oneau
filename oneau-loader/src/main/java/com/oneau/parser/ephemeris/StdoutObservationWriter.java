@@ -3,6 +3,7 @@ package com.oneau.parser.ephemeris;
 import com.oneau.common.ObservationWriter;
 import com.oneau.core.util.HeavenlyBody;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +45,7 @@ public class StdoutObservationWriter implements ObservationWriter {
         
         out.println(format("Observation %s/#%d", observation.getFilename(), observation.getObservationNumber()));
         Map<HeavenlyBody, CoefficientInfo> m = header.getCoeffInfo();
-        Map<HeavenlyBody, List<Double>> c = observation.getCoefficients();
+        Map<HeavenlyBody, List<BigDecimal>> c = observation.getCoefficients();
         if(null == m) {
             throw new IllegalArgumentException("null map of coeffInfo");
         }

@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.io.BufferedReader;
 import java.io.StringReader;
+import java.math.BigDecimal;
 import java.util.List;
 
 import static com.oneau.core.util.Utility.parseCoefficient;
@@ -190,13 +191,12 @@ public class Group1041HandlerTest {
         BufferedReader reader = new BufferedReader(new StringReader(HEADER1041));
         Header header = new Header("filename");
         this.underTest.handle(header, reader);
-        List<Double> constants = header.getConstantValues();
+        List<BigDecimal> constants = header.getConstantValues();
         assertEquals(CONSTANT_COUNT, constants.size());
         for(int i=0; i<CONSTANT_COUNT; i++) {
             assertEquals(
-                    parseCoefficient(CONSTANT_VALUES[i]),
-                    constants.get(i),
-                    0.0000001
+                    parseCoefficient(CONSTANT_VALUES[i]).compareTo(constants.get(i)),
+                    0
             );
         }
     }

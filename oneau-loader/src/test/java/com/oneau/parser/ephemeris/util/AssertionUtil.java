@@ -34,7 +34,7 @@ public class AssertionUtil {
         }
     }
 
-    public static void assertArraysEqual(List<Double> expected, List<Double> actual) {
+    public static <T extends Number> void assertArraysEqual(List<T> expected, List<T> actual) {
         assertEquals("arrays not equal in size.", expected.size(), actual.size());
         int sz = expected.size();
         for(int i=0; i<sz; i++) {
@@ -49,7 +49,11 @@ public class AssertionUtil {
             if(logger.isTraceEnabled()) {
                 logger.trace(format("i=>%d::e:[%f]::a:[%f]",i, expected.get(i), actual.get(i)));
             }
-            assertEquals(format("idx[%d]",i),expected.get(i), actual.get(i), 0.000000001);
+            
+            String e = expected.get(i).toString();
+            String a = actual.get(i).toString();
+            
+           	assertEquals(format("idx[%d]",i),e, a);
         }
     }
 

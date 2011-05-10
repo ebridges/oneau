@@ -18,7 +18,6 @@ import static java.lang.String.format;
  */
 public class EphemerisData {
     private static final Logger logger = Logger.getLogger(EphemerisData.class);
-    private static final String EPHEMERIS_FILE_ROOT = "/ephemeris/%s";
 
     private EphemerisDataFile dataFile;
     private Double[] ephemerisCoefficients;
@@ -164,7 +163,7 @@ public class EphemerisData {
     }
 
     private BufferedReader readEphemerisData() {
-        String filename = format(EPHEMERIS_FILE_ROOT, dataFile.getFileName());
+        String filename = dataFile.getFileName();
         logger.info(format("Opening file from location [%s].", filename));
         InputStream is = getClass().getResourceAsStream(filename);
         if (null == is) {

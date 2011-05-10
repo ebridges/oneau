@@ -1,5 +1,6 @@
 package com.oneau.core;
 
+import static java.lang.String.format;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
@@ -16,7 +17,7 @@ import org.junit.Test;
  */
 public class EphemerisDataParseTest {
     private static final Logger logger = Logger.getLogger(EphemerisDataParseTest.class);
-    private static final EphemerisDataFile DATA_FILE= EphemerisDataFile.lookupByName("ascp2000.405");
+    private static final EphemerisDataFile DATA_FILE= EphemerisDataFile.lookupByName(format(EphemerisDataFile.EPHEMERIS_FILE_ROOT, "ascp2000.405"));
 
     @Before
     public void setUp() {

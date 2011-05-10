@@ -3,6 +3,7 @@ package com.oneau.parser.ephemeris;
 import com.oneau.core.util.HeavenlyBody;
 import com.oneau.core.util.Range;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -15,8 +16,8 @@ import static com.oneau.core.util.Utility.throwIfNull;
 public class Observation {
     private String filename;
     private Integer observationNumber;
-    private Range<Double> beginEndDates;
-    private Map<HeavenlyBody, List<Double>> coefficients;
+    private Range<BigDecimal> beginEndDates;
+    private Map<HeavenlyBody, List<BigDecimal>> coefficients;
 
     public Observation(String filename, Integer observationNumber) {
         this.filename = throwIfNull("filename", filename);
@@ -31,19 +32,23 @@ public class Observation {
         return observationNumber;
     }
 
-    public Range<Double> getBeginEndDates() {
+    public Range<BigDecimal> getBeginEndDates() {
         return beginEndDates;
     }
 
-    public void setBeginEndDates(Range<Double> beginEndDates) {
+    public void setBeginEndDates(Range<BigDecimal> beginEndDates) {
+    	BigDecimal diff = beginEndDates.getRight().subtract(beginEndDates.getLeft());
+    	if(diff.intValueExact() != 32) {
+    		throw new IllegalArgumentException("An observation must be 32 days long.");
+    	}
         this.beginEndDates = beginEndDates;
     }
 
-    public Map<HeavenlyBody, List<Double>> getCoefficients() {
+    public Map<HeavenlyBody, List<BigDecimal>> getCoefficients() {
         return coefficients;
     }
 
-    public void setCoefficients(Map<HeavenlyBody, List<Double>> coefficients) {
+    public void setCoefficients(Map<HeavenlyBody, List<BigDecimal>> coefficients) {
         this.coefficients = coefficients;
     }
 

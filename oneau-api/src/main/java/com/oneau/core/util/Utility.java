@@ -2,6 +2,7 @@ package com.oneau.core.util;
 
 import org.apache.log4j.Logger;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import static java.lang.Integer.parseInt;
 import static java.lang.String.format;
 import static java.lang.System.arraycopy;
 import static java.util.Arrays.sort;
+import static java.util.Arrays.asList;
 
 /**
  * User: ebridges
@@ -112,7 +114,11 @@ public final class Utility {
     }
 
     public static String toString(Object[] objects) {
-        StringBuilder sb = new StringBuilder(objects.length * 32);
+    	return toString(asList(objects));
+    }
+    
+    public static String toString(List<? extends Object> objects) {
+        StringBuilder sb = new StringBuilder(objects.size() * 32);
         boolean isFirst = true;
         for (Object o : objects) {
             if (isFirst) {
@@ -281,6 +287,18 @@ public final class Utility {
         }
     }
 
+    public static BigDecimal parseCoefficient(String val) {
+    	if(isEmpty(val)) {
+    		throw new IllegalArgumentException("got empty value for coefficient.");
+    	}
+		String[] value = val.split("D");
+		BigDecimal v = (new BigDecimal(value[0]));
+		if(value[1].startsWith("+")) {
+			value[1] = value[1].replace("+", "");
+		}
+		return v.movePointRight(parseInt(value[1]));
+    }
+    
     public static double buildCoefficient(int mantissa1, int mantissa2, int exponent, boolean isCoefficientNegative, boolean isExponentNegative) {
         double coefficient;
         if (isExponentNegative) {
@@ -291,6 +309,7 @@ public final class Utility {
         return (isCoefficientNegative ? -coefficient : +coefficient);
     }
 
+    /*
     public static double parseCoefficient(String val) {
         if(isEmpty(val)) {
             throw new IllegalArgumentException("coefficient was empty.");
@@ -320,4 +339,5 @@ public final class Utility {
                 isExponentNegative
         );
     }
+    */
 }

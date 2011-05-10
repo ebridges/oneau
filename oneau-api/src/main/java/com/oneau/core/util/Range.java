@@ -1,6 +1,7 @@
 package com.oneau.core.util;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import static java.lang.String.format;
 import static java.lang.System.arraycopy;
@@ -38,6 +39,15 @@ public class Range<T extends Number> implements Serializable {
         return right;
     }
 
+    public boolean contains(BigDecimal value) {
+    	if(left instanceof BigDecimal && right instanceof BigDecimal) {
+    		BigDecimal l = BigDecimal.class.cast(left);
+    		BigDecimal r = BigDecimal.class.cast(right);
+    		return (l.compareTo(value) < 0 && r.compareTo(value) >= 0 );
+    	}
+    	throw new IllegalArgumentException("left & right must be BigDecimal to compare to another BigDecimal.");
+    }
+    
     public boolean contains(Double value) {
         return (left.doubleValue() < value) && (value <= right.doubleValue());
     }

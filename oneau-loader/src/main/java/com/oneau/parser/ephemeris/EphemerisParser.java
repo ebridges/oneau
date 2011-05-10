@@ -11,10 +11,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.oneau.core.util.Utility.isEmpty;
+import static java.lang.String.format;
 
 /**
  * User: ebridges
@@ -24,7 +24,7 @@ public class EphemerisParser {
     private static final Logger logger = Logger.getLogger(EphemerisParser.class.getName());
     private static final String OBSERVATION_WRITER_OPTION = "observation-writer";
     private static final String EPHEMERIS_FILE_LIST_OPTION = "ephemeris-files";
-    private static final String DEFAULT_OBSERVATION_WRITER_CLASS = "com.oneau.loader.ephemeris.StdoutSqlObservationWriter";
+    private static final String DEFAULT_OBSERVATION_WRITER_CLASS = "com.oneau.loader.ephemeris.StdoutObservationWriter";
 
     private Map<String,String> arguments;
 
@@ -36,12 +36,14 @@ public class EphemerisParser {
     public EphemerisParser(String[] args) {
         this.arguments = new HashMap<String,String>();
         parseArgs(args);
+        
+        logger.info("EphemerisParser arguments:");
+        for(Map.Entry<String,String> e : arguments.entrySet()) {
+        	logger.info(format("  %s: %s", e.getKey(), e.getValue()));
+        }
     }
 
     public void run() throws Exception {
-        if (logger.isLoggable(Level.FINER)) {
-            logger.entering(EphemerisParser.class.getName(), "run");
-        }
         String[] ephemerisFiles = arguments.get(EPHEMERIS_FILE_LIST_OPTION).split(",");
         String headerFile = removeHeader(ephemerisFiles);
         
@@ -85,10 +87,6 @@ public class EphemerisParser {
     }
 
     private void parseArgs(String[] a) {
-        if (logger.isLoggable(Level.FINER)) {
-            logger.entering(EphemerisParser.class.getName(), "parseArgs", a);
-        }
-
         List<String> args = copy(a);
         
         for(int i=0; i<args.size(); i++) {

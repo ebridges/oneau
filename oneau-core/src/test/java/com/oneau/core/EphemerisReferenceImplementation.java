@@ -125,7 +125,7 @@ public class EphemerisReferenceImplementation {
     }
 
     private BufferedReader readEphemerisData(EphemerisDataFile data) {
-        String filename = format(EPHEMERIS_FILE_ROOT, data.getFileName());
+        String filename = data.getFileName();
         logger.info(format("Opening file from location [%s].", filename));
         InputStream is = getClass().getResourceAsStream(filename);
         if (null == is) {

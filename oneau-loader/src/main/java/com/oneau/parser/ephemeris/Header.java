@@ -2,6 +2,7 @@ package com.oneau.parser.ephemeris;
 
 import com.oneau.core.util.HeavenlyBody;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +18,7 @@ public class Header {
     private Double startEpoch;
     private Double endEpoch;
     private List<String> constantNames;
-    private List<Double> constantValues;
+    private List<BigDecimal> constantValues;
     private Map<HeavenlyBody, CoefficientInfo> coeffInfo;
     private Integer daysInInterval;
 
@@ -81,15 +82,15 @@ public class Header {
         this.constantNames = constantNames;
     }
 
-    public List<Double> getConstantValues() {
+    public List<BigDecimal> getConstantValues() {
         return constantValues;
     }
 
-    public void setConstantValues(List<Double> constantValues) {
+    public void setConstantValues(List<BigDecimal> constantValues) {
         this.constantValues = constantValues;
     }
 
-    public Double getConstantValue(String name) {
+    public BigDecimal getConstantValue(String name) {
         for(int i=0; i<constantNames.size(); i++) {
             if(constantNames.get(i).equals(name)) {
                 return constantValues.get(i);

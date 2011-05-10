@@ -4,6 +4,7 @@ import com.oneau.core.util.HeavenlyBody;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -200,7 +201,7 @@ public class HeaderHandlerFactory {
         @Override
         public void handle(Header header, BufferedReader data) throws IOException {
             int constantsCount = 0;
-            List<Double> constantValues = new ArrayList<Double>(175);
+            List<BigDecimal> constantValues = new ArrayList<BigDecimal>(175);
             String line = null;
             while( (line = data.readLine()) != null ) {
                 if(isEmpty(line)) {

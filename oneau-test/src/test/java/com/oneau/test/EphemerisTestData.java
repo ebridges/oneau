@@ -9,7 +9,7 @@ import java.util.Date;
 
 import static com.oneau.core.util.Constants.TESTPO_DATE_PATTERN;;
 
-public class EphemerisTestCase {
+public class EphemerisTestData {
 	private Integer id;
 	private Integer ephemerisNumber;
 	private Date ephemerisDate;
@@ -20,7 +20,7 @@ public class EphemerisTestCase {
 	private Double coordinate;
 	private String row;
 	
-	public EphemerisTestCase(Integer id, String row) {
+	public EphemerisTestData(Integer id, String row) {
 		this.id = id;
 		this.row = row;
 		this.initialize(row);
@@ -88,10 +88,10 @@ public class EphemerisTestCase {
 		if (obj == null) {
 			return false;
 		}
-		if (!(obj instanceof EphemerisTestCase)) {
+		if (!(obj instanceof EphemerisTestData)) {
 			return false;
 		}
-		EphemerisTestCase other = (EphemerisTestCase) obj;
+		EphemerisTestData other = (EphemerisTestData) obj;
 		return this.getId().equals(other.getId());
 	}
 
