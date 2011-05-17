@@ -8,14 +8,15 @@ import com.oneau.core.util.HeavenlyBody;
 
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * User: ebridges
  * Date: Sep 1, 2010
  */
 public class EphemerisDataViewImpl implements EphemerisDataView {
-    private static final Logger logger = Logger.getLogger(EphemerisDataViewImpl.class);
+    private static final Logger logger = Logger.getLogger(EphemerisDataViewImpl.class.getName());
     
     private HeavenlyBody body;
     private List<Double> coefficients;
@@ -33,10 +34,19 @@ public class EphemerisDataViewImpl implements EphemerisDataView {
 
     @Override
     public List<Double> getCoefficients() {
+
+        logger.info(format("Returning coefficients for %s. Begin idx %d, End idx %d, Total cnt of coefficients: %d",
+                body.getName(),
+                getViewBegin(),
+                getViewEnd(),
+                coefficients.size()));
+        
         return unmodifiableList(coefficients.subList(
                 getViewBegin(),
                 getViewEnd()
         ));
+
+        //return unmodifiableList(coefficients);
     }
 
     @Override
@@ -49,37 +59,41 @@ public class EphemerisDataViewImpl implements EphemerisDataView {
         return this.interpolatedTime.getTimeWithinSubinterval(body.getNumberOfCoefficientSets(), asOf);
     }
     
-    
+
     int getViewBegin() {
-        int interval = this.fileProperties.getInterval(asOf);
+        //int interval = this.fileProperties.getInterval(asOf);
         int subinterval = this.fileProperties.getSubinterval(body, asOf);
-        int numbersToSkip = (interval - 1) * this.fileProperties.getNumbersPerInterval();
+        //int numbersToSkip = (interval - 1) * this.fileProperties.getNumbersPerInterval();
 
         /*
          * Starting at the beginning of the coefficient array, skip the first "numbersToSkip"
          * coefficients.  This puts the pointer on the first piece of data in the correct interval.
          */
-        int pointer = numbersToSkip + 1;
+        int pointer = 0; //= numbersToSkip + 1;
 
         // Skip the coefficients for the planets ahead of this one
+        /*
         for (HeavenlyBody b : HeavenlyBody.orderedByIndex()) {
             if (b == body) {
                 break;
             }
             pointer = pointer + 3 * b.getNumberOfCoefficientSets() * b.getNumberOfChebyshevCoefficients();
         }
+        */
 
         // Skip the next (subinterval - 1)*3*number_of_coefs(heavenlyBody) coefficients
         pointer += (subinterval - 1) * 3 * body.getNumberOfChebyshevCoefficients();
 
-        if (logger.isDebugEnabled()) {
-            logger.debug(format("interval: %d, subinterval: %d, numbersToSkip: %d, pointer: %d", interval, subinterval, numbersToSkip, pointer));
+        if (logger.isLoggable(Level.FINE)) {
+//            logger.debug(format("interval: %d, subinterval: %d, numbersToSkip: %d, pointer: %d", interval, subinterval, numbersToSkip, pointer));
+            logger.fine(format("subinterval: %d, pointer: %d", subinterval, pointer));
         }
 
-        return pointer-1;
+        return pointer;
     }
 
     int getViewEnd() {
         return getViewBegin() + (3 * body.getNumberOfChebyshevCoefficients());
-    }    
+    }
+    
 }

@@ -68,7 +68,7 @@ public class EphemerisDataFileTest {
     public void testGetSubintervalDuration() {
         for(EphemerisDataFile file : EphemerisDataFile.values()) {
             for(HeavenlyBody body : HeavenlyBody.values()) {
-                double expectedSubintervalDuration = EphemerisReferenceImplementation.getSubintervalDuration(body, file);
+                double expectedSubintervalDuration = EphemerisReferenceImplementation.getSubintervalDuration(body);
                 double actualSubintervalDuration = file.getSubintervalDuration(body);
                 assertEquals(expectedSubintervalDuration, actualSubintervalDuration, 0.00001);
             }

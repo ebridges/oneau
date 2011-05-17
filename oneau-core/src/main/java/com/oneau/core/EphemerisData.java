@@ -2,7 +2,6 @@ package com.oneau.core;
 
 import com.oneau.core.util.HeavenlyBody;
 import com.oneau.core.util.Utility;
-import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,12 +11,15 @@ import java.io.InputStreamReader;
 import static com.oneau.core.util.Utility.newDouble;
 import static java.lang.String.format;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * User: EBridges
  * Created: 2010-04-12
  */
 public class EphemerisData {
-    private static final Logger logger = Logger.getLogger(EphemerisData.class);
+    private static final Logger logger = Logger.getLogger(EphemerisData.class.getName());
 
     private EphemerisDataFile dataFile;
     private Double[] ephemerisCoefficients;
@@ -27,6 +29,7 @@ public class EphemerisData {
         this.ephemerisCoefficients = parseEphemerisCoefficients(this.dataFile);
     }
 
+    /*
 
     public EphemerisDataView getDataForBody(HeavenlyBody body, Double asOf) {
         if (null == body) {
@@ -37,10 +40,11 @@ public class EphemerisData {
         return view;
     }
 
-
+    /*
     public EphemerisDataFile getDataFile() {
         return dataFile;
     }
+    */
 
     public Double[] getEphemerisCoefficients() {
         return ephemerisCoefficients;
@@ -85,8 +89,8 @@ public class EphemerisData {
                         mantissa1 = Integer.parseInt(line.substring(4, 13));
                         mantissa2 = Integer.parseInt(line.substring(13, 22));
                         exponent = Integer.parseInt(line.substring(24, 26));
-                        if (logger.isTraceEnabled()) {
-                            logger.trace(format("1st entry (record:%d,coefficient:%d): [mantissa1:%d] [mantissa2:%d] [exponent:%d]", record, coefficient, mantissa1, mantissa2, exponent));
+                        if (logger.isLoggable(Level.FINER)) {
+                            logger.finer(format("1st entry (record:%d,coefficient:%d): [mantissa1:%d] [mantissa2:%d] [exponent:%d]", record, coefficient, mantissa1, mantissa2, exponent));
                         }
                         int idx = (record - 1) * 816 + (3 * (coefficient - 2) - 1);
                         coefficients[idx] = Utility.buildCoefficient(
@@ -96,8 +100,8 @@ public class EphemerisData {
                                 line.substring(1, 2).equals("-"),
                                 line.substring(23, 24).equals("-")
                         );
-                        if (logger.isTraceEnabled()) {
-                            logger.trace(format("  coefficient[%s]: %s", idx, coefficients[idx]));
+                        if (logger.isLoggable(Level.FINER)) {
+                            logger.finer(format("  coefficient[%s]: %s", idx, coefficients[idx]));
                         }
                     }
                     if (coefficient > 2) {
@@ -105,8 +109,8 @@ public class EphemerisData {
                         mantissa1 = Integer.parseInt(line.substring(30, 39));
                         mantissa2 = Integer.parseInt(line.substring(39, 48));
                         exponent = Integer.parseInt(line.substring(50, 52));
-                        if (logger.isTraceEnabled()) {
-                            logger.trace(format("2nd entry (record:%d,coefficient:%d): [mantissa1:%d] [mantissa2:%d] [exponent:%d]", record, coefficient, mantissa1, mantissa2, exponent));
+                        if (logger.isLoggable(Level.FINER)) {
+                            logger.finer(format("2nd entry (record:%d,coefficient:%d): [mantissa1:%d] [mantissa2:%d] [exponent:%d]", record, coefficient, mantissa1, mantissa2, exponent));
                         }
                         int idx = (record - 1) * 816 + 3 * (coefficient - 2);
                         coefficients[idx] = Utility.buildCoefficient(
@@ -116,8 +120,8 @@ public class EphemerisData {
                                 line.substring(27, 28).equals("-"),
                                 line.substring(49, 50).equals("-")
                         );
-                        if (logger.isTraceEnabled()) {
-                            logger.trace(format("  coefficient[%s]: %s", idx, coefficients[idx]));
+                        if (logger.isLoggable(Level.FINER)) {
+                            logger.finer(format("  coefficient[%s]: %s", idx, coefficients[idx]));
                         }
                     }
                     if (coefficient < 274) {
@@ -125,8 +129,8 @@ public class EphemerisData {
                         mantissa1 = Integer.parseInt(line.substring(56, 65));
                         mantissa2 = Integer.parseInt(line.substring(65, 74));
                         exponent = Integer.parseInt(line.substring(76, 78));
-                        if (logger.isTraceEnabled()) {
-                            logger.trace(format("3rd entry (record:%d,coefficient:%d): [mantissa1:%d] [mantissa2:%d] [exponent:%d]", record, coefficient, mantissa1, mantissa2, exponent));
+                        if (logger.isLoggable(Level.FINER)) {
+                            logger.finer(format("3rd entry (record:%d,coefficient:%d): [mantissa1:%d] [mantissa2:%d] [exponent:%d]", record, coefficient, mantissa1, mantissa2, exponent));
                         }
                         int idx = (record - 1) * 816 + (3 * (coefficient - 2) + 1);
                         coefficients[idx] = Utility.buildCoefficient(
@@ -136,8 +140,8 @@ public class EphemerisData {
                                 line.substring(53, 54).equals("-"),
                                 line.substring(75, 76).equals("-")
                         );
-                        if (logger.isTraceEnabled()) {
-                            logger.trace(format("  coefficient[%s]: %s", idx, coefficients[idx]));
+                        if (logger.isLoggable(Level.FINER)) {
+                            logger.finer(format("  coefficient[%s]: %s", idx, coefficients[idx]));
                         }
                     }
                 }
@@ -150,10 +154,10 @@ public class EphemerisData {
             }
 
         } catch (IOException e) {
-            logger.error("Error = " + e.toString());
+            logger.severe("Error = " + e.toString());
             throw e;
         } catch (StringIndexOutOfBoundsException e) {
-            logger.error("String index out of bounds at coefficient = " + coefficient);
+            logger.severe("String index out of bounds at coefficient = " + coefficient);
             throw e;
         } finally {
             if (null != buff)

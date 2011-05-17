@@ -119,7 +119,7 @@ public class EphemerisServlet extends HttpServlet {
                 view.writeModel(writer, model);
             }
         } catch(Throwable e) {
-			view.writeError(writer, error);
+			view.writeError(writer, e);
         } finally {
             writer.flush();
         }

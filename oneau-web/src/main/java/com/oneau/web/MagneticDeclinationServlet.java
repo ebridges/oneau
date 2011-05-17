@@ -63,6 +63,8 @@ public class MagneticDeclinationServlet extends HttpServlet {
             MagneticDeclination md = trueNorthCalculator.calculate(year, month, day, lat, lon, el);
 
             view.writeModel(writer, md);
+        } catch(Throwable e) {
+			view.writeError(writer, e);
         } finally {
             writer.flush();
         }

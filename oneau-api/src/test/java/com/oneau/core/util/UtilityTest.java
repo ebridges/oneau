@@ -1,7 +1,12 @@
 package com.oneau.core.util;
 
+import static com.oneau.core.util.Utility.*;
+import static com.oneau.core.util.Utility.containsAll;
+import static com.oneau.core.util.Utility.containsAny;
 import static java.lang.String.format;
-import static com.oneau.core.util.Utility.isEmpty;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -12,7 +17,77 @@ import org.junit.Test;
 
 public class UtilityTest {
 	private static final Logger logger = Logger.getLogger(Utility.class);
-	
+    private Object[] underTest = {1, 2, 3, 4};
+
+    @Test
+    public void testToJulianDay() {
+        double expected = 2451544.5;
+        double actual = Utility.toJulianDay(2000.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0);
+    
+        assertEquals(expected, actual, 0.01);
+    }
+
+    @Test
+    public void testFirst() {
+        assertEquals(1, first(underTest));
+    }
+
+    @Test
+    public void testRest() {
+        Object[] expected = {2, 3, 4};
+        Object[] actual = rest(underTest);
+        assertEquals(expected.length, actual.length);
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testContainsAny_All() {
+        boolean actual = containsAny(underTest, 1, 2, 3, 4);
+        assertTrue(actual);
+    }
+
+    @Test
+    public void testContainsAny_Some() {
+        boolean actual = containsAny(underTest, 2, 3, 4);
+        assertTrue(actual);
+    }
+
+    @Test
+    public void testContainsAny_None() {
+        boolean actual = containsAny(underTest, 5, 6, 7, 8);
+        assertFalse(actual);
+    }
+
+    @Test
+    public void testContainsAny_Empty() {
+        boolean actual = containsAny(underTest);
+        assertFalse(actual);
+    }
+
+    @Test
+    public void testContainsAll_All() {
+        boolean actual = containsAll(underTest, 1, 2, 3, 4);
+        assertTrue(actual);
+    }
+
+    @Test
+    public void testContainsAll_Some() {
+        boolean actual = containsAll(underTest, 2, 3, 4);
+        assertTrue(actual);
+    }
+
+    @Test
+    public void testContainsAll_None() {
+        boolean actual = containsAll(underTest, 5, 6, 7, 8);
+        assertFalse(actual);
+    }
+
+    @Test
+    public void testContainsAll_Empty() {
+        boolean actual = containsAll(underTest);
+        assertFalse(actual);
+    }
+
     @Test
     public void testParseCoefficient() {
     	int count=1;
@@ -96,8 +171,7 @@ public class UtilityTest {
 			" -0.175062428703760925D+05  0.996100472148497147D+02  0.101657835496558828D+02  \n" +
 			" -3.162143993383701196D+00 -1.553638337555255669D-02  2.186668223082336968D-03  \n" +
 			" -1.432953676547702635D+06  0.996100472148497147D+02  0.101657835496558828D+02  \n" ;
-	
-			
+
 			
 	private static final List<String> COEFFICIENTS = Arrays.asList(
 			ONE_OBSERVATION.split("\n")

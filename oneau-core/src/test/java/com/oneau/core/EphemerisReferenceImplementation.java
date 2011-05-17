@@ -1,8 +1,6 @@
 package com.oneau.core;
 
-import com.oneau.core.util.Constants;
 import com.oneau.core.util.HeavenlyBody;
-import org.apache.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,14 +10,15 @@ import java.io.InputStreamReader;
 import static com.oneau.core.EphemerisDataFile.INTERVAL_DURATION;
 import static com.oneau.core.util.Utility.newDouble;
 import static java.lang.String.format;
+import java.util.logging.Logger;
 
 /**
  * User: EBridges
  * Created: 2010-04-20
  */
 public class EphemerisReferenceImplementation {
-    private static final Logger logger = Logger.getLogger(EphemerisReferenceImplementation.class);
-    private static final String EPHEMERIS_FILE_ROOT = "/ephemeris/%s";
+    private static final Logger logger = Logger.getLogger(EphemerisReferenceImplementation.class.getName());
+   // private static final String EPHEMERIS_FILE_ROOT = "/ephemeris/%s";
 
     public EphemerisReferenceImplementation() {
     }
@@ -37,7 +36,7 @@ public class EphemerisReferenceImplementation {
         return ((Math.floor((asOf - file.getBeginDate()) / INTERVAL_DURATION) + 1) - 1) * INTERVAL_DURATION + file.getBeginDate();
     }
 
-    public static double getSubintervalDuration(HeavenlyBody body, EphemerisDataFile file) {
+    public static double getSubintervalDuration(HeavenlyBody body) {
         return (EphemerisDataFile.INTERVAL_DURATION / body.getNumberOfCoefficientSets());
     }
 
@@ -113,10 +112,10 @@ public class EphemerisReferenceImplementation {
             }
 
         } catch (IOException e) {
-            logger.error("Error = " + e.toString());
+            logger.severe("Error = " + e.toString());
             throw e;
         } catch (StringIndexOutOfBoundsException e) {
-            logger.error("String index out of bounds at i = " + i);
+            logger.severe("String index out of bounds at i = " + i);
         } finally {
             if(null != buff)
                  buff.close();
@@ -194,15 +193,15 @@ public class EphemerisReferenceImplementation {
           */
         pointer = numbers_to_skip + 1;
 
-        logger.debug(format("expected: pointer: %d", pointer));
+        logger.fine(format("expected: pointer: %d", pointer));
 
         /*  Skip the coefficients for the first (heavenlyBody-1) planets  */
         for (j = 1; j <= (heavenlyBody - 1); j++) {
-            logger.debug(format("e: pointer(%d) + 3 * coeffSets(%d) * coeffCnt(%d)", pointer, number_of_coef_sets[j], number_of_coefs[j]));
+            logger.fine(format("e: pointer(%d) + 3 * coeffSets(%d) * coeffCnt(%d)", pointer, number_of_coef_sets[j], number_of_coefs[j]));
             pointer = pointer + 3 * number_of_coef_sets[j] * number_of_coefs[j];
         }
 
-        logger.debug(format("expected: pointer after skipping %d planets: %d", (heavenlyBody - 1), pointer));
+        logger.fine(format("expected: pointer after skipping %d planets: %d", (heavenlyBody - 1), pointer));
 
         /*  Skip the next (subinterval - 1)*3*number_of_coefs(heavenlyBody) coefficients  */
         pointer = pointer + (subinterval - 1) * 3 * number_of_coefs[heavenlyBody];
@@ -230,7 +229,7 @@ public class EphemerisReferenceImplementation {
         for (j = 1; j <= 3; j++) {
             ephemeris_r[j] = 0;
             for (k = 1; k <= number_of_coefs[heavenlyBody]; k++){
-                logger.debug(format("    e: position[%d](%f) += coefficient[%d][%d](%f) * polynomial[%d](%f)", j, ephemeris_r[j], j, k, coef[j][k], k, position_poly[k]));
+                logger.fine(format("    e: position[%d](%f) += coefficient[%d][%d](%f) * polynomial[%d](%f)", j, ephemeris_r[j], j, k, coef[j][k], k, position_poly[k]));
                 ephemeris_r[j] = ephemeris_r[j] + coef[j][k] * position_poly[k];
             }
             /*  Convert from km to A.U.  */
@@ -248,15 +247,14 @@ public class EphemerisReferenceImplementation {
         for (j = 1; j <= 3; j++) {
             ephemeris_rprime[j] = 0;
             for (k = 1; k <= number_of_coefs[heavenlyBody]; k++){
-                logger.debug(format("    e: velocity[%d](%f) += coefficient[%d][%d](%f) * polynomial[%d](%f)", j, ephemeris_rprime[j], j, k, coef[j][k], k, velocity_poly[k]));
+                logger.fine(format("    e: velocity[%d](%f) += coefficient[%d][%d](%f) * polynomial[%d](%f)", j, ephemeris_rprime[j], j, k, coef[j][k], k, velocity_poly[k]));
                 ephemeris_rprime[j] = ephemeris_rprime[j] + coef[j][k] * velocity_poly[k];
             }
             /*  The next line accounts for differentiation of the iterative formula with respect to chebyshev time.
             Essentially, if dx/dt = (dx/dct) times (dct/dt), the next line includes the factor (dct/dt) so that the
             units are km/day  */
-            if(logger.isDebugEnabled()) {
-                logger.debug(format("   e: velocity[%d](%f) *= (2.0 * NumCoefficientSets(%d) / INTERVAL_DURATION(%d)", j, ephemeris_rprime[j], number_of_coef_sets[heavenlyBody], interval_duration));
-            }
+            logger.fine(format("   e: velocity[%d](%f) *= (2.0 * NumCoefficientSets(%d) / INTERVAL_DURATION(%d)", j, ephemeris_rprime[j], number_of_coef_sets[heavenlyBody], interval_duration));
+
             ephemeris_rprime[j] = ephemeris_rprime[j] * (2.0 * number_of_coef_sets[heavenlyBody] / interval_duration);
 
             /*  Convert from km to A.U.  */

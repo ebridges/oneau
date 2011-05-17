@@ -2,7 +2,6 @@ package com.oneau.core;
 
 import com.oneau.core.util.HeavenlyBody;
 import com.oneau.core.util.PositionAndVelocity;
-import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.zip.GZIPInputStream;
+import java.util.logging.Logger;
 
 import static com.oneau.core.util.Utility.toCsv;
 import com.oneau.core.util.AssertionUtil;
@@ -24,11 +24,10 @@ import static java.lang.String.format;
  * Created: 2010-04-08
  */
 public class PositionAndVelocityTest {
-    private static final Logger logger = Logger.getLogger(EphemerisDataParseTest.class);
+    private static final Logger logger = Logger.getLogger(EphemerisDataParseTest.class.getName());
     private static final EphemerisDataFile DATA_FILE= EphemerisDataFile.lookupByName(format(EphemerisDataFile.EPHEMERIS_FILE_ROOT, "ascp2000.405"));
-    private static final Double TEST_DATE = 2451544.5; // 2000-01-01
-    //private static final Double TEST_DATE = 2455302.500000000;
-    //private static final Double TEST_DATE = 2452210.33056;
+    private static final Double JAN_01_2000 = 2451544.5;
+    private static final Double JAN_01_2010 = 2455197.5;
 
     //private static final String TEST_DATE_FILE = "/julian-days.dat.gz";
     private static final String TEST_DATE_FILE = "/dates.txt";
@@ -40,6 +39,42 @@ public class PositionAndVelocityTest {
     	EphemerisDAO dao = DAOFactory.instance().getEphemerisDAO();
         underTest = new Ephemeris(dao);
     }
+
+    @Test
+    public void testCalculatePositionAndVelocity_SingleDateMultiplePlanets() throws IOException {
+        EphemerisData data = new EphemerisData(DATA_FILE);
+        Double[] ephemeris_coefficients = data.getEphemerisCoefficients();
+        Double[] ephemeris_dates = DATA_FILE.getDateRange();
+
+        for(HeavenlyBody body : HeavenlyBody.orderedByIndex()) {
+            if(body.isBody()) {
+                EphemerisReferenceImplementation expected = new EphemerisReferenceImplementation(ephemeris_coefficients, ephemeris_dates);
+                double[] expectedEphemerisR = new double[4];
+                double[] expectedEphemerisRPrime = new double[4];
+                logger.info(format("Calculating expected position & velocity for %s from reference implementation.", body.getName()));
+                expected.getPlanetPositionAndVelocity(JAN_01_2010, body.getId(), expectedEphemerisR, expectedEphemerisRPrime);
+                logger.info(format("Calculating actual position & velocity for %s from developed code.", body.getName()));
+                PositionAndVelocity actual = underTest.getPlanetPositionAndVelocity(JAN_01_2010, body);
+
+                // note: legacy code uses fortran-conventions for array indices -- therefore the index to be used for
+                //       the heavenlyBody needs to be +1 from the 0-based "getIndex()" method -- hence the special 'copy' method
+                Double[] expectedPosition = copy(expectedEphemerisR);
+                Double[] expectedVelocity = copy(expectedEphemerisRPrime);
+
+                // de#  -- date -- -- jed -- t# c# x# -- coordinate ---
+                // 405  2000.01.01 2451544.5 10 13  2      -0.0015614617894
+
+                logger.info(format("expected value for position: [%s]", toCsv(expectedPosition)));
+                logger.info(format("actual   value for position: [%s]", toCsv(actual.getPosition())));
+                logger.info(format("expected value for velocity: [%s]", toCsv(expectedVelocity)));
+                logger.info(format("actual   value for velocity: [%s]", toCsv(actual.getVelocity())));
+
+                AssertionUtil.assertArraysEqual(expectedPosition, actual.getPosition());
+                AssertionUtil.assertArraysEqual(expectedVelocity, actual.getVelocity());
+            }
+        }
+    }
+
 
     @Test
     public void testCalculatePositionAndVelocity_OneDate() throws IOException {
@@ -56,9 +91,9 @@ public class PositionAndVelocityTest {
         double[] expectedEphemerisR = new double[4];
         double[] expectedEphemerisRPrime = new double[4];
         logger.info("Calculating expected position & velocity from reference implementation.");
-        expected.getPlanetPositionAndVelocity(TEST_DATE, HeavenlyBody.MERCURY.getId(), expectedEphemerisR, expectedEphemerisRPrime);
-        logger.info("Calculating actual position & velocity from develped code.");
-        PositionAndVelocity actual = underTest.getPlanetPositionAndVelocity(TEST_DATE, HeavenlyBody.MERCURY);
+        expected.getPlanetPositionAndVelocity(JAN_01_2000, HeavenlyBody.MERCURY.getId(), expectedEphemerisR, expectedEphemerisRPrime);
+        logger.info("Calculating actual position & velocity from developed code.");
+        PositionAndVelocity actual = underTest.getPlanetPositionAndVelocity(JAN_01_2000, HeavenlyBody.MERCURY);
 
         // note: legacy code uses fortran-conventions for array indices -- therefore the index to be used for
         //       the heavenlyBody needs to be +1 from the 0-based "getIndex()" method -- hence the special 'copy' method
@@ -105,10 +140,10 @@ public class PositionAndVelocityTest {
                         AssertionUtil.assertArraysEqual(copy(expectedEphemerisR), actual.getPosition());
                         AssertionUtil.assertArraysEqual(copy(expectedEphemerisRPrime), actual.getVelocity());
                     } else {
-                        logger.debug(format("skipping date [%f] since it's outside date range of data [%f:%f].", asOf, DATA_FILE.getBeginDate(), DATA_FILE.getEndDate()));
+                        logger.fine(format("skipping date [%f] since it's outside date range of data [%f:%f].", asOf, DATA_FILE.getBeginDate(), DATA_FILE.getEndDate()));
                     }
                 } else {
-                    logger.warn(format("skipping malformed line [%s]", line));
+                    logger.warning(format("skipping malformed line [%s]", line));
                 }
             }
         } finally {

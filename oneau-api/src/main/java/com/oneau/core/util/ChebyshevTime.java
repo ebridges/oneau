@@ -1,6 +1,6 @@
 package com.oneau.core.util;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import static java.lang.String.format;
 
 /**
@@ -10,7 +10,7 @@ import static java.lang.String.format;
  * Date: Sep 1, 2010
  */
 public class ChebyshevTime {
-	private static final Logger logger = Logger.getLogger(ChebyshevTime.class);
+	private static final Logger logger = Logger.getLogger(ChebyshevTime.class.getName());
     private Double ephemerisStartTime;
     private Integer ephemerisIntervalSize;
 

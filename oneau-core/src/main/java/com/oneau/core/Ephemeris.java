@@ -8,12 +8,13 @@ import com.oneau.core.util.PositionAndVelocity;
 import com.oneau.core.util.Utility;
 
 import com.oneau.data.EphemerisDAO;
-import org.apache.log4j.Logger;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static com.oneau.core.util.HeavenlyBody.EARTH;
 import static com.oneau.core.util.HeavenlyBody.MOON;
@@ -46,8 +47,8 @@ import static java.lang.String.format;
  * adjusted to use the DE200 ephemeris, whose format is quite similar.
  */
 public class Ephemeris {
-	private static final Logger logger = Logger.getLogger(Ephemeris.class);
-    private final Map<EphemerisDataFile, EphemerisData> DATAFILE_CACHE = new HashMap<EphemerisDataFile, EphemerisData>();
+	private static final Logger logger = Logger.getLogger(Ephemeris.class.getName());
+//    private final Map<EphemerisDataFile, EphemerisData> DATAFILE_CACHE = new HashMap<EphemerisDataFile, EphemerisData>();
 
     private EphemerisDAO ephemerisDao;
 
@@ -58,9 +59,10 @@ public class Ephemeris {
         this.ephemerisDao = ephemerisDao;
     }
 
+    /*
     public void loadData(String... files) throws IOException {
         for (String file : files) {
-            logger.trace(format("pre-loading file [%s]", file));
+            logger.finer(format("pre-loading file [%s]", file));
             EphemerisDataFile dataFile = EphemerisDataFile.lookupByName(file);
             if (!DATAFILE_CACHE.containsKey(dataFile)) {
                 logger.info(format("precaching dataFile [%s]", file));
@@ -69,6 +71,7 @@ public class Ephemeris {
             }
         }
     }
+    */
 
     /**
      * Procedure to calculate the position and velocity at jultime of the major planets.
@@ -84,13 +87,11 @@ public class Ephemeris {
      *
      * @param jultime        Date for which the position &amp; velocity should be calculated.
      * @param heavenlyBodies Planetary bodies for which to calculate position &amp; velocity.
-     * @return Map<HeavenlyBody, PositionAndVelocity> Results of calculations of position and velocity for given heavenly bodies.
+     * @return java.util.Map&lt;HeavenlyBody, PositionAndVelocity&lt; Results of calculations of position and velocity for given heavenly bodies.
      * @throws java.io.IOException Thrown when I/O error.
      */
     public Map<HeavenlyBody, PositionAndVelocity> calculatePlanetaryEphemeris(double jultime, HeavenlyBody... heavenlyBodies) throws IOException {
-        if (logger.isTraceEnabled()) {
-            logger.trace("calculatePlanetaryEphemeris() called.");
-        }
+        logger.finer("calculatePlanetaryEphemeris() called.");
 
         if (isEmpty(heavenlyBodies)) {
             heavenlyBodies = HeavenlyBody.values();
@@ -247,8 +248,8 @@ public class Ephemeris {
         for (int x = 0; x < 3; x++) {
             velocity[x] = 0.0;
             for (int y = 0; y < coefficientCount; y++) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(format("    a: velocity[%d](%f) += coefficient[%d](%f) * polynomial[%d](%f)", x, velocity[x], i, coefficients.get(i), y, polynomial[y]));
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine(format("    a: velocity[%d](%f) += coefficient[%d](%f) * polynomial[%d](%f)", x, velocity[x], i, coefficients.get(i), y, polynomial[y]));
                 }
                 velocity[x] += coefficients.get(i++) * polynomial[y];
             }
@@ -257,13 +258,13 @@ public class Ephemeris {
              * Essentially, if dx/dt = (dx/dct) times (dct/dt), the next line includes the factor (dct/dt) so that
              * the units are km/day
              */
-            if (logger.isDebugEnabled()) {
-                logger.debug(format("   a: velocity[%d](%f) *= (2.0 * NumCoefficientSets(%d) / INTERVAL_DURATION(%d)", x, velocity[x], ephemerisData.getBody().getNumberOfCoefficientSets(), EphemerisDataFile.INTERVAL_DURATION));
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine(format("   a: velocity[%d](%f) *= (2.0 * NumCoefficientSets(%d) / INTERVAL_DURATION(%d)", x, velocity[x], ephemerisData.getBody().getNumberOfCoefficientSets(), EphemerisDataFile.INTERVAL_DURATION));
             }
             velocity[x] *= (2.0 * ephemerisData.getBody().getNumberOfCoefficientSets() / EphemerisDataFile.INTERVAL_DURATION);
 
-            if (logger.isDebugEnabled()) {
-                logger.debug(format("velocity[%d]=%fkm, %fau", x, velocity[x], resultConverter.convert(velocity[x])));
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine(format("velocity[%d]=%fkm, %fau", x, velocity[x], resultConverter.convert(velocity[x])));
             }
             velocity[x] = resultConverter.convert(velocity[x]);
         }
@@ -294,22 +295,22 @@ public class Ephemeris {
         
         int cnt = 0;
         for(Double d : coefficients) {
-        	logger.debug(format("(%d): %f", cnt++, d));
+        	logger.fine(format("(%d): %f", cnt++, d));
         }
         
         int i = 0;
         for (int x = 0; x < 3; x++) {
             position[x] = 0.0;
             for (int y = 0; y < coefficientCount; y++) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(format("    a: position[%d](%f) += coefficient[%d](%f) * polynomial[%d](%f)", x, position[x], i, coefficients.get(i), y, polynomial[y]));
+                if (logger.isLoggable(Level.FINE)) {
+                    logger.fine(format("    a: position[%d](%f) += coefficient[%d](%f) * polynomial[%d](%f)", x, position[x], i, coefficients.get(i), y, polynomial[y]));
                 }
                 position[x] += coefficients.get(i) * polynomial[y];
                 i++;
             }
 
-            if (logger.isDebugEnabled()) {
-                logger.debug(format("position[%d]=%fkm, %fau", x, position[x], resultConverter.convert(position[x])));
+            if (logger.isLoggable(Level.FINE)) {
+                logger.fine(format("position[%d]=%fkm, %fau", x, position[x], resultConverter.convert(position[x])));
             }
             position[x] = resultConverter.convert(position[x]);
         }
