@@ -118,11 +118,8 @@ public class EphemerisServlet extends HttpServlet {
                 }
                 view.writeModel(writer, model);
             }
-        } catch(EphemerisLookupError e) {
-            writer.println(e.toString());
-            for( StackTraceElement ee  : e.getStackTrace()) {
-                writer.println(ee.toString());
-            }
+        } catch(Throwable e) {
+			view.writeError(writer, error);
         } finally {
             writer.flush();
         }

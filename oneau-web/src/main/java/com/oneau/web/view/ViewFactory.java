@@ -103,6 +103,19 @@ class JsonView implements View {
         }
         writer.write("]\n");
     }
+
+    @Override
+    public void writeError(Writer writer, Throwable error) {
+        try {
+            writer.write(
+                    format("{\"errorMessage\":\"%s\"}", error.getMessage())
+            );
+            logger.error("Caught error: "+error.getMessage(), error);
+        } catch(IOException e) {
+            logger.error("Caught IO Exception when trying to write out error message. I/O Exception: "+e.getMessage(), e);
+            logger.error("Underlying exception: " + error.getMessage(), error);
+        }
+    }
 }
 
 class TextView implements View {
@@ -145,6 +158,17 @@ class TextView implements View {
                     velocity
             )
             );
+        }
+    }
+
+    @Override
+    public void writeError(Writer writer, Throwable error) {
+        try {
+            writer.write(error.getMessage());
+            logger.error("Caught error: "+error.getMessage(), error);
+        } catch(IOException e) {
+            logger.error("Caught IO Exception when trying to write out error message. I/O Exception: "+e.getMessage(), e);
+            logger.error("Underlying exception: " + error.getMessage(), error);
         }
     }
 }

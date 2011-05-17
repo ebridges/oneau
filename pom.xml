@@ -105,7 +105,7 @@
                 <artifactId>jboss-maven-plugin</artifactId>
                 <configuration>
                     <jbossHome>/opt/jboss/</jbossHome>
-                    <serverName>default</serverName>
+                    <serverName>oneau</serverName>
                     <port>8080</port>
                     <fileName>oneau-web/target/oneau-web.war</fileName>
                 </configuration>

@@ -18,4 +18,6 @@ public interface View {
     void writeModel(Writer writer, Map<HeavenlyBody, PositionAndVelocity> model) throws IOException;
 
     void writeModel(Writer writer, MagneticDeclination decl) throws IOException;
+
+    void writeError(Writer writer, Throwable error);
 }

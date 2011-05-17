@@ -34,30 +34,34 @@ abstract class AbstractSqlGenerator implements SqlGenerator {
         this.rangeIds = new HashMap<Range<BigDecimal>, Long>();
     }
 
-    protected abstract String getStatementTerminator();
+    protected abstract String eol();
+
+    protected String pwd() {
+        return "oneau";
+    }
     
     protected String generateInsertObservation() {
-    	return "INSERT INTO ONEAU.OBSERVATION (ID, FILE_ID, MEASURED_ITEM_ID, OBSERVATION_NUM, INTERVAL_ID, COEFFICIENT) VALUES (%d, %d, %d, %d, %d, %32.17f)" + getStatementTerminator();   	
+    	return "INSERT INTO ONEAU.OBSERVATION (ID, FILE_ID, MEASURED_ITEM_ID, OBSERVATION_NUM, INTERVAL_ID, COEFFICIENT) VALUES (%d, %d, %d, %d, %d, %32.17f)" + eol();
     }
     
     protected String generateInsertRange(){
-    	return "INSERT INTO ONEAU.EPHEMERIS_INTERVAL(ID, RANGE_FROM, RANGE_TO) VALUES (%d, %f, %f)" + getStatementTerminator();
+    	return "INSERT INTO ONEAU.EPHEMERIS_INTERVAL(ID, RANGE_FROM, RANGE_TO) VALUES (%d, %f, %f)" + eol();
     }
     
     protected String generateInsertFile(){
-    	return "INSERT INTO ONEAU.EPHEMERIS_DATA(ID, FILENAME, HEADER_ID) VALUES (%d, '%s', %d)" + getStatementTerminator();
+    	return "INSERT INTO ONEAU.EPHEMERIS_DATA(ID, FILENAME, HEADER_ID) VALUES (%d, '%s', %d)" + eol();
     }
     
     protected String generateInsertHeader(){
-    	return "INSERT INTO ONEAU.EPHEMERIS_HEADER (ID, NAME, FILENAME, KSIZE, NUM_COEFF, EPOCH_START, EPOCH_END) VALUES (%d, '%s', '%s', %d, %d, %f, %f)" + getStatementTerminator();
+    	return "INSERT INTO ONEAU.EPHEMERIS_HEADER (ID, NAME, FILENAME, KSIZE, NUM_COEFF, EPOCH_START, EPOCH_END) VALUES (%d, '%s', '%s', %d, %d, %f, %f)" + eol();
     }
     
     protected String generateInsertConstant(){
-    	return "INSERT INTO ONEAU.CONSTANT (ID, HEADER_ID, NAME, VALUE) VALUES (%d, %d, '%s', %f)" + getStatementTerminator();
+    	return "INSERT INTO ONEAU.CONSTANT (ID, HEADER_ID, NAME, VALUE) VALUES (%d, %d, '%s', %f)" + eol();
     }
     
     protected String generateInsertBody(){
-    	return "INSERT INTO ONEAU.MEASURED_ITEM (ID, NAME, DIMENSIONS, CHEB_COEFFS, COEFF_SETS) VALUES (%d, '%s', %d, %d, %d)" + getStatementTerminator();
+    	return "INSERT INTO ONEAU.MEASURED_ITEM (ID, NAME, DIMENSIONS, CHEB_COEFFS, COEFF_SETS) VALUES (%d, '%s', %d, %d, %d)" + eol();
     }
     
     /* (non-Javadoc)
