@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.oneau</groupId>
-    <version>2.3</version>
+    <version>2.4-SNAPSHOT</version>
     <name>OneAU Application</name>
     <artifactId>oneau-application</artifactId>
     <packaging>pom</packaging>
@@ -179,32 +179,32 @@
             <dependency>
                 <groupId>com.oneau.resources</groupId>
                 <artifactId>oneau-resources</artifactId>
-                <version>2.3</version>
+                <version>2.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.oneau.web</groupId>
                 <artifactId>oneau-web</artifactId>
-                <version>2.3</version>
+                <version>2.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.oneau.loader</groupId>
                 <artifactId>oneau-loader</artifactId>
-                <version>2.3</version>
+                <version>2.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.oneau.core</groupId>
                 <artifactId>oneau-core</artifactId>
-                <version>2.3</version>
+                <version>2.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.oneau.core</groupId>
                 <artifactId>oneau-api</artifactId>
-                <version>2.3</version>
+                <version>2.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>com.oneau.data</groupId>
                 <artifactId>oneau-data</artifactId>
-                <version>2.3</version>
+                <version>2.4-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>commons-cli</groupId>
@@ -279,9 +279,9 @@
         </plugins>
     </reporting>
     <scm>
-        <connection>scm:svn:https://pl3.projectlocker.com/oneau/ephemeris/svn/tags/oneau-application-2.3</connection>
-        <developerConnection>scm:svn:https://pl3.projectlocker.com/oneau/ephemeris/svn/tags/oneau-application-2.3</developerConnection>
-        <url>https://pl3.projectlocker.com/oneau/ephemeris/trac/browser/tags/oneau-application-2.3</url>
+        <connection>scm:svn:https://pl3.projectlocker.com/oneau/ephemeris/svn</connection>
+        <developerConnection>scm:svn:https://pl3.projectlocker.com/oneau/ephemeris/svn</developerConnection>
+        <url>https://pl3.projectlocker.com/oneau/ephemeris/trac/browser</url>
     </scm>
     <distributionManagement>
       <repository>
