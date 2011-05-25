@@ -149,6 +149,13 @@
                 </configuration>
             </plugin>
         </plugins>
+	<extensions>
+         <extension>
+            <groupId>org.apache.maven.wagon</groupId>
+            <artifactId>wagon-ssh-external</artifactId>
+            <version>1.0-beta-7</version>
+         </extension>
+       </extensions>
     </build>
     <dependencyManagement>
         <dependencies>
@@ -279,8 +286,7 @@
     <distributionManagement>
       <repository>
         <id>ssh-repository</id>
-        <url>scpexe://ebridges@1au.com/repository</url>
+        <url>scpexe://deploy@1au.com/home/deploy/repository</url>
       </repository>
     </distributionManagement>
-
 </project>
