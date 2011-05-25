@@ -7,11 +7,17 @@
     <artifactId>oneau-application</artifactId>
     <version>2.3</version>
   </parent>
-  <version>2.3-SNAPSHOT</version>
+  <version>2.3</version>
   <packaging>jar</packaging>
   <name>OneAU Resources</name>
   <url>http://maven.apache.org</url>
   <build>
     <finalName>${project.artifactId}</finalName>
   </build>
+
+  <scm>
+    <connection>scm:svn:https://pl3.projectlocker.com/oneau/ephemeris/svn/tags/oneau-application-2.3/tags/oneau-application-2.3/oneau-resources</connection>
+    <developerConnection>scm:svn:https://pl3.projectlocker.com/oneau/ephemeris/svn/tags/oneau-application-2.3/tags/oneau-application-2.3/oneau-resources</developerConnection>
+    <url>https://pl3.projectlocker.com/oneau/ephemeris/trac/browser/tags/oneau-application-2.3/tags/oneau-application-2.3/oneau-resources</url>
+  </scm>
 </project>
