@@ -8,6 +8,7 @@
         <display-name>Ephemeris Servlet</display-name>
         <description>Loads an instance of Ephemeris into the Servlet Context, and remains available to fulfill requests.</description>
         <servlet-class>com.oneau.web.EphemerisServlet</servlet-class>
+        <!--
         <init-param>
             <param-name>jdbc_url</param-name>
             <param-value>jdbc:postgresql:oneau</param-value>
@@ -28,7 +29,7 @@
             <param-value>org.postgresql.Driver</param-value>
             <description>JDBC Driver</description>
         </init-param>
-        <!--
+        -->
         <init-param>
             <param-name>jdbc_url</param-name>
             <param-value>jdbc:hsqldb:file:/var/local/db/oneau/ephemeris-db</param-value>
@@ -46,10 +47,9 @@
         </init-param>
         <init-param>
             <param-name>jdbc_driver</param-name>
-            <param-value>org.hsqldb.jdbcDriver</param-value>
+            <param-value>org.hsqldb.jdbc.JDBCDriver</param-value>
             <description>JDBC Driver</description>
         </init-param>
-        -->
         <!--
         <init-param>
             <param-name>ephemeris-data</param-name>

@@ -3,7 +3,9 @@ package com.oneau.loader.ephemeris;
 import com.oneau.parser.ephemeris.Header;
 import com.oneau.parser.ephemeris.Observation;
 
+import java.io.IOException;
 import java.io.Writer;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -20,6 +22,25 @@ public class SqlObservationWriter extends AbstractObservationWriter {
 
         logger.info("Using database type: "+dbtype);
         this.sqlGenerator = SqlGeneratorFactory.instance(dbtype);
+    }
+
+    @Override
+    public void init() {
+        super.init();
+        List<String> schema = this.sqlGenerator.generateSchema();
+        try {
+            for(String s : schema) {
+                    out.write(s);
+            }
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        System.out.flush();
     }
 
     @Override

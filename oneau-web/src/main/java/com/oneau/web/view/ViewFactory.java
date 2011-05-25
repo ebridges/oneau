@@ -6,6 +6,7 @@ import com.oneau.web.util.MagneticDeclination;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.Map;
 
@@ -164,7 +165,13 @@ class TextView implements View {
     @Override
     public void writeError(Writer writer, Throwable error) {
         try {
-            writer.write(error.getMessage());
+            if(null != error) {
+                if(null != error.getMessage()) {
+                    writer.write(error.getMessage());
+                } else {
+
+                }
+            }
             logger.error("Caught error: "+error.getMessage(), error);
         } catch(IOException e) {
             logger.error("Caught IO Exception when trying to write out error message. I/O Exception: "+e.getMessage(), e);

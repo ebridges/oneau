@@ -35,6 +35,23 @@ XX 4. observation parsing is skipping the first two coefficients (after begin/en
    WHERE D.FILENAME = '/ephemeris/ascp2000.405'
    AND M.name = 'Mercury'
    AND O.observation_num = 22
-
-
+5. when running with HSQL driver, an error occurred:
+    Exception in thread "main" java.lang.IllegalArgumentException: java.sql.SQLIntegrityConstraintViolationException: integrity constraint violation: unique constraint or index violation; SYS_CT_59 table: EPHEMERIS_INTERVAL
+        at com.oneau.loader.ephemeris.JdbcObservationWriter.write(JdbcObservationWriter.java:113)
+        at com.oneau.parser.ephemeris.AscpFileParser.readObservationsFromFile(AscpFileParser.java:59)
+        at com.oneau.parser.ephemeris.EphemerisParser.run(EphemerisParser.java:79)
+        at com.oneau.parser.ephemeris.EphemerisParser.main(EphemerisParser.java:40)
+    Caused by: java.sql.SQLIntegrityConstraintViolationException: integrity constraint violation: unique constraint or index violation; SYS_CT_59 table: EPHEMERIS_INTERVAL
+        at org.hsqldb.jdbc.Util.sqlException(Unknown Source)
+        at org.hsqldb.jdbc.Util.sqlException(Unknown Source)
+        at org.hsqldb.jdbc.JDBCStatement.fetchResult(Unknown Source)
+        at org.hsqldb.jdbc.JDBCStatement.executeUpdate(Unknown Source)
+        at com.oneau.loader.ephemeris.JdbcObservationWriter.executeUpdate(JdbcObservationWriter.java:118)
+        at com.oneau.loader.ephemeris.JdbcObservationWriter.write(JdbcObservationWriter.java:107)
+   -- After analysis it was determined that file ascp2180.405 ends with the same date range which ascp2200.405 begins with.
+   -- It's not clear how to proceed with that.  Even though the application should be able to link up the observations with
+      a preexisting date range (see: com.oneau.loader.ephemeris.AbstractSqlGenerator#writeFileInfo()), there are no other
+      circumstances in the ephemeris files where there are duplicate date ranges.
+   -- this also did not occur with the postgresql jdbc driver since there was no unique constraint on the combo of to/from range.
+6. Only 3 date ranges are created in the ephemeris_interval table with the HSQL driver.  PSQL driver does not have this behavior.
 

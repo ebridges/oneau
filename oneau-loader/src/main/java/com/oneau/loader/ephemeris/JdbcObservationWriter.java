@@ -8,6 +8,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Enumeration;
 import java.util.logging.Logger;
 
 import static com.oneau.core.util.Utility.isEmpty;
@@ -30,6 +31,7 @@ public class JdbcObservationWriter implements ObservationWriter {
     public JdbcObservationWriter() {
     }
 
+    /*
     public static void main(String[] args) {
     	System.setProperty(URL_PROPERTY, "jdbc:postgresql:oneau");
     	System.setProperty(USERNAME_PROPERTY,"postgres");
@@ -39,16 +41,26 @@ public class JdbcObservationWriter implements ObservationWriter {
     	JdbcObservationWriter w = new JdbcObservationWriter();
     	w.init();
     }
+    */
     
     @Override
     public void init() {
         try {
             Class.forName(getProperty(DRIVER_PROPERTY));
+            logger.info(format("Located JDBC Driver [%s] on classpath.", getProperty(DRIVER_PROPERTY)));
         } catch (ClassNotFoundException e) {
             throw new ExceptionInInitializerError(e);
         }
+
+        Enumeration enumeration = DriverManager.getDrivers();
+        while (enumeration.hasMoreElements()) {
+          Object driverAsObject = enumeration.nextElement();
+          logger.info("Loaded JDBC Driver: " + driverAsObject);
+        }
+
         try {
             this.connection = initializeConnection();
+            
             String dbtypekey = SqlGeneratorFactory.getDbTypeKey(
             		this.connection.getMetaData().getDatabaseProductName(),
             		this.connection.getMetaData().getDatabaseProductVersion()
@@ -56,6 +68,7 @@ public class JdbcObservationWriter implements ObservationWriter {
             
             logger.info("Using database type: "+dbtypekey);
             this.sqlGenerator = SqlGeneratorFactory.instance(dbtypekey);
+            
             for(String sql : sqlGenerator.generateSchema())
                 executeStatement(sql);
         } catch (SQLException e) {
@@ -120,6 +133,10 @@ public class JdbcObservationWriter implements ObservationWriter {
     }
 
     private Connection initializeConnection() throws SQLException {
+        logger.info(format("Building connection to %s at %s",
+                getProperty(USERNAME_PROPERTY),
+                getProperty(URL_PROPERTY)
+        ));
         return DriverManager.getConnection(
                 getProperty(URL_PROPERTY),
                 getProperty(USERNAME_PROPERTY),

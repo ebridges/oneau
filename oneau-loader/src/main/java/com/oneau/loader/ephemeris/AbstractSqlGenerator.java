@@ -1,5 +1,7 @@
 package com.oneau.loader.ephemeris;
 
+import static com.oneau.data.SchemaObjectDefinition.*;
+
 import com.oneau.core.util.HeavenlyBody;
 import com.oneau.core.util.Range;
 import com.oneau.parser.ephemeris.CoefficientInfo;
@@ -22,6 +24,7 @@ import static java.util.Collections.unmodifiableList;
  */
 abstract class AbstractSqlGenerator implements SqlGenerator {
     private static final Logger logger = Logger.getLogger(AbstractSqlGenerator.class.getName());
+
     private long seq;
     private Long headerId;
     private Map<String, Long> fileIds;
@@ -41,27 +44,27 @@ abstract class AbstractSqlGenerator implements SqlGenerator {
     }
     
     protected String generateInsertObservation() {
-    	return "INSERT INTO ONEAU.OBSERVATION (ID, FILE_ID, MEASURED_ITEM_ID, OBSERVATION_NUM, INTERVAL_ID, COEFFICIENT) VALUES (%d, %d, %d, %d, %d, %32.17f)" + eol();
+    	return format("INSERT INTO %s.%s (ID, FILE_ID, MEASURED_ITEM_ID, OBSERVATION_NUM, INTERVAL_ID, COEFFICIENT) VALUES (%%d, %%d, %%d, %%d, %%d, %%32.17f)  %s", SCHEMANAME, OBSERVATION, eol());
     }
     
     protected String generateInsertRange(){
-    	return "INSERT INTO ONEAU.EPHEMERIS_INTERVAL(ID, RANGE_FROM, RANGE_TO) VALUES (%d, %f, %f)" + eol();
+    	return format("INSERT INTO %s.%s (ID, RANGE_FROM, RANGE_TO) VALUES (%%d, %%f, %%f)  %s", SCHEMANAME, EPHEMERIS_INTERVAL, eol());
     }
     
     protected String generateInsertFile(){
-    	return "INSERT INTO ONEAU.EPHEMERIS_DATA(ID, FILENAME, HEADER_ID) VALUES (%d, '%s', %d)" + eol();
+    	return format("INSERT INTO %s.%s(ID, FILENAME, HEADER_ID) VALUES (%%d, '%%s', %%d)  %s", SCHEMANAME, EPHEMERIS_DATA, eol());
     }
     
     protected String generateInsertHeader(){
-    	return "INSERT INTO ONEAU.EPHEMERIS_HEADER (ID, NAME, FILENAME, KSIZE, NUM_COEFF, EPOCH_START, EPOCH_END) VALUES (%d, '%s', '%s', %d, %d, %f, %f)" + eol();
+    	return format("INSERT INTO %s.%s (ID, NAME, FILENAME, KSIZE, NUM_COEFF, EPOCH_START, EPOCH_END) VALUES (%%d, '%%s', '%%s', %%d, %%d, %%f, %%f)  %s", SCHEMANAME, EPHEMERIS_HEADER, eol());
     }
     
     protected String generateInsertConstant(){
-    	return "INSERT INTO ONEAU.CONSTANT (ID, HEADER_ID, NAME, VALUE) VALUES (%d, %d, '%s', %f)" + eol();
+    	return format("INSERT INTO %s.%s (ID, HEADER_ID, NAME, VALUE) VALUES (%%d, %%d, '%%s', %%f)  %s", SCHEMANAME, CONSTANT, eol());
     }
     
     protected String generateInsertBody(){
-    	return "INSERT INTO ONEAU.MEASURED_ITEM (ID, NAME, DIMENSIONS, CHEB_COEFFS, COEFF_SETS) VALUES (%d, '%s', %d, %d, %d)" + eol();
+    	return format("INSERT INTO %s.%s (ID, NAME, DIMENSIONS, CHEB_COEFFS, COEFF_SETS) VALUES (%%d, '%%s', %%d, %%d, %%d)  %s", SCHEMANAME, MEASURED_ITEM, eol());
     }
     
     /* (non-Javadoc)
@@ -83,15 +86,19 @@ abstract class AbstractSqlGenerator implements SqlGenerator {
 
         for(HeavenlyBody body : observation.getCoefficients().keySet()) {
             for(BigDecimal coefficient : observation.getCoefficients().get(body)) {
-                sql.add(format(
-                        this.generateInsertObservation(),
-                        seq++,
-                        fileId,
-                        body.getId(),
-                        observation.getObservationNumber(),
-                        rangeId,
-                        coefficient
-                ));
+                sql.add(
+                        logSql(
+                                format(
+                                        this.generateInsertObservation(),
+                                        seq++,
+                                        fileId,
+                                        body.getId(),
+                                        observation.getObservationNumber(),
+                                        rangeId,
+                                        coefficient
+                                )
+                        )
+                );
             }
         }
         
@@ -107,11 +114,12 @@ abstract class AbstractSqlGenerator implements SqlGenerator {
             if(null == observation.getBeginEndDates()) {
                 throw new NullPointerException("range cannot be null");
             }
+            logger.info("generating insert for interval: " + observation.getBeginEndDates().toString());
             StringBuilder out = new StringBuilder(this.generateInsertRange().length() + 24*3);
             long intervalId = seq++;
             out.append(format(this.generateInsertRange(), intervalId, observation.getBeginEndDates().getLeft(), observation.getBeginEndDates().getRight()));
             this.rangeIds.put(observation.getBeginEndDates(), intervalId);
-            return out.toString();
+            return logSql(out);
         } else {
             return null;
         }
@@ -127,7 +135,7 @@ abstract class AbstractSqlGenerator implements SqlGenerator {
             long fileId = seq++;
             out.append(format(this.generateInsertFile(), fileId, observation.getFilename(), headerId));
             this.fileIds.put(observation.getFilename(), fileId);
-            return out.toString();
+            return logSql(out);
         } else {
             return null;
         }
@@ -144,8 +152,7 @@ abstract class AbstractSqlGenerator implements SqlGenerator {
             out.append(format(this.generateInsertHeader(), headerId, header.getName(), header.getFilename(), header.getKsize(), header.getNumCoeff(), header.getStartEpoch(), header.getEndEpoch()));
             writeBodies(out, header.getCoeffInfo());
             writeConstants(out, header.getConstantNames(), header.getConstantValues());
-            logger.finer(format("Header SQL:\n%s", out.toString()));
-            return out.toString();
+            return logSql(out);
         } else {
             return null;
         }
@@ -169,5 +176,14 @@ abstract class AbstractSqlGenerator implements SqlGenerator {
         sz += HeavenlyBody.values().length * this.generateInsertBody().length();
         sz += header.getConstantNames().size() * this.generateInsertConstant().length();
         return sz;
+    }
+
+    private String logSql(StringBuilder sql) {
+        return logSql(sql.toString());
+    }
+
+    private String logSql(String sql) {
+        logger.finest(sql);
+        return sql;
     }
 }

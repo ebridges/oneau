@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Logger;
 
+import static com.oneau.data.SchemaObjectDefinition.*;
 import static java.lang.String.format;
 
 /**
@@ -24,8 +25,8 @@ import static java.lang.String.format;
 public class EphemerisDAOImpl implements EphemerisDAO {
     private static final Logger logger = Logger.getLogger(EphemerisDAOImpl.class.getName());
     private DataSource dataSource;
-    private static final String COEFFICIENTS_BY_DATE_SQL = "SELECT COEFFICIENT FROM ONEAU.OBSERVATION LEFT JOIN ONEAU.EPHEMERIS_DATA D ON FILE_ID = D.ID WHERE INTERVAL_ID = ? AND MEASURED_ITEM_ID = ? AND D.FILENAME = ?";
-    private static final String LOOKUP_INTERVAL_ID = "SELECT id AS interval_id FROM oneau.ephemeris_interval WHERE ? BETWEEN range_from AND range_to";
+    private static final String COEFFICIENTS_BY_DATE_SQL = format("SELECT COEFFICIENT FROM %s.%s LEFT JOIN %s.%s D ON FILE_ID = D.ID WHERE INTERVAL_ID = ? AND MEASURED_ITEM_ID = ? AND D.FILENAME = ?", SCHEMANAME, OBSERVATION, SCHEMANAME, EPHEMERIS_DATA);
+    private static final String LOOKUP_INTERVAL_ID = format("SELECT id AS interval_id FROM %s.%s WHERE ? BETWEEN range_from AND range_to", SCHEMANAME, EPHEMERIS_INTERVAL);
 
     public EphemerisDAOImpl(DataSource dataSource) {
         this.dataSource = dataSource;

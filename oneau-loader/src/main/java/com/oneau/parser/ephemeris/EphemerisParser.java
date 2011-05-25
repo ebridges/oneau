@@ -1,11 +1,14 @@
 package com.oneau.parser.ephemeris;
 
 import com.oneau.common.ObservationWriter;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 /*
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 */
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -22,9 +25,13 @@ import static java.lang.String.format;
  */
 public class EphemerisParser {
     private static final Logger logger = Logger.getLogger(EphemerisParser.class.getName());
+
     private static final String OBSERVATION_WRITER_OPTION = "observation-writer";
     private static final String EPHEMERIS_FILE_LIST_OPTION = "ephemeris-files";
-    private static final String DEFAULT_OBSERVATION_WRITER_CLASS = "com.oneau.loader.ephemeris.StdoutObservationWriter";
+
+    private static final String DEFAULT_OBSERVATION_WRITER_CLASS = "com.oneau.loader.ephemeris.StdoutSqlObservationWriter";
+    private static final String DEFAULT_EPHEMERIS_FILE = "/ephemeris/ascp2000.405";
+    private static final String HEADER_EPHEMERIS_FILE = "/ephemeris/header.405";
 
     private Map<String,String> arguments;
 
@@ -34,6 +41,18 @@ public class EphemerisParser {
     }
 
     public EphemerisParser(String[] args) {
+       //Get the System Classloader
+        ClassLoader applicationClassLoader = this.getClass().getClassLoader();
+        if (applicationClassLoader == null) {
+            applicationClassLoader = ClassLoader.getSystemClassLoader();
+        }
+
+        URL[] urls = ((URLClassLoader)applicationClassLoader).getURLs();
+        for (URL url : urls) {
+            logger.info("Classpath entry: " + url.getFile());
+        }
+
+
         this.arguments = new HashMap<String,String>();
         parseArgs(args);
         
@@ -44,7 +63,7 @@ public class EphemerisParser {
     }
 
     public void run() throws Exception {
-        String[] ephemerisFiles = arguments.get(EPHEMERIS_FILE_LIST_OPTION).split(",");
+        String[] ephemerisFiles = getListOfEphemerisFiles(arguments.get(EPHEMERIS_FILE_LIST_OPTION));
         String headerFile = removeHeader(ephemerisFiles);
         
         HeaderParser headerParser = new HeaderParser(headerFile);
@@ -63,6 +82,15 @@ public class EphemerisParser {
         } finally {
             ow.finish();
         }
+    }
+
+    private String[] getListOfEphemerisFiles(String arg) {
+        if(isEmpty(arg)) {
+            return new String[]{HEADER_EPHEMERIS_FILE, DEFAULT_EPHEMERIS_FILE};
+        } else {
+            return arg.split(",");
+        }
+
     }
 
     private String removeHeader(String[] arr) {

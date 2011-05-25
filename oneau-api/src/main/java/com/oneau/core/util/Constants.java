@@ -62,6 +62,11 @@ public final class Constants {
     public static final String JDBC_USERNAME_KEY = "jdbc_username";
     public static final String JDBC_PASSWORD_KEY = "jdbc_password";
     public static final String JDBC_DRIVER_KEY = "jdbc_driver";
+    
+    public static final Integer DATE_PRECISION = 10;
+    public static final Integer DATE_SCALE = 1;
+    public static final Integer COEFF_PRECISION = 20;
+    public static final Integer COEFF_SCALE = 10;
 
     private Constants() {
     }

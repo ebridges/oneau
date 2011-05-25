@@ -10,18 +10,11 @@ import java.io.OutputStreamWriter;
  * Date: Nov 13, 2010
  */
 public class StdoutSqlObservationWriter  extends SqlObservationWriter {
+    public StdoutSqlObservationWriter() {
+        this(SqlGeneratorFactory.HSQL);
+    }
+
     public StdoutSqlObservationWriter(String dbtype) {
-        super(new OutputStreamWriter(System.out), dbtype);
-    }
-
-    @Override
-    public void write(Header header, Observation observation) {
-        super.write(header, observation);
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
-        System.out.flush();
+        super(new OutputStreamWriter(System.out), SqlGeneratorFactory.HSQL);
     }
 }
