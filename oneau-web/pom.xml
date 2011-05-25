@@ -3,11 +3,11 @@
   <groupId>com.oneau.web</groupId>
   <artifactId>oneau-web</artifactId>
   <packaging>war</packaging>
-  <version>2.3</version>
+  <version>2.3-SNAPSHOT</version>
   <parent>
     <groupId>com.oneau</groupId>
     <artifactId>oneau-application</artifactId>
-    <version>2.3</version>
+    <version>2.3-SNAPSHOT</version>
   </parent>
   <name>OneAU Web Application</name>
   <url>http://maven.apache.org</url>
