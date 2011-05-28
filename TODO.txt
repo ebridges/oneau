@@ -54,4 +54,4 @@ XX 4. observation parsing is skipping the first two coefficients (after begin/en
       circumstances in the ephemeris files where there are duplicate date ranges.
    -- this also did not occur with the postgresql jdbc driver since there was no unique constraint on the combo of to/from range.
 6. Only 3 date ranges are created in the ephemeris_interval table with the HSQL driver.  PSQL driver does not have this behavior.
-
+7. EphemerisDataFile doesn't have metadata for all date ranges: need begin/end & # observations.

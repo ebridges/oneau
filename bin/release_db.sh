@@ -17,6 +17,9 @@ M2_REPO=~/.m2/repository
 PROJ_HOME=..
 
 TARGET="${PROJ_HOME}/target"
+if [ ! -e ${TARGET} ] ; then
+    mkdir -p ${TARGET}
+fi
 
 CP=.
 CP=${CP}:${M2_REPO}/org/hsqldb/hsqldb/2.2.1/hsqldb-2.2.1.jar
@@ -50,11 +53,13 @@ done
 
 echo 'readonly=true' >> "${TMP_DIR}/${DB_NAME}.properties"
 
+
+
 java -cp ${CP} org.hsqldb.lib.tar.DbBackup --save "${DB_BAK}" "${TMP_DIR}/${DB_NAME}"
 
-echo  gzip -c ${DB_BAK} | ssh ${REMOTE_REPO_ADDR} "cd ${REMOTE_REPO_DIR} && cat -> ${DB_ARCHIVE}.gz"
+gzip -c ${DB_BAK} | ssh ${REMOTE_REPO_ADDR} "cd ${REMOTE_REPO_DIR} && cat -> ${DB_ARCHIVE}.gz"
 
-#/bin/rm -rf ${TMP_DIR}
-#rm ${DB_BAK}
+/bin/rm -rf ${TMP_DIR}
+rm ${DB_BAK}
 
 echo "done"

@@ -8,6 +8,8 @@ import com.oneau.core.util.PositionAndVelocity;
 import com.oneau.core.util.Utility;
 
 import com.oneau.data.EphemerisDAO;
+import com.oneau.data.EphemerisIntervalNotFound;
+import com.oneau.data.EphemerisLookupError;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -159,6 +161,10 @@ public class Ephemeris {
             to load a new set.
           */
         EphemerisDataFile dataFile = EphemerisDataFile.lookupByDate(jultime);
+        if(null == dataFile) {
+            throw new EphemerisIntervalNotFound(jultime);
+        }
+
 //        if (!DATAFILE_CACHE.containsKey(dataFile)) {
 //            DATAFILE_CACHE.put(dataFile, new EphemerisData(dataFile));
 //        }
@@ -167,6 +173,7 @@ public class Ephemeris {
 //        EphemerisDataView dataView = getViewForDate(heavenlyBody, jultime);
 
  //       EphemerisDAO dao = DAOFactory.instance().getEphemerisDAO();
+
         EphemerisDataView dataView = ephemerisDao.getCoefficientsByDate(dataFile, heavenlyBody, jultime);
 
         logger.info(format("EphemerisDataView: %s",dataView.toString()));

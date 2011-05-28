@@ -169,7 +169,8 @@ class TextView implements View {
                 if(null != error.getMessage()) {
                     writer.write(error.getMessage());
                 } else {
-
+                    writer.write("Caught null pointer exception.");
+                    error.printStackTrace(new PrintWriter(writer));
                 }
             }
             logger.error("Caught error: "+error.getMessage(), error);
