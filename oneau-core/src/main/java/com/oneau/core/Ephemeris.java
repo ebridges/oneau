@@ -336,6 +336,16 @@ public class Ephemeris {
         return polynomial;
     }
 
+    /**
+     * polynomial(a) = 1
+     * polynomial(b) = date
+     * for i : coefficentCount
+     *     polynomial(i) = 2 * date * polynomial(i-1) - polynomial(i-2)
+     *
+     * @param coefficientCount
+     * @param chebyshevTime
+     * @return
+     */
     private double[] createPositionPolynomial(int coefficientCount, double chebyshevTime) {
         double[] polynomial = new double[coefficientCount];
         polynomial[0] = 1;
