@@ -1,0 +1,317 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1"> 
+<title>Using the JPL Solar System Ephemeris</title>
+</head><body>
+<h1>Using the JPL Solar System Ephemeris</h1>
+
+<h2>Table of Contents</h2>
+<ul>
+	<li><a href="#data">Ephemeris Data</a>
+	</li><li><a href="#sky">Positions of Planets on the Sky</a>
+	<ul>
+		<li><a href="#view">Observer's Point of View</a>
+		</li><li><a href="#light_delay">Time Delay and Apparent
+			Direction</a>
+		</li><li><a href="#coord_frame">Coordinate Reference Frames
+			(J2000, B1950, IERS)</a>
+	</li></ul>
+	</li><li><a href="#pulsar">Pulsar Pulse Times of Arrival</a>
+	</li><li><a href="#ref">References</a>
+</li></ul>
+
+The JPL solar system ephemeris has a wide variety of applications for
+spacecraft navigation and ground-based astronomy.  I shall describe only
+two applications of relevance to the GBT, generation of lunar and planetary
+positions for telescope tracking and pulsar synchronization and data
+reduction.
+
+<h2><a name="data">Ephemeris Data</a></h2>
+
+The ephemeris contains equation coefficients which describe the
+three-dimensional positions and velocities of the sun, moon, and planets as
+a function of time in a rectangular coordinate system.  There is a set of
+coefficients for each coordinate component of position and velocity for
+each object.  Each set of coefficients typically covers a time span of
+between 8 and 32 days.  The number of coefficients and time span depends on
+the rate of change and required accuracy of an object's position and
+velocity.  See the documents on the descriptions of the <a href="http://www.cv.nrao.edu/%7Erfisher/Ephemerides/ephem_descr.html">JPL Ephemeris</a>, and the <a href="http://www.cv.nrao.edu/%7Erfisher/Ephemerides/computer_code.html"> computer code</a> for reading the ephemeris for
+more details.
+
+<p>The X-Y plane of the ephemeris rectangular coordinate system is parallel
+to the earth's equatorial plane.  The X axis is in the direction of the
+vernal equinox, the Y axis points toward RA = 6 hours, Dec = 0, and the Z
+axis is in the direction of the north celestial pole.  The position
+components are in kilometers, and the velocity components are in kilometers
+per day.  The time independent variable for the equations is <a href="http://www.cv.nrao.edu/%7Erfisher/Ephemerides/times.html#TDT">Terrestrial Dynamic Time</a> in fractional Julian
+days.
+
+</p><p>The origin of the rectangular coordinates is at the solar system
+barycenter (center of mass) for the sun and all planets, except the earth.
+The solar system barycentric positions of the earth and moon may be derived
+from the ephemeris specifications of the position and velocity
+of the earth-moon barycenter and the geocentric position and velocity of
+the moon.
+
+</p><p>Since the orientation of the earth's equator and pole are is
+continuously changing, the coordinate system must be specified for a
+particular epoch.  The DE100-series ephemerides use the B1950 equator and
+equinox.  The DE200 series uses the J2000 system <a href="#ref1">[ref
+1]</a>.  The most recent DE400 series are also in the J2000 system, but its
+equator and equinox are defined by the reference frame of the International
+Earth Rotation Service (<a href="ftp://maia.usno.navy.mil/ser7/iersexp.sup">IERS</a>), which is more
+precisely tied to distant celestial objects than is the IAU J2000 standard.
+
+</p><h2><a name="sky">Positions of Planets on the Sky</a></h2>
+
+There is an interesting change in computational perspective brought about
+by the three dimensional nature of the JPL ephemeris.  As classical
+astronomers we are most familiar with the two dimensional world of
+spherical direction coordinates.  Adding the third dimension to spherical
+coordinates for nearby objects is much more complicated than making a
+complete switch to rectangular coordinates for all calculations except the
+final conversion to spherical coordinates for the purposes of pointing a
+telescope.  Even <a href="http://www.cv.nrao.edu/%7Erfisher/Ephemerides/earth_rot.html#prec">precession</a>, <a href="http://www.cv.nrao.edu/%7Erfisher/Ephemerides/earth_rot.html#nut">nutation</a>, and aberration (the tedium of
+every observer's life) are more easily visualized and specified for the
+computer in three-dimensional coordinates.
+
+<p>The solar system is not static.  Apparent directions are
+significantly affected by the light travel time between two objects
+as explained below.
+
+</p><h3><a name="view">Observer's Point of View</a></h3>
+
+Earthly observers are interested in the direction of the moon and planets
+as seen from our observatories.  The ephemeris can give us only geocentric
+positions, however.  For the moment we shall assume that we have a
+computational source for the <a href="http://www.cv.nrao.edu/%7Erfisher/Ephemerides/earth_rot.html#topo">observatory's
+geocentric position</a> and proceed with a brief description of computing
+the apparent position of an object in the sky.
+
+<p>To get the instantaneous topocentric (observatory's) position of the
+moon we add vectors from the observatory to the earth's center, and from
+the earth's center to the moon's center.  The latter is supplied by the
+ephemeris.  If we let <tt>(x,y,z)</tt> be geocentric and <tt>(a,b,c)</tt>
+be topocentric vector coordinates, the vector equation is
+
+</p><pre>	Moon(a,b,c) = Moon(x,y,z) - Observatory(x,y,z)
+</pre>
+
+Using available ephemeris information, a planet's topocentric position is
+the vector sum:<br> observatory-&gt;(earth's center) +<br>(earth's
+center)-&gt;(earth-moon barycenter) +<br> (earth-moon barycenter)-&gt;(solar
+system barycenter) +<br>(solar system barycenter)-&amp;gtplanet.
+
+<p>If we let <tt>(X,Y,Z)</tt> be solar system barycentric coordinates,
+<tt>EMB</tt> represent the earth-moon barycenter, and <tt>EMrat</tt> be the
+earth/moon mass ratio, then
+
+</p><pre>	Planet(a,b,c) = Planet(X,Y,Z) - EMB(X,Y,Z)
+			   + Moon(x,y,z) / (1 + EMrat) - Observatory(x,y,z)
+</pre>
+
+where the third term quotient on the right hand side of the equation is the
+geocentric position of the earth-moon barycenter.
+
+<p>Positions from any point in the solar system relative to any other point
+may be computed in a similar manner as long as the locations are given in
+the ephemeris.
+
+</p><p>Neglecting the light travel time correction for the moment, conversion of a
+topocentric vector to right ascension and declination in the ephemeris'
+reference frame is simply
+
+</p><pre>	Dec = arctan ( c / sqrt( a * a + b * b ) )
+	RA  = arctan ( b / a )
+</pre>
+
+<h3><a name="light_delay">Time Delay and Apparent Direction</a></h3>
+
+Specifying a planet's position in the sky can be quite confusing because it
+can be done in any one of a number of spherical coordinate
+conventions (B1950, J2000, current epoch, etc.), and there are two physical
+corrections for the finite speed of light.  We will say more about the <a href="http://www.cv.nrao.edu/%7Erfisher/Ephemerides/earth_rot.html">coordinate conventions</a> in a separate document.
+For the moment let's look at the light travel time corrections
+
+<p>Things are always as they appear, but it depends on whom you ask.  When
+we look at a planet we are actually seeing the planet where it was when its
+light left the planet.  This could be minutes or even hours before the
+current time.  The procedure for compensating for this time delay is to
+compute the distance to the planet at the time of observation.  From
+this compute the light travel time, recompute the planet's position for
+current time minus light travel time, and use this earlier planet's
+position with the current observatory, moon, and earth-moon
+barycenter positions in the <tt>Planet(a,b,c)</tt> equation above.
+
+</p><p>The planet's position obtained from this procedure
+is its "astrometric" position in the reference frame of the solar system
+ephemeris.  That is, it is the position of the planet as it would appear on
+the background of stars as plotted in this frame, J2000 for
+example.
+
+</p><p>The second correction to the apparent direction of a planet, due to the
+finite speed of light, comes from the motion of the observer.  The same
+correction needs to made to star positions, where it is called "aberration
+of star light."  The time-worn analogy is of a person running in the rain.
+If the person is standing still, the rain appears to be coming straight
+down, but, if the person is moving, the rain appears to be coming from the
+direction of motion.  The aberration correction to the apparent direction
+of a star or planet, in radians, is the ratio of the velocity component of
+the observer's motion perpendicular to the line of sight to the speed of
+light.  The earth's orbital velocity is about 30 km/s so the annual
+aberration can be much as 30 / 300,000 = .0001 radians or about 20
+arcseconds.
+
+</p><p>One might ask "velocity with respect to what?" when computing
+aberration.  In the case of stars we dodge the question by computing only
+<em>differential</em> aberration for different times of day and year,
+hence, the terms "diurnal aberration" and "annual aberration."  For a
+planet we can use the observer's lateral velocity with respect to the
+planet, but this correction will include the time-of-flight correction for
+the speed of light outlined above.  Since the time-of-flight correction
+used the planet's velocity with respect to the solar system barycenter, we
+can add the aberration correction using the earth's velocity with respect
+to the barycenter.  Another, slightly more rigorous approach is to compute
+the sum of both corrections together by computing the direction of the
+planet using the positions of both the planet and observer at the current
+time minus the light travel time.
+
+</p><p>The Astronomical Almanac is not entirely consistent on how it lists
+planetary positions.  Pluto's position is tabulated as astrometric.  In
+other words, it is corrected for the light's time-of-flight but not for
+aberration, and the coordinate frame is J2000 as given by the DE200
+ephemeris.  All other planetary positions are listed as "apparent", the
+position with respect to the current equator and equinox including the
+correction for aberration.  In other words, these positions are corrected
+for <a href="http://www.cv.nrao.edu/%7Erfisher/Ephemerides/earth_rot.html#prec">precession</a>, <a href="http://www.cv.nrao.edu/%7Erfisher/Ephemerides/earth_rot.html#nut">nutation</a>, aberration, and time-of-flight.
+
+</p><h3><a name="coord_frames">Coordinate Reference Frames (B1950, J2000,
+IERS)</a></h3>
+
+The choice of coordinate system for an ephemeris is an arbitrary one.  In
+the past the strongest criterion was that the coordinate system be one in
+very common use.  The advent of much more accurate celestial measurement
+techniques and fast computers for coordinate conversions has changed the
+dominant criterion to the precision with which a coordinate system can be
+tied to very distant celestial objects.  The JPL ephemerides have followed
+this evolution with the DE100, DE200, and DE400 series, which are based on
+the B1950, J2000, and IERS coordinate systems, respectively.
+
+<p>The B1950 and J2000 equatorial coordinate systems are defined by the
+mean orientation of the earth's equator and ecliptic at the beginning of
+the years 1950 and 2000.  The assumed orientation of the earth on these two
+dates is more a matter of definition than actual, since the 'mean'
+orientation does not include short term motions of the earth's spin axis
+(nutation and smaller effects).  Of course, he coordinates of celestial
+objects in B1950 and J2000 differ by many arcminutes.
+
+</p><p>The B1950 system is tied to the sky by star coordinates in the FK4
+catalog, and J2000 is tied to FK5.  Because star catalogs tend to be
+weighted toward nearby stars, they are subject to stellar proper motions
+and the assumption that the motions of many stars will average out.  Since
+the FK4 catalog was published, offsets and drift rates have been determined
+for its average stellar positions at the level of a few hundredths of an
+arcsecond as summarized in <a href="#ref2">[ref 2]</a>.  These corrections
+are insignificant for telescope pointing, but they are important for VLBI
+and pulsar observations.
+
+</p><p>The <a href="ftp://maia.usno.navy.mil/ser7/iersexp.sup">IERS</a>
+reference frame is essentially the J2000 system except that it is tied to the
+sky by the published positions of 228 radio sources, roughly 23 of which
+are monitored by several VLBI networks to determine the day to day changes
+in the orientation of the earth <a href="#ref3">[ref 3]</a>.  These radio
+sources are very distant compared to stars and should not suffer any of
+the proper motion problems.  The DE403 and IERS celestial frames are tied
+together to an accuracy of a few milliarcseconds <a href="#ref5">[ref
+5]</a>.  The IERS and FK5 systems are consistent to the accuracy of the FK5
+catalog.
+
+</p><p>The JPL ephemerides themselves define a celestial reference frame since
+they publish the positions of solar system objects in space in a coordinate
+system which is presumably fixed with respect to distant celestial objects.
+Although every effort has been made to tie the ephemeris dynamical frame to
+a stellar frame, there will always be an offset at some level.  You
+must be aware that, when working with more than one ephemeris or coordinate
+system, you need to take into account the accuracy with which these systems
+are known to be tied.  Avoid switching systems unnecessarily, and define
+your assumptions and choices clearly for other observers using your data.
+
+</p><h2><a href="#pulsar">Pulsar Pulse Times of Arrival</a></h2>
+
+Prediction and reduction of pulsar pulse times of arrival make use of the
+ephemeris information on the earth's changing distance to a pulsar as it
+moves around the sun.  Garden variety pulsar timing can achieve accuracies
+of tens of microseconds, and millisecond pulsar timing is working at the
+level of a few hundred nanoseconds over long periods of time.  The latter
+number implies that the observer's position with respect to the solar
+system barycenter be known to about 100 meters.  This is very close to the
+accuracy limit of the latest ephemerides.
+
+<p>Pulsar timing also requires a relativistic gravitational correction due
+to the earth's motion in the solar system's potential well.  This
+correction can be as large as 1.6 milliseconds.  The standard pulsar
+timing reference is the solar system barycenter using <a href="http://www.cv.nrao.edu/%7Erfisher/Ephemerides/times.html#TBD">Barycentric Dynamic Time</a>.
+
+</p><p>The geometric timing correction is simply the speed of light divided
+into the distance from the observer to the solar system barycenter times
+the cosine of the angle between the observer-barycenter line and the
+direction to the pulsar.  In vector language this is the dot product of the
+observer's barycentric vector and the pulsar direction unit vector divided
+by the speed of light.  Using the ephemeris vector notation above, the
+observer's barycentric vector is
+
+</p><pre>	Observer(X,Y,Z) = EMB(X,Y,Z) + Moon(x,y,z) / (1 + EMrat)
+						+ Observatory(x,y,z)
+</pre>
+
+and the unit vector components of the pulsar's direction are
+
+<pre>	Pulsar_unit_X = cosine( RA ) cosine( Dec )
+	Pulsar_unit_Y = sine( RA ) cosine( Dec )
+	Pulsar_unit_Z = sine( Dec )
+</pre>
+
+The main caution is to keep the pulsar's position in the same coordinate
+frame as the ephemeris.  A 0.1 arcsecond pulsar direction error can produce
+a timing error as high as 240 microseconds, so all of the reference frame
+caveats of the previous section apply here, too.  Uncertainties involved
+with converting from B1950 to J2000 coordinates, for instance, can have
+effects at the 10 to 100 microsecond level.
+
+<p>Equations for the relativistic time correction are given in the
+Explanatory Supplement to the Astronomical Almanac <a href="#ref4">[ref
+4]</a>.
+
+</p><h2><a name="ref">References</a></h2>
+
+<p><a name="ref1">[1] <em>The Astronomical Almanac</em>, 1984, "The
+Introduction of the Improved IAU System of Astronomical Constants, Time
+Scales and Reference Frame into the Astronomical Almanac", Supplement
+section, pp. S1-S39, U. S. Government Printing Office, Washington and Her
+Majesty's Stationery Office, London.</a>
+
+</p><p><a name="ref2">[2] Hohenkerk, C.Y., Yallop, B.D., Smith, C.A., Sinclair,
+A.T., 1992, "Celestial Reference Systems", Chapter 3, p. 167,
+<em>Explanatory Supplement to the Astronomical Almanac</em>, Seidelmann,
+P.K., Ed., U. S. Naval Observatory, University Science Books, Mill Valley,
+CA.</a>
+
+</p><p><a name="ref3">[3] Archinal, B.A., 1992, "Terrestrial Coordinates and
+the Rotation of the Earth", Chapter 4, p. 255, <em>Explanatory Supplement
+to the Astronomical Almanac</em> Seidelmann, P.K., Ed., U. S. Naval
+Observatory, University Science Books, Mill Valley, CA.</a>
+
+</p><p><a name="ref4">[4] Seidelmann, P.K., Guinot, B., Dogget, L.E., 1992,
+"Time", Chapter 2, p. 42, <em>Explanatory Supplement to the Astronomical
+Almanac</em>, Seidelmann, P.K., Ed., U. S. Naval Observatory, University
+Science Books, Mill Valley, CA.</a>
+
+</p><p><a name="ref5">[5] Standish, E.M., Newhall, X X, Williams, J.G. and Folkner,
+W.F.: 1995, "JPL Planetary and Lunar Ephemerides, DE403/LE403", JPL IOM
+314.10-127.</a>
+
+</p><p>Last updated January, 24, 1996.
+</p><p>
+<a href="mailto:%20rfisher@nrao.edu">rfisher@nrao.edu</a>
+</p><p>
+<a href="http://www.cv.nrao.edu/%7Erfisher">Rick Fisher's Home Page</a>
+</p></body></html>
