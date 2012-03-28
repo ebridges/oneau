@@ -5,23 +5,26 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
+import java.util.logging.Logger;
 
 /**
  * Date: Aug 17, 2010
  * Time: 3:17:56 PM
  */
 public class DAOFactory {
-	/*
-    static final String JDBC_URL="jdbc:hsqldb:file:/Users/ebridges/Documents/Projects/1au/oneau-application/db/oneau-db";
+    private static final Logger logger = Logger.getLogger(DAOFactory.class.getName());
+
+    static final String JDBC_URL="jdbc:hsqldb:file:/db/oneau-db";
     static final String JDBC_USERNAME="SA";
     static final String JDBC_PASSWORD="";
     static final String JDBC_DRIVER="org.hsqldb.jdbcDriver";
-    */
+    /*
     static final String JDBC_URL="jdbc:postgresql:oneau";
     static final String JDBC_USERNAME="postgres";
     static final String JDBC_PASSWORD="postgres";
     static final String JDBC_DRIVER="org.postgresql.Driver";
-
+    */
     private String jdbcUrl;
     private String jdbcUsername;
     private String jdbcPassword;
@@ -33,6 +36,7 @@ public class DAOFactory {
         return new DAOFactory(jdbcUrl, jdbcUsername, jdbcPassword, jdbcDriver);
     }
 
+    /* used for tests */
     public static DAOFactory instance() {
         return new DAOFactory();
     }
@@ -102,6 +106,11 @@ public class DAOFactory {
 
             public int getLoginTimeout() throws SQLException {
                 return 0;
+            }
+
+            @Override
+            public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+                return logger;
             }
         };
     }
