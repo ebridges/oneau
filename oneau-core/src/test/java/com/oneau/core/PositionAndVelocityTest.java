@@ -3,6 +3,7 @@ package com.oneau.core;
 import com.oneau.core.util.HeavenlyBody;
 import com.oneau.core.util.PositionAndVelocity;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -40,6 +41,7 @@ public class PositionAndVelocityTest {
         underTest = new Ephemeris(dao);
     }
 
+    @Ignore
     @Test
     public void testCalculatePositionAndVelocity_SingleDateMultiplePlanets() throws IOException {
         EphemerisData data = new EphemerisData(DATA_FILE);
@@ -75,7 +77,7 @@ public class PositionAndVelocityTest {
         }
     }
 
-
+    @Ignore
     @Test
     public void testCalculatePositionAndVelocity_OneDate() throws IOException {
         EphemerisData data = new EphemerisData(DATA_FILE);
