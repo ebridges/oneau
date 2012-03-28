@@ -7,7 +7,7 @@ if [ -z ${VERSION} ] ; then
     exit;
 fi
 
-REMOTE_REPO_ADDR="deploy@1au.com"
+REMOTE_REPO_ADDR="deploy@74.208.17.94"
 REMOTE_REPO_DIR=/home/deploy/repository/ephemeris-db
 
 
