@@ -19,3 +19,8 @@ This light-weight, Java application is highly optimized to effectively operate w
 * Understanding JPL Ephemerides Data, Pt. 1 & 2
     * http://eqbridges.wordpress.com/2010/02/13/understanding-jpl-ephemerides-data-pt-1/
     * http://eqbridges.wordpress.com/2010/02/15/understanding-jpl-ephemerides-data-pt-2/
+
+## License
+This software is licensed under a Creative Commons Attribution-NonCommercial (CC BY-NC) license.  Please see the LICENSE.txt file accompanying the distribution for details.
+
+![CC BY-NC](http://i.creativecommons.org/l/by-nc/3.0/88x31.png "CC BY-NC")
